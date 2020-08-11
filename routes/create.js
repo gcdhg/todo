@@ -10,12 +10,12 @@ router.get('/', (req, res) => {
     });
   });
   
-router.post('/', (req, res) => {
+router.post('/', async (req, res) => {
     var todo = new Todo({
         title: req.body.title
     });
 
-    todo.save();
+    await todo.save();
     res.redirect('/');
 });
 
