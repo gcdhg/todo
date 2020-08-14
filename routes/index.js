@@ -12,4 +12,17 @@ router.get('/', async (req, res, next) => {
   });
 });
 
+router.post('/', async (req, res) => {
+  const todo = await Todo.findById(req.body.id);
+
+  if (todo.completed){
+    todo.completed = false
+  } else todo.completed = true;
+  if (todo.completed) {
+    todo.timeOfComplition = Date.now();
+  }
+  await todo.save();
+  res.redirect(303, '/');
+});
+
 module.exports = router;

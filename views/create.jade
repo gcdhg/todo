@@ -1,7 +1,17 @@
-form(action="/create" method="POST")
-  h2 Create todo
+extends layout
 
-  div.class="input-field"
-    input(type="text" name="title")
-    label Todo title
-    button(Type="submit" class="btn") confirm
+block content
+  div.container
+    form(action="/create" method="POST")
+      h2 Create ToDo
+
+      div(class="col-md-6 mb-3")
+        llabel(for="TaskTitle")= 'Task Title'
+        input(type="text" class="form-control is-valid" name="title" id="validationServer01" required)
+        div.valid-feedback.
+          Please enter Task Title
+      
+      div(class="form-group col-md-6 mb-3")
+        label(for="des")= 'Description'
+        textarea.form-control(type="text" id="des" name="des" rows="3")
+      input(type="submit" class="btn btn-success" value="Confirm")
