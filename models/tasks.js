@@ -5,6 +5,9 @@ const schema = new Schema({
         type: String,
         required: true
     },
+    des: {
+        type: String
+    },
     completed: {
         type: Boolean,
         default: false
