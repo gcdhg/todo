@@ -31,8 +31,8 @@ block content
   .container
 
     h1= title
-    if (showOne)
+    - if (showOne)
       +tasker(tasks)
-    else
+    - else
       for task in tasks
         +tasker(task) 
