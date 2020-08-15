@@ -23,25 +23,11 @@ exports.createTask = async(function* (req, res) {
         des: req.body.des
     });
 
-    task.save();
+    yield task.save();
     res.redirect('/');
 });
 
 exports.editTask = async(function* (req, res) {
-
-    // yield Task.findByIdAndUpdate({
-    //     _id: req.body.id
-    // }, {
-    //     $set: { title: req.body.title },
-    //     $set: { des: req.body.des },
-    //     $set: { timeOfEdition: Date.now() },
-    //     new: true
-    // }, (err, updatedTask) => {
-    //     if (err) {
-    //         res.status(500);
-    //         console.log(err);
-    //     }
-    // });
 
     var task = yield Task.findById(req.body.id);
 
@@ -71,20 +57,26 @@ exports.completeTask = async(function* (req, res) {
 });
 
 exports.getForm = function (req, res) {
-    res.render('create', {
-        title: 'Create todo',
-        isCreate: true
-    });
+    try {
+        res.render('create', {
+            title: 'Create todo',
+            isCreate: true
+        });
+    } catch (err) {
+        if (err) {
+            res.status(500);
+        }
+    }
 };
 
 exports.getUpdateTask = async(function* (req, res) {
 
-    const task = yield Task.findById(req.body.id);
+    const task = yield Task.findById({ _id: req.params.id });
 
     res.render('create', {
         title: 'Edit ToDo',
         isCreate: false,
-        task: task
+        task
     });
 });
 
@@ -104,8 +96,6 @@ exports.deleteTask = async(function* (req, res) {
 
 exports.getTaskById = async(function* (req, res) {
     var tasks = yield Task.findById(req.params.id);
-
-    console.log(tasks);
 
     res.render('index', {
         title: "Task",

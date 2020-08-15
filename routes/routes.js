@@ -8,12 +8,12 @@ var tasks = require('../controllers/tasks');
 router.get('/', tasks.showAllTasks);
 router.put('/', tasks.completeTask);
 router.delete('/', tasks.deleteTask);
-router.get('/:id', tasks.getTaskById);
 router.get('/create', tasks.getForm);
 router.post('/create', tasks.createTask);
 router.put('/create', tasks.editTask)
 router.put('/edit', tasks.editTask);
-router.post('/edit', tasks.getUpdateTask);
+router.get('/edit/:id', tasks.getUpdateTask);
+router.get('/:id', tasks.getTaskById);
 
 
 module.exports = router;
