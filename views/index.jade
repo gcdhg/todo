@@ -1,20 +1,38 @@
 extends layout
 
 mixin tasker(task)
-  div.card(id="ToDo#{task.id}")
-    h5.card-header= task.title    
-    div.card-body
+  .card
+    h5.card-header
+      a(href= "/#{task._id}")= task.title    
+
+    .card-body
       h5.card-title #{task.des}
       p.card-text Creation time: #{task.timeOfCreation}
+
       if(task.completed)
         p.card-text Complition time: #{task.timeOfComplition}
-      form(action="/", method="POST")
-        input(type="hidden" value="#{task.id}" name="id")
-        input(type="submit", class="btn btn-success" value="Complete")      
+
+      .row
+        form(action="/", method="POST")
+          input(type="hidden" value="#{task.id}" name="id")
+          input(type="hidden", name="_method" value="PUT")
+          input(type="submit", class="btn btn-success" value="Complete") 
+
+        form(action="/edit" method="POST")
+          input(type="hidden" value="#{task.id}" name="id")
+          input(type="submit", class="btn btn-primary" value="Edit")     
+          
+        form(action="/" method="POST")
+          input(type="hidden" value="#{task.id}" name="id")
+          input(type="hidden", name="_method" value="DELETE")
+          input(type="submit", class="btn btn-danger" value="Delete")   
 
 block content
-  div.container
+  .container
+
     h1= title
-    for task in todos
-      +tasker(task)
-      
+    if (showOne)
+      +tasker(tasks)
+    else
+      for task in tasks
+        +tasker(task) 

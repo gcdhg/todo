@@ -16,8 +16,13 @@ const schema = new Schema({
         type: Date,
         default: Date.now()
     },
+    timeOfEdition: {
+        type: Date,
+        default: null
+    },
     timeOfComplition: {
-        type: Date
+        type: Date,
+        default: null
     }
 });
 

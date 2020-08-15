@@ -1,17 +1,36 @@
 extends layout
 
 block content
-  div.container
-    form(action="/create" method="POST")
-      h2 Create ToDo
+  if (isCreate)
+    div.container
+      form(action="/create" method="POST")
+        h2= title
 
-      div(class="col-md-6 mb-3")
-        llabel(for="TaskTitle")= 'Task Title'
-        input(type="text" class="form-control is-valid" name="title" id="validationServer01" required)
-        div.valid-feedback.
-          Please enter Task Title
-      
-      div(class="form-group col-md-6 mb-3")
-        label(for="des")= 'Description'
-        textarea.form-control(type="text" id="des" name="des" rows="3")
-      input(type="submit" class="btn btn-success" value="Confirm")
+        div(class="col-md-6 mb-3")
+          llabel(for="TaskTitle")= 'Task Title'
+          input(type="text" class="form-control is-valid" name="title" id="title" required)
+          div.valid-feedback.
+            Please enter Task Title
+        
+        div(class="form-group col-md-6 mb-3")
+          label(for="des")= 'Description'
+          textarea.form-control(type="text" id="des" name="des" rows="3")
+        input(type="submit" class="btn btn-success" value="Confirm")
+  else
+    div.container
+        form(action="/create" method="POST")
+          h2= title
+
+          div(class="col-md-6 mb-3")
+            llabel(for="TaskTitle")= 'Task Title'
+            input(type="text" class="form-control is-valid" name="title" id="title" placeholder="#{task.title}" required)
+            div.valid-feedback.
+              Please enter Task Title
+          
+          div(class="form-group col-md-6 mb-3")
+            label(for="des")= 'Description'
+            textarea.form-control(type="text" id="des" name="des" rows="3" placeholder="#{task.des}")
+
+          input(type="hidden", name="id" value="#{task.id}")
+          input(type="hidden", name="_method" value="PUT")
+          input(type="submit" class="btn btn-success" value="Update")
