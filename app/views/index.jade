@@ -11,7 +11,6 @@ mixin tasker(task)
 
       if(task.completed)
         p.card-text Time of complition : #{task.timeOfComplition}
-
       .row
         form(action="/", method="POST")
           input(type="hidden" value="#{task.id}" name="id")
