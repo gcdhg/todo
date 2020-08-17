@@ -1,23 +1,19 @@
 <template>
   <div id="app">
     <img alt="Vue logo" src="./assets/logo.png">
-    <ToDoList>
-
-    </ToDoList>
+    <HelloWorld msg="Welcome to Your Vue.js App"/>
   </div>
 </template>
 
 <script>
-import ToDoList from './components/ToDoList.vue';
-
-const API_URL = 'http://localhost:3000';
+import HelloWorld from './components/HelloWorld.vue'
 
 export default {
   name: 'App',
   components: {
-    ToDoList,
-  },
-};
+    HelloWorld
+  }
+}
 </script>
 
 <style>
