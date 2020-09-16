@@ -1,5 +1,4 @@
 const dotenv = require('dotenv').config();
-require('module-alias/register');
 
 const createError = require('http-errors');
 const express = require('express');
@@ -36,12 +35,6 @@ app.use(
 app.use('/', taskRouter);
 app.use('/users', usersRouter);
 
-// mongoose.connect(process.env.MONGODB_URL, {
-//   useNewUrlParser: true,
-//   useUnifiedTopology: true,
-//   useFindAndModify: false,
-// });
-
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
   next(createError(404));
@@ -57,14 +50,5 @@ app.use(function (err, req, res, next) {
   res.status(err.status || 500);
   res.status(500).json(err);
 });
-
-app.use(
-  cors({
-    origin: ['http://localhost:3000'],
-    optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
-    credentials: true
-  })
-);
-
 
 module.exports = app;

@@ -4,6 +4,8 @@
  * Module dependencies.
  */
 
+require ('module-alias/register');
+
 var app = require('../app');
 var debug = require('debug')('todo:server');
 var http = require('http');
@@ -25,7 +27,7 @@ var server = http.createServer(app);
  * Listen on provided port, on all network interfaces.
  */
 
-server.listen(port);
+server.listen(port, () => console.log(`server started at port ${port}`));
 server.on('error', onError);
 server.on('listening', onListening);
 

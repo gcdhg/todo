@@ -16,16 +16,16 @@ module.exports.showAllTasks = async(function* (req, res) {
                 title: 'ToDo list',
                 foundData
             });
+        } else {
+            return res.status(200).json({
+                title: 'no tasks created yet'
+            })
         }
-        return res.status(200).json({
-            title: 'ToDo list',
-            foundData
-        })
     });
 });
 
 module.exports.getTaskById = async(function* (req, res) {
-    var tasks = yield Task.findById(req.params.id, (err, foundData) => {
+    var task = yield Task.findById(req.params.id, (err, foundData) => {
         if (err) {
             return res.status(400).json(
                 err
@@ -35,16 +35,15 @@ module.exports.getTaskById = async(function* (req, res) {
 
     res.status(302).json({
         title: "Task",
-        tasks,
-        showOne: true
+        task
     });
 });
 
 module.exports.createTask = async(function* (req, res) {
     try {
         const task = new Task({
-            title: req.body.title.trim(),
-            des: req.body.des.trim()
+            title: req.body.title,
+            body: req.body.body
         });
 
         yield task.save();
@@ -52,10 +51,10 @@ module.exports.createTask = async(function* (req, res) {
             task
         })
     } catch (err) {
-        res.status(510).json(
-            err
-        );
-    }
+    res.status(510).json(
+        err
+    )
+}
 });
 
 module.exports.editTask = async(function* (req, res) {
@@ -69,8 +68,8 @@ module.exports.editTask = async(function* (req, res) {
     });
 
     task.title = req.body.title;
-    task.des = req.body.des;
-    task.timeOfEdition = Date.now();
+    task.body = req.body.body;
+    task.editedAt = Date.now();
 
     yield task.save();
 
@@ -90,10 +89,10 @@ module.exports.completeTask = async(function* (req, res) {
 
     if (task.completed) {
         task.completed = false;
-        task.timeOfComplition = null;
+        task.completedAt = null;
     } else {
         task.completed = true;
-        task.timeOfComplition = Date.now();
+        task.completedAt = Date.now();
     }
 
     yield task.save();
