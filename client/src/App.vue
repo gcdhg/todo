@@ -1,9 +1,21 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <Header/>
+    <div id="nav">
+    </div>
+    <router-view/>
   </div>
 </template>
+
+<script>
+import Header from '@/components/Header.vue'
+
+export default {
+  components: {
+    Header
+  }
+}
+</script>
 
 <style>
 #app {
@@ -12,6 +24,18 @@
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
+}
+
+#nav {
+  padding: 30px;
+}
+
+#nav a {
+  font-weight: bold;
+  color: #2c3e50;
+}
+
+#nav a.router-link-exact-active {
+  color: #42b983;
 }
 </style>

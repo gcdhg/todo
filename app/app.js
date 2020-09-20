@@ -32,6 +32,7 @@ app.use(
   })
 );
 
+app.use(cors({origin: 'http://localhost:8080'}));
 app.use('/', taskRouter);
 app.use('/users', usersRouter);
 

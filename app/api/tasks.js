@@ -12,10 +12,7 @@ module.exports.showAllTasks = async(function* (req, res) {
             );
         }
         if (foundData) {
-            return res.status(200).json({
-                title: 'ToDo list',
-                foundData
-            });
+            return res.status(200).json(foundData);
         } else {
             return res.status(200).json({
                 title: 'no tasks created yet'
@@ -33,10 +30,7 @@ module.exports.getTaskById = async(function* (req, res) {
         }
     });
 
-    res.status(302).json({
-        title: "Task",
-        task
-    });
+    res.status(302).json(task);
 });
 
 module.exports.createTask = async(function* (req, res) {
@@ -47,9 +41,7 @@ module.exports.createTask = async(function* (req, res) {
         });
 
         yield task.save();
-        res.status(201).json({
-            task
-        })
+        res.status(201).json(task)
     } catch (err) {
     res.status(510).json(
         err

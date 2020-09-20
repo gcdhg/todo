@@ -17,4 +17,10 @@ const TaskSchema = new Schema({
     completedAt: { type: Date, default: null }
 });
 
+// TaskSchema.method = {
+//     load: function (id) {
+//         return 
+//     }
+// }
+
 mongoose.model('todo', TaskSchema);

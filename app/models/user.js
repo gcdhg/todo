@@ -12,4 +12,21 @@ const UserSchema = new Schema({
     authToken: { type: String, default: '' }
 });
 
-mongoose.model('user', UserSchema);
+UserSchema.method = {
+    makeSalt: function () {
+        return Math.round(new Date().valueOf() * Math.random() + '');
+    },
+    encryptPassword: function (password) {
+        if (!password) return '';
+        try {
+            return crypto
+                .createHmac('sha1', this.salt)
+                .update(password)
+                .digest('hex');
+        } catch (err) {
+            return '';
+        }
+    },
+}
+
+mongoose.model('User', UserSchema);
