@@ -43,10 +43,10 @@ module.exports.createTask = async(function* (req, res) {
         yield task.save();
         res.status(201).json(task)
     } catch (err) {
-    res.status(510).json(
-        err
-    )
-}
+        res.status(510).json(
+            err
+        )
+    }
 });
 
 module.exports.editTask = async(function* (req, res) {
@@ -130,12 +130,11 @@ module.exports.deleteTask = async(function* (req, res) {
     var id = req.body.id;
     yield Task.findByIdAndDelete({
         _id: id,
-    }, async (err, data) => {
+    }, (err, data) => {
         if (err) {
-            return res.status(500);
+            console.log(err);
+            return res.status(500).json(err);
         }
-        return res.status(200).json({
-            err
-        });
+        return res.status(200).json(data);
     });
 });

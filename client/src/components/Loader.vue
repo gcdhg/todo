@@ -2,7 +2,7 @@
   <div class="lds-dual-ring"></div>
 </template>
 
-<style>
+<style scoped>
   .lds-dual-ring {
     display: inline-block;
     width: 64px;
