@@ -4,6 +4,7 @@ import Router from 'vue-router'
 import Home from '@/views/Home'
 import Todos from '@/views/Todos'
 import Create from '@/views/Create.vue'
+import Login from '@/views/Login.vue'
 // import { component } from 'vue/types/umd'
 
 Vue.use(Router)
@@ -23,6 +24,16 @@ const routes = [
     path: '/create',
     name: 'Create',
     component: Create
+  },
+  {
+    path: '/edit/:id',
+    name: 'Edit',
+    component: Create
+  },
+  {
+    path: '/login',
+    name: 'Login',
+    component: Login
   },
   {
     path: '/about',

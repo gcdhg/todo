@@ -22,18 +22,11 @@ export default {
   data() {
     return {
       todos: [],
-      loading: true,
+      loading: false,
     };
   },
   mounted() {
-    fetch("http://localhost:3000")
-      .then((res) => res.json())
-      .then((json) => {
-        setTimeout(() => {
-          this.todos = json;
-          this.loading = false;
-        }, 0);
-      });
+    this.updateData();
   },
   components: {
     ToDoList,

@@ -10,18 +10,11 @@ router.route('/')
     .delete(api.deleteTask);
 
 router.route('/create')
-    .get(api.getForm)
     .post(api.createTask)
-    .put(api.editTask);
-
-router.route('/edit')
-    .put(api.editTask);
 
 router.route('/edit/:id')
-    .get(api.getUpdateTask);
-
-router.route('/:id')
-    .get(api.getTaskById);
+    .get(api.getTaskById)
+    .post(api.editTask);
 
 
 module.exports = router;

@@ -22,15 +22,20 @@ module.exports.showAllTasks = async(function* (req, res) {
 });
 
 module.exports.getTaskById = async(function* (req, res) {
-    var task = yield Task.findById(req.params.id, (err, foundData) => {
-        if (err) {
-            return res.status(400).json(
-                err
-            );
-        }
-    });
+    try {
+        var task = yield Task.findById(req.params.id, (err, foundData) => {
+            if (err) {
+                return res.status(400).json(
+                    err
+                );
+            }
+        });
 
-    res.status(302).json(task);
+        res.status(302).json(task);
+    } catch (err) {
+        console.log(err);
+        res.status(400).json();
+    }
 });
 
 module.exports.createTask = async(function* (req, res) {
@@ -50,24 +55,27 @@ module.exports.createTask = async(function* (req, res) {
 });
 
 module.exports.editTask = async(function* (req, res) {
+    try {
+        var task = yield Task.findById(req.params.id, (err, foundData) => {
+            if (err) {
+                return res.status(406).json(
+                    err
+                );
+            }
+        });
 
-    var task = yield Task.findById(req.body.id, (err, foundData) => {
-        if (err) {
-            return res.status(406).json(
-                err
-            );
-        }
-    });
+        task.title = req.body.title;
+        task.body = req.body.body;
+        task.editedAt = Date.now();
 
-    task.title = req.body.title;
-    task.body = req.body.body;
-    task.editedAt = Date.now();
+        yield task.save();
 
-    yield task.save();
-
-    res.status().json({
-        task
-    });
+        res.status().json(
+            task
+        );
+    } catch (err) {
+        res.status(500);
+    }
 });
 
 module.exports.completeTask = async(function* (req, res) {
@@ -90,38 +98,6 @@ module.exports.completeTask = async(function* (req, res) {
     yield task.save();
 
     res.status(200).json({
-        task
-    });
-});
-
-module.exports.getForm = function (req, res) {
-    try {
-        res.status(200).json({
-            title: 'Create todo',
-            isCreate: true
-        });
-    } catch (err) {
-        if (err) {
-            res.status(500).json(
-                err
-            );
-        }
-    }
-};
-
-module.exports.getUpdateTask = async(function* (req, res) {
-
-    const task = yield Task.findById({ _id: req.params.id }, (err, updatedData) => {
-        if (err) {
-            return res.status(500).json(
-                err
-            );
-        }
-    });
-
-    res.status(200).json({
-        title: 'Edit ToDo',
-        isCreate: false,
         task
     });
 });

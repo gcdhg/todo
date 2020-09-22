@@ -19,9 +19,20 @@
       </div>
 
       <div>
+        <!-- need improvment -->
+        <b-button
+          variant="success"
+          v-on:click="updateTodo"
+          v-if="urlArr[1]"
+          type="submit"
+          class="btn btn-primary"
+          style="display:inline"
+          href="/"
+        >Edit</b-button>
         <b-button
           variant="success"
           v-on:click="createTodo"
+          v-else
           type="submit"
           class="btn btn-primary"
           style="display:inline"
@@ -34,6 +45,7 @@
           style="display:inline"
           href="/"
         >Back</b-button>
+        <!--  -->
       </div>
     </form>
     <br />
@@ -53,16 +65,64 @@
 </template>
 
 <script>
+// need improvment
+const urlArr = window.location.href.split("edit/");
+console.log(urlArr);
+// 
+
 export default {
   data() {
     return {
       todo: {
+        id: "",
         title: "",
         body: "",
       },
+      urlArr,
     };
   },
+  mounted() {
+    if (urlArr[1])
+      this.fetchData();
+    else {
+      this.todo.id = ""
+      this.todo.title = "";
+      this.todo.body = "";
+    }
+  },
   methods: {
+    fetchData() {
+      fetch("http://localhost:3000/edit/" + urlArr[1])
+      .then((res) => res.json())
+      .then((json) => {
+        setTimeout(() => {
+          console.log(json);
+          this.todo.id = json._id;
+          this.todo.title = json.title;
+          this.todo.body = json.body;
+        }, 0);
+      })
+      .catch(err => console.log(err));
+    },
+    updateTodo () {
+      fetch("http://localhost:3000/edit/" + urlArr[1], {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json;charset=utf-8",
+          Origin: "http://localhost:3000/edit",
+        },
+        body: JSON.stringify(this.todo),
+      })
+        .then((res) => res.json())
+        .then((json) => {
+          setTimeout(() => {
+            console.log(json);
+          }, 0);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
     createTodo() {
       fetch("http://localhost:3000/create", {
         body: JSON.stringify(this.todo),
@@ -90,10 +150,3 @@ export default {
   },
 };
 </script>
-
-<style scoped>
-.container-buttons {
-  display: flex;
-  justify-content: space-around;
-}
-</style>

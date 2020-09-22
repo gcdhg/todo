@@ -32,19 +32,8 @@ app.use(
   })
 );
 
-var whitelist = ['http://localhost:8080', 'http://localhost:3000'];
-
-var corsOptions = {
-  origin: function (origin, callback) {
-    if (whitelist.indexOf(origin) !== -1 || !origin) {
-      callback(null, true)
-    } else {
-      callback(new Error('Not allowed by CORS'))
-    }
-  }
-}
-
-app.use(cors(corsOptions));
+app.use(cors());
+app.options('*', cors());
 app.use('/', taskRouter);
 app.use('/users', usersRouter);
 
