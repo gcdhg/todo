@@ -4,6 +4,7 @@
         :key="todo"
         v-bind:todo="todo" 
         v-bind:index="i"
+        v-on:complete-todo="completeTodo"
         v-on:remove-todo="removeTodo"
     />
   </div>
@@ -20,6 +21,9 @@ export default {
   methods: {
     removeTodo (id) {
       this.$emit('remove-todo', id);
+    },
+    completeTodo (id) {
+      this.$emit('complete-todo', id);
     }
   }
 };

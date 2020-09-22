@@ -3,6 +3,8 @@ import VueRouter from 'vue-router'
 import Router from 'vue-router'
 import Home from '@/views/Home'
 import Todos from '@/views/Todos'
+import Create from '@/views/Create.vue'
+// import { component } from 'vue/types/umd'
 
 Vue.use(Router)
 
@@ -16,6 +18,11 @@ const routes = [
     path: '/home',
     name: 'Home',
     component: Home
+  },
+  {
+    path: '/create',
+    name: 'Create',
+    component: Create
   },
   {
     path: '/about',
