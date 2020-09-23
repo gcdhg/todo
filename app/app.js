@@ -7,7 +7,8 @@ const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const mongoose = require('mongoose');
 const methodOverride = require('method-override');
-const cors = require('cors')
+const cors = require('cors');
+const session = require('express-session');
 
 const taskRouter = require('./routes/routes');
 const usersRouter = require('./routes/users');

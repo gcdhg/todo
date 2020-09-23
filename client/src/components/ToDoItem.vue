@@ -1,21 +1,33 @@
 <template>
   <div class="card">
     <div class="card-header">
-      {{todo.title | uppercase}}
+      {{ todo.title | uppercase }}
       <a v-if="todo.completed">&check; completed</a>
+
+      <button
+        type="button"
+        class="close"
+        aria-label="Close"
+        v-on:click="$emit('remove-todo', todo._id)"
+      >
+        <span aria-hidden="true">&times;</span>
+      </button>
     </div>
+
     <div class="card-body">
-      <div style="white-space: pre-line;" class="card-text">{{todo.body}}</div>
+      <div style="white-space: pre-line" class="card-text">{{ todo.body }}</div>
       <div class="btn-group">
-        <form action="/" method="PUT">
-          <b-button variant="success" v-on:click="$emit('complete-todo', todo._id)">Done</b-button>
-        </form>
-        <form action="/" method="GET">
-          <b-button v-bind:href="'/edit/' + todo._id" variant="primary" v-on:click="$emit('edit-todo', todo._id)">Edit</b-button>
-        </form>
-        <form action="/" method="DELETE">
-          <b-button variant="danger" v-on:click="$emit('remove-todo', todo._id)">Delete</b-button>
-        </form>
+        <b-button
+          variant="success"
+          v-on:click="$emit('complete-todo', todo._id)"
+          >Done</b-button
+        >
+        <b-button
+          v-bind:href="'/edit/' + todo._id"
+          variant="primary"
+          v-on:click="$emit('edit-todo', todo._id)"
+          >Edit</b-button
+        >
       </div>
     </div>
   </div>

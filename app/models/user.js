@@ -27,6 +27,9 @@ UserSchema.method = {
             return '';
         }
     },
+    auth (password) {
+        return this.encryptPassword(password) === hashed_password;
+    }
 }
 
 mongoose.model('User', UserSchema);

@@ -22,7 +22,7 @@ export default {
   data() {
     return {
       todos: [],
-      loading: false,
+      loading: true,
     };
   },
   mounted() {
@@ -81,6 +81,7 @@ export default {
         .then((json) => {
           setTimeout(() => {
             this.todos = json;
+            this.loading = false;
           }, 0);
         });
     },
