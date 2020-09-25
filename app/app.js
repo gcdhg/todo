@@ -26,7 +26,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 // enables method override from req send from client
-// it alows us to use DELETE, PUT ... etc
+// it allows us to use DELETE, PUT ... etc
 app.use(
   methodOverride(function (req) {
     if (req.body && typeof req.body === 'object' && '_method' in req.body) {
@@ -34,6 +34,19 @@ app.use(
       var method = req.body._method;
       delete req.body._method;
       return method;
+    }
+  })
+);
+// enables sessions
+app.use(
+  session({
+    saveUninitialized: false,
+    resave: false,
+    secret: process.env.SESSION_SECRET_KEY,
+    cookie: {
+      maxAge: 7200000,
+      sameSite: true,
+      secure: process.env.CURRENT_STATE === 'production'
     }
   })
 );

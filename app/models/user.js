@@ -17,7 +17,7 @@ const UserSchema = new Schema({
     },
     username: { type: String, unique: true, trim: true },
     provider: { type: String, },
-    hashed_password: { type: String, },
+    password: { type: String, },
     salt: { type: String, },
     tokens: [{
         token: {
@@ -47,18 +47,49 @@ UserSchema.methods.generateAuthToken = async function () {
     return token;
 };
 
-UserSchema.statics.findByCredenitials = async (email, password) => {
-    const user = await User.find({ email })
-
+UserSchema.statics.findByCredentials = async (email, password) => {
+    // Search for a user by email and password.
+    const user = await User.findOne({ email })
     if (!user) {
-        throw new Error({ error: 'Invalid login credentials' });
+        throw 'Invalid login credentials'
     }
-    const isPasswordMatch = await bcrypt.compare(password, user.password);
-
+    const isPasswordMatch = await bcrypt.compare(password, user.password)
     if (!isPasswordMatch) {
-        throw new Error({ error: 'Invalid login credentials' })
+        throw 'Invalid login credentials'
     }
     return user
+}
+
+UserSchema.statics.findByCredentialsAndDelete = async function (email, password) {
+    const user = await User.findByCredentials(email, password);
+    await User.findOneAndDelete({
+        email: user.email,
+        username: user.username
+    }, (err, data) => {
+        if (err) {
+            return false;
+        }
+    });
+    return true;
+};
+
+UserSchema.statics.destroyToken = async function (email, password, token) {
+    const user = await User.findByCredentials(email, password);
+    const newTokens = user.tokens.splice(user.tokens.indexOf(token), 1);
+    await User.findOneAndUpdate({
+        email: user.email,
+    }, {
+        tokens: newTokens
+    });
+    user.save();
+    return user;
+};
+
+UserSchema.statics.destroyAllTokens = async function (email, password) {
+    const user = await User.findByCredentials(email, password);
+    user.tokens = [];
+    await user.save();
+    return user;
 };
 
 const User = mongoose.model('User', UserSchema)
