@@ -68,6 +68,7 @@
 // need improvment
 const urlArr = window.location.href.split("edit/");
 console.log(urlArr);
+// const currentUrl = new Url (window.location.href);
 // 
 
 export default {

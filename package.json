@@ -8,12 +8,15 @@
     "dev": "nodemon ./app/bin/www"
   },
   "_moduleAliases": {
-    "@root": ".",
+    "@rootApp": "./app",
     "@ToDoApi": "./app/api",
     "@ToDoModels": "./app/models",
-    "@ToDoAPI": "./app/app.js"
+    "@ToDoRoutes": "./app/routes",
+    "@ToDoMiddleware": "./app/config/middleware"
   },
   "dependencies": {
+    "bcrypt": "^5.0.0",
+    "blubird": "0.0.1-security",
     "cookie-parser": "~1.4.4",
     "cors": "^2.8.5",
     "debug": "~2.6.9",
@@ -22,12 +25,15 @@
     "express-session": "^1.17.1",
     "http-errors": "~1.6.3",
     "jade": "~1.11.0",
+    "jsonwebtoken": "^8.5.1",
     "method-override": "^3.0.0",
     "module-alias": "^2.2.2",
     "mongoose": "^5.9.28",
-    "morgan": "~1.9.1"
+    "morgan": "^1.10.0",
+    "validator": "^13.1.17"
   },
   "devDependencies": {
+    "@types/module-alias": "^2.0.0",
     "jest": "^26.4.2",
     "nodemon": "^2.0.4"
   },

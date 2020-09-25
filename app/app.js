@@ -13,7 +13,7 @@ const session = require('express-session');
 const taskRouter = require('./routes/routes');
 const usersRouter = require('./routes/users');
 
-const database = require('./config/database')(mongoose, process.env.MONGODB_URL)
+const database = require('./config/db/database')(mongoose, process.env.MONGODB_URL)
 
 const app = express();
 

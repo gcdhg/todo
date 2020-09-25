@@ -3,40 +3,45 @@ const { wrap: async } = require('co');
 
 const User = mongoose.model('User');
 
-module.exports.createUser = async(function* (req, res) {
+module.exports.createUser = async function (req, res) {
     try {
-        const sendData = req.body;
-
-        const newUser = new User({
-            name: sendData.name,
-            email: sendData.email,
-            username: sendData.username,
-            salt: User.makeSalt(),
-            hashed_password: User.encryptPassword(sendData.password),
-        });
-
-        yield newUser.save();
-        return res.status(200);
-    } catch (err) {
-        return res.status(500);
+        const user = new User(req.body);
+        await user.save();
+        const token = await user.generateAuthToken();
+        res.status(201).send({ user, token });
+    } catch (error) {
+        console.log(error);
+        res.status(400).send(error);
     }
-});
+};
 
-module.exports.login = async(function* (req, res) {
-    const name = req.body.username;
-    const email = req.body.email;
-    const password = req.body.password;
-
-    const foundUser = User.find({
-        username: name,
-        email: email,
-    }, (err, foundData) => {
-        return res.status(500).json(
-            {'message':'User not found'}
-        );
-    });
-
-    if (foundUser.auth(encryptPassword(password))) {
-        return res.status(200).json();
+module.exports.loginUser = async function (req, res) {
+    try {
+        const { email, password } = req.body
+        const user = await User.findByCredentials(email, password)
+        if (!user) {
+            return res.status(401).send({ error: 'Login failed! Check authentication credentials' })
+        }
+        const token = await user.generateAuthToken()
+        res.send({ user, token })
+    } catch (error) {
+        res.status(400).send(error)
     }
-});
+};
+
+module.exports.logoutUser = async function (req, res) {
+    try {
+        const {email, password} = req.body;
+    } catch (error) {
+        res.status(400).send(error);
+    }
+};
+
+module.exports.deleteUser = async function (req, res) {
+    try {
+        const {email, password} = req.body;
+        const user = await User.findByIdAndDelete()
+    } catch (error) {
+        res.status(400).send(error);
+    }
+}

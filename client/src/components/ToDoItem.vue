@@ -2,8 +2,9 @@
   <div class="card">
     <div class="card-header">
       {{ todo.title | uppercase }}
-      <a v-if="todo.completed">&check; completed</a>
-
+      <b-badge variant="success" v-if="todo.completed"
+        >&check; completed</b-badge
+      >
       <button
         type="button"
         class="close"
