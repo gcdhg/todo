@@ -1,9 +1,12 @@
 var express = require('express');
 var router = express.Router();
 
-/* GET users listing. */
-router.get('/', function(req, res, next) {
-  res.send('respond with a resource');
-});
+var User = require('@ToDoModels/user.js');
 
-module.exports = router;
+var userApi = require('@ToDoApi/user.js');
+
+router.post('/create', userApi.createUser);
+
+router.post('/login', userApi.loginUser);
+
+module.exports = router

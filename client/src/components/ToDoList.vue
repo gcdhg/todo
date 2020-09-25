@@ -1,11 +1,31 @@
 <template>
-    <div>
-
-    </div>
+  <div class="container">
+    <TodoItem
+      v-for="(todo, i) of todos"
+      :key="todo._id"
+      v-bind:todo="todo"
+      v-bind:index="i"
+      v-on:complete-todo="completeTodo"
+      v-on:remove-todo="removeTodo"
+    />
+  </div>
 </template>
 
 <script>
-export default {
+import TodoItem from "@/components/ToDoItem";
 
+export default {
+  props: ["todos"],
+  components: {
+    TodoItem,
+  },
+  methods: {
+    removeTodo(id) {
+      this.$emit("remove-todo", id);
+    },
+    completeTodo(id) {
+      this.$emit("complete-todo", id);
+    },
+  },
 };
 </script>
