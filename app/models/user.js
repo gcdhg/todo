@@ -32,7 +32,9 @@ UserSchema.pre('save', async function (next) {
     const user = this;
 
     if (user.isModified('password')) {
-        user.password = await bcrypt.hash(user.password, 8)
+        user.password = await bcrypt.hash(user.password, 8).catch(err => {
+            throw "failed to encrypt data"
+        })
     }
 
     next();
@@ -74,7 +76,7 @@ UserSchema.statics.findByCredentialsAndDelete = async function (email, password)
 };
 
 UserSchema.statics.destroyToken = async function (email, password, token) {
-    const user = await User.findByCredentials(email, password);
+    const user = await User.findByCredentials(email, password)
     const newTokens = user.tokens.splice(user.tokens.indexOf(token), 1);
     await User.findOneAndUpdate({
         email: user.email,
@@ -85,12 +87,12 @@ UserSchema.statics.destroyToken = async function (email, password, token) {
     return user;
 };
 
-UserSchema.statics.destroyAllTokens = async function (email, password) {
-    const user = await User.findByCredentials(email, password);
-    user.tokens = [];
-    await user.save();
-    return user;
-};
+// UserSchema.statics.destroyAllTokens = async function (email, password) {
+//     const user = await User.findByCredentials(email, password);
+//     user.tokens = [];
+//     await user.save();
+//     return user;
+// };
 
 const User = mongoose.model('User', UserSchema)
 

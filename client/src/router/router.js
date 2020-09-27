@@ -1,7 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Router from 'vue-router'
-import Home from '@/views/Home'
 import Todos from '@/views/Todos'
 import Create from '@/views/Create.vue'
 import Login from '@/views/Login.vue'
@@ -14,11 +13,6 @@ const routes = [
     path: '/',
     name: 'Todo',
     component: Todos
-  },
-  {
-    path: '/home',
-    name: 'Home',
-    component: Home
   },
   {
     path: '/create',

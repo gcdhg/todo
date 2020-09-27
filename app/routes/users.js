@@ -2,7 +2,6 @@ var express = require('express');
 var router = express.Router();
 
 var User = require('@ToDoModels/user.js');
-var auth = require('../config/middleware/auth.js')
 
 const userApi = require('../api/user');
 

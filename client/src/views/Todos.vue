@@ -1,89 +1,53 @@
 <template>
   <div class="home">
-    <Loader v-if="loading" />
+    <Loader v-if="returnLoading" />
     <ToDoList
-      v-else-if="todos.length"
-      v-bind:todos="todos"
-      @complete-todo="completeTodo"
-      @remove-todo="removeTodo"
+      v-else-if="returnTodos.length"
+      v-bind:todos="returnTodos"
+      @complete-todo="completeTodoForThisUser"
+      @remove-todo="removeTodoForThisUser"
     />
     <p v-else>No todos!</p>
+
+    {{getToken}}
   </div>
 </template>
 
 <script>
+// eslint-disable-next-line no-unused-vars
 import fetch from "node-fetch";
+import { mapGetters, mapActions } from "vuex";
 
 import ToDoList from "@/components/ToDoList.vue";
-import Loader from "@/components/Loader";
+import Loader from "@/components/Loader.vue";
+
+const usedComponents = {
+  ToDoList,
+  Loader,
+};
+
+let returnData = {
+  loading: false,
+};
 
 export default {
-  name: "app",
+  name: "todo",
   data() {
-    return {
-      todos: [],
-      loading: true,
-    };
+    return returnData;
   },
-  mounted() {
-    this.updateData();
+  async mounted() {
+    this.updateData(localStorage.token);
   },
-  components: {
-    ToDoList,
-    Loader,
-  },
+  components: usedComponents,
+  computed: mapGetters(["returnTodos", "returnLoading", "getToken"]),
   methods: {
-    removeTodo(id) {
-      fetch("http://localhost:3000", {
-        headers: {
-          "Content-Type": "application/json;charset=utf-8",
-          "Origin": "http://localhost:3000",
-        },
-        method: "DELETE",
-        body: JSON.stringify({
-          id,
-        }),
-      })
-        .then((res) => res.json())
-        .then((json) => {
-          setTimeout(() => {
-            console.log(json);
-            this.updateData();
-          })
-        })
-        .catch((err) => console.log(err));
+    ...mapActions(["removeTodo", "completeTodo", "updateData"]),
+    removeTodoForThisUser(id) {
+      this.removeTodo(id);
     },
 
-    completeTodo(id) {
-        fetch("http://localhost:3000", {
-        headers: {
-          "Content-Type": "application/json;charset=utf-8",
-          Origin: "http://localhost:3000",
-        },
-        method: "PUT",
-        body: JSON.stringify({
-          id,
-        }),
-      })
-        .then((res) => res.json())
-        .then((json) => {
-          setTimeout(() => {
-            console.log(json);
-            this.updateData();
-          })
-        })
-        .catch((err) => console.log(err));
-    },
-
-    updateData() {
-      fetch("http://localhost:3000")
-        .then((res) => res.json())
-        .then((json) => {
-          setTimeout(() => {
-            this.todos = json;
-            this.loading = false;
-          }, 0);
-        });
+    completeTodoForThisUser(id) {
+      this.completeTodo(id);
     },
   },
 };

@@ -1,7 +1,4 @@
-const bluebird = require('bluebird')
-
 module.exports = (mongoose, config) => {
-    mongoose.Promise = bluebird
 
     const database = mongoose.connection;
 

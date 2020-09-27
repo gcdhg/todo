@@ -10,9 +10,11 @@ const mongoose = require('mongoose');
 const methodOverride = require('method-override');
 const cors = require('cors');
 const session = require('express-session');
+const MongoStore = require('connect-mongo')(session);
 
 const taskRouter = require('./routes/routes');
 const usersRouter = require('./routes/users');
+const { signedCookie } = require('cookie-parser');
 
 // database connection
 const database = require('./config/db/database')(mongoose, process.env.MONGODB_URL)
@@ -40,11 +42,12 @@ app.use(
 // enables sessions
 app.use(
   session({
+    name: 'sessionId',
     saveUninitialized: false,
     resave: false,
     secret: process.env.SESSION_SECRET_KEY,
     cookie: {
-      maxAge: 7200000,
+      maxAge: 1209600,
       sameSite: true,
       secure: process.env.CURRENT_STATE === 'production'
     }

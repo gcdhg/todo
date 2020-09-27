@@ -30,6 +30,7 @@
           >Edit</b-button
         >
       </div>
+      {{ username }}
     </div>
   </div>
 </template>
@@ -42,6 +43,11 @@ export default {
       required: true,
     },
     index: Number,
+  },
+  data() {
+    return {
+      username: "",
+    };
   },
   filters: {
     uppercase(value) {

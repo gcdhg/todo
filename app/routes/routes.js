@@ -3,18 +3,16 @@ var router = express.Router();
 var Todo = require('../models/tasks.js');
 
 var api = require('../api/tasks');
+var auth = require('../config/middleware/auth.js')
 
-router.route('/')
-    .get(api.showAllTasks)
-    .put(api.completeTask)
-    .delete(api.deleteTask);
+router.get('/', auth, api.showAllTasks)
+router.put('/', auth, api.completeTask)
+router.delete('/', auth, api.deleteTask);
 
-router.route('/create')
-    .post(api.createTask)
+router.post('/create', auth, api.createTask)
 
-router.route('/edit/:id')
-    .get(api.getTaskById)
-    .post(api.editTask);
+router.get('/edit/:id', auth, api.getTaskById)
+router.post('/edit/:id', auth, api.editTask);
 
 
 module.exports = router;
