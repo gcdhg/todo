@@ -40,8 +40,7 @@ export default {
   },
   methods: {
     loginUser: async function () {
-      this.$store.dispatch("loginUser", this.user);
-      localStorage.token = String(this.user.token);
+      await this.$store.dispatch("loginUser", this.user);
     },
   },
 };

@@ -21,34 +21,34 @@ module.exports.createUser = async function (req, res) {
     }
 };
 
-// response.writeHead(301,
-//     {Location: 'http://whateverhostthiswillbe:8675/'+newRoom}
-//   );
-
-// 
 module.exports.loginUser = async function (req, res) {
     try {
         const { email, password } = req.body;
         const user = await User.findByCredentials(email, password);
-        if (!user) {
+        if (user) {
+            try {
+                const token = await user.generateAuthToken()
+
+                req.session.userid = user._id;
+                req.session.token = token;
+                res.status(200).json({ user, token });
+            } catch (err) {
+                console.log(err)
+                res.status(500).json({
+                    error: 500,
+                    body: "Token generation failed"
+                })
+            }
+
+        }
+
+        else {
             return res.status(401).json({
                 error: 401,
                 body: 'Login failed! Check authentication credentials'
             });
         }
-        await user.generateAuthToken()
-            .then(token => {
-                req.session.userid = user._id;
-                req.session.token = token;
-                console.log(res.session);
-                res.status(200).json({ user, token });
-            })
-            .catch(err => {
-                res.status(500).json({
-                    error: 500,
-                    body: "Token generation failed"
-                })
-            });
+
     } catch (err) {
         console.log(err);
         res.status(400).json(err);

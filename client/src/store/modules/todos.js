@@ -2,23 +2,38 @@ export default {
     state: {
         todos: [],
         loading: true,
-        token: localStorage.token
+        token: localStorage.token,
+        auth: false,
     },
     mutations: {
         updateTodos(state, todos) {
             state.todos = todos;
-            state.loading = false;
+            state.loading = todos.loading;
+        },
+        userAuthenticated(state, auth) {
+            state.auth = auth;
         }
     },
     actions: {
         async updateData(context) {
+            if (context.getters.returnToken !== undefined) {
+                context.commit("userAuthenticated", true)
+            }
             await fetch("http://localhost:3000", {
                 headers: {
-                    'Authorization': 'Bearer ' + context.getters.returnToken
+                    'Authorization': 'Bearer ' + context.getters.returnToken,
                 }
             })
-                .then((res) => res.json())
-                .then((json) => {
+                .then((res) => {
+                    if (res.status === 200 || res.status === 304) {
+                        context.commit("userAuthenticated", true)
+                    }
+                    else {
+                        context.commit("userAuthenticated", false)
+                    }
+                    return res.json()
+                })
+                .then(json => {
                     json.loading = false
                     context.commit('updateTodos', json)
                 }).catch(err => {
@@ -77,7 +92,10 @@ export default {
             return state.loading;
         },
         returnToken(state) {
-            return state.token;
+            return String(state.token);
         },
+        returnUserAuthenticated(state) {
+            return state.auth;
+        }
     }
 }

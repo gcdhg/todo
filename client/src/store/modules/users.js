@@ -13,27 +13,28 @@ export default {
     },
     actions: {
         async loginUser(context, user) {
-            await fetch("http://localhost:3000/users/login", {
-                headers: {
-                    "Content-Type": "application/json;charset=utf-8",
-                    "Origin": "http://localhost:3000/users/login",
-                },
-                method: "POST",
-                body: JSON.stringify(user),
-            })
-                .then((res) => res.json())
-                .then((json) => {
-                    user.token = json.token
+            try {
+                const res = await fetch("http://localhost:3000/users/login", {
+                    headers: {
+                        "Content-Type": "application/json;charset=utf-8",
+                        "Origin": "http://localhost:3000/users/login",
+                    },
+                    method: "POST",
+                    body: JSON.stringify(user),
                 })
-                .catch((err) => {
-                    console.log(err);
-                });
-            context.commit("addUserData", user);
+                if (res) {
+                    const json = await res.json();
+                    user.token = json.token;
+                    console.log(json)
+                    localStorage.token = String(json.token);
+                    context.commit("addUserData", user);
+                }
+                else {
+                    console.log("failed to fetch");
+                }
+            } catch (err) {
+                console.log(err);
+            }
         },
     },
-    getters: {
-        getToken(state) {
-            return state.token
-        }
-    }
 }

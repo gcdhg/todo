@@ -33,17 +33,18 @@ export default {
                 console.log(err);
             }
         },
-        async updateOneToEditTodo(context, id, body) {
+        async updateOneToEditTodo(context, upadatedTodo) {
+            context.commit('updateTodo', upadatedTodo)
             try {
-                const res = await fetch("http://localhost:3000/edit/" + id, {
-                    body: JSON.stringify(body),
+                const res = await fetch("http://localhost:3000/edit", {
                     method: "POST",
                     headers: {
                         'Authorization': 'Bearer ' + context.getters.returnToken,
                         "Content-Type": "application/json;charset=utf-8",
-                        "Origin": "http://localhost:3000/edit" + id,
+                        "Origin": "http://localhost:3000/edit"
                     },
-                });
+                    body: JSON.stringify(context.getters.returnOneTodoById),
+                }).catch(err => console.log(err));
                 if (res) {
                     const json = res.json();
                     context.commit('updateTodo', {
@@ -70,7 +71,7 @@ export default {
                     },
                 })
                 if (res) {
-                    const json = res.json();
+                    const json = await res.json();
                     context.commit('updateTodo', {
                         id: '',
                         title: '',

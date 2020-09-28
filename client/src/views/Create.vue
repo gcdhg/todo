@@ -63,7 +63,7 @@
       <label for="previewTodo">Preview:</label>
       <div id="previewTodo">
         <div class="card-header">
-          {{ returnOneTodoById.title  | uppercase }}
+          {{ returnOneTodoById.title | uppercase }}
         </div>
         <div class="card-body">
           <div style="white-space: pre-line" class="card-text">
@@ -107,9 +107,6 @@ export default {
       };
     }
   },
-  watch: {
-    
-  },
   methods: {
     ...mapActions(["updateOneToEditTodo", "createNewTodo", "fetchData"]),
     async fetchDataById() {
@@ -117,11 +114,12 @@ export default {
       this.todo = this.$store.getters.returnOneTodoById;
     },
     async updateTodoById() {
-      this.updateOneToEditTodo(this.urlArr[1], this.todo);
+      console.log(this.todo)
+      this.updateOneToEditTodo(this.todo);
       this.todo = this.$store.getters.returnOneTodoById;
     },
     async createTodo() {
-      this.createNewTodo(this.todo);
+      await this.createNewTodo(this.todo);
       this.todo = this.$store.getters.returnOneTodoById;
     },
   },

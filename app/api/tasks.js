@@ -37,17 +37,14 @@ module.exports.showAllTasks = async function (req, res) {
 
 module.exports.createTask = async function (req, res) {
     try {
-        if (req.user && req.token) {
-            const task = new Task({
-                title: req.body.title,
-                body: req.body.body,
-                user: req.user
-            });
+        const task = new Task({
+            title: req.body.title,
+            body: req.body.body,
+            user: req.user
+        });
 
-            await task.save();
-            res.status(201).json(task)
-        }
-        else res.status(400).json('token transaction failed')
+        await task.save();
+        res.status(201).json(task)
     } catch (err) {
         res.status(400).json(err)
     }
@@ -79,26 +76,26 @@ module.exports.getTaskById = async function (req, res) {
 
 module.exports.editTask = async function (req, res) {
     try {
-        console.log(req.user)
-        if (req.user && req.token) {
-            var task = await Task.findByIdAndUpdate(req.params.id, {
-                title: req.body.title,
-                body: req.body.body,
-                editedAt: Date.now()
-            }, (err, foundData) => {
-                if (err) {
-                    return res.status(406).json(
-                        err
-                    );
-                }
-            });
+        console.log(req.body)
+        const task = await Task.findOneAndUpdate({_id: req.body._id}, {
+            title: req.body.title,
+            body: req.body.body,
+            editedAt: Date.now(),
+        }, (err, data) => {
+            if (err) {
+                return res.status(406).json(
+                    err
+                );
+            }
+            console.log(data)
+        });
+        if (!task) console.log(task)
 
-            await task.save();
+        await task.save();
 
-            res.status().json(task);
-        }
-        else res.status(400).json('token transaction failed')
+        res.status(200).json(task);
     } catch (err) {
+        console.log(err)
         res.status(400).json(err)
     }
 };

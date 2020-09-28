@@ -1,5 +1,5 @@
 <template>
-  <b-breadcrumb>
+  <b-breadcrumb class="fontsyle">
     <b-breadcrumb-item to="/">
       <b-icon icon="house-fill" scale="1.25" shift-v="1.25" aria-hidden="true">
       </b-icon>

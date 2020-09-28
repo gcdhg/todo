@@ -12,7 +12,7 @@ router.delete('/', auth, api.deleteTask);
 router.post('/create', auth, api.createTask)
 
 router.get('/edit/:id', auth, api.getTaskById)
-router.post('/edit/:id', auth, api.editTask);
+router.post('/edit', auth, api.editTask);
 
 
 module.exports = router;

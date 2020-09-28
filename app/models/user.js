@@ -83,7 +83,6 @@ UserSchema.statics.destroyToken = async function (email, password, token) {
     }, {
         tokens: newTokens
     });
-    user.save();
     return user;
 };
 
