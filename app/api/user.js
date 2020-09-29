@@ -31,7 +31,7 @@ module.exports.loginUser = async function (req, res) {
 
                 req.session.userid = user._id;
                 req.session.token = token;
-                res.status(200).json({ user, token });
+                res.status(200).json({ username: user.username, token });
             } catch (err) {
                 console.log(err)
                 res.status(500).json({
@@ -39,9 +39,7 @@ module.exports.loginUser = async function (req, res) {
                     body: "Token generation failed"
                 })
             }
-
         }
-
         else {
             return res.status(401).json({
                 error: 401,
@@ -56,14 +54,19 @@ module.exports.loginUser = async function (req, res) {
 };
 
 module.exports.logoutUserOnce = async function (req, res) {
-    const { email, password, token } = req.body;
-    await User.destroyToken(email, password, token)
+    // req.user || req.token
+    const token = req.token;
+    const id = req.user;
+    await User.destroyToken(id, token)
         .then(response => {
-            if (response.tokens.length) {
-                res.status(400).json(response);
+            if (!response.tokens.length) {
+                res.status(400).json('token deleted');
             }
-            res.status(201).json('token deleted');
+            else {
+                res.status(201).json(response);
+            }
         }).catch(err => {
+            console.log(err)
             res.status(400).json(err)
         });
 };

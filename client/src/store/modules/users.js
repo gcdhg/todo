@@ -1,16 +1,4 @@
 export default {
-    state: {
-        email: '',
-        password: '',
-        token: ''
-    },
-    mutations: {
-        addUserData(state, user) {
-            state.email = user.email;
-            state.password = user.password;
-            state.token = user.token;
-        },
-    },
     actions: {
         async loginUser(context, user) {
             try {
@@ -25,12 +13,36 @@ export default {
                 if (res) {
                     const json = await res.json();
                     user.token = json.token;
-                    console.log(json)
                     localStorage.token = String(json.token);
-                    context.commit("addUserData", user);
+                    context.commit("userAuthenticated", true)
                 }
                 else {
                     console.log("failed to fetch");
+                }
+            } catch (err) {
+                console.log(err);
+            }
+        },
+        
+        async logoutUser(context) {
+            try {
+                const res = await fetch("http://localhost:3000/users/logout", {
+                    headers: {
+                        'Authorization': 'Bearer ' + context.getters.returnToken,
+                        "Content-Type": "application/json;charset=utf-8",
+                        "Origin": "http://localhost:3000/users/logout",
+                    },
+                    method: "POST",
+                })
+                if (!res) {
+                    console.log("failed to fetch");
+                }
+                if (res.status === 201) {
+                    localStorage.token = undefined;
+                    context.commit("userAuthenticated", false)
+                }
+                else {
+                    console.log('failed to logout')
                 }
             } catch (err) {
                 console.log(err);

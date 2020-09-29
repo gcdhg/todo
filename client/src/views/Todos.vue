@@ -9,20 +9,42 @@
           <hr />
           <h5 class="card-text text-center">
             <a class="dashed" href="/login">Login</a>
-            <a class="dashed" href="https://github.com/gcdhg/todo">Source code on github</a>
+            <a class="dashed" href="https://github.com/gcdhg/todo"
+              >Source code on github</a
+            >
           </h5>
         </div>
       </div>
     </div>
-    <div v-else>
+    <div v-else class="container">
+      <div class="container">
+        <p class="text-left">Incoming:</p>
+      </div>
+      <div>
+        <b-button v-b-toggle.collapse-create-new-todo variant="outline-danger">
+          <b-icon class="align-centr" icon="plus" aria-hidden="true"></b-icon>
+          new todo</b-button
+        >
+        <b-collapse id="collapse-create-new-todo" class="mt-2">
+          <b-card>
+            <Create />
+          </b-card>
+        </b-collapse>
+      </div>
+      <hr />
+
       <Loader v-if="returnLoading" />
+
       <ToDoList
         v-if="returnTodos.length"
         v-bind:todos="returnTodos"
         @complete-todo="completeTodoForThisUser"
         @remove-todo="removeTodoForThisUser"
       />
-      <p v-else>No todos!</p>
+      <div class="text-center" v-else>
+        <h1>No todos!</h1>
+        <h2>you've completed all tasks</h2>
+      </div>
     </div>
   </div>
 </template>
@@ -34,15 +56,17 @@ import { mapGetters, mapActions } from "vuex";
 
 import ToDoList from "@/components/ToDoList.vue";
 import Loader from "@/components/Loader.vue";
+import Create from "@/views/Create.vue";
 
 const usedComponents = {
   ToDoList,
   Loader,
+  Create,
 };
 
 export default {
   name: "todo",
-  async mounted() {
+  async created() {
     this.updateData(localStorage.token);
   },
   components: usedComponents,

@@ -6,10 +6,6 @@ const auth = async (req, res, next) => {
     if (token) {
         try {
             const data = jwt.verify(token, process.env.JWT_KEY);
-        } catch (err) {
-            res.status(400).json({ error: 'No token found' });
-        }
-        try {
             const user = await User.findOne({ _id: data._id, 'tokens.token': token }, (err, data) => {
                 if (err) {
                     console.log(err);

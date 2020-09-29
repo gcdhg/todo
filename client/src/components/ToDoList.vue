@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div>
     <TodoItem
       v-for="(todo, i) of todos"
       :key="todo._id"

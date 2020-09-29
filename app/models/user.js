@@ -75,9 +75,13 @@ UserSchema.statics.findByCredentialsAndDelete = async function (email, password)
     return true;
 };
 
-UserSchema.statics.destroyToken = async function (email, password, token) {
-    const user = await User.findByCredentials(email, password)
-    const newTokens = user.tokens.splice(user.tokens.indexOf(token), 1);
+UserSchema.statics.destroyToken = async function (id, token) {
+    // const user = await User.findByCredentials(email, password)
+    const user = await User.findOne({ _id: id, 'tokens.token': token })
+    if (!user) {
+        throw ('no such token')
+    }
+    const newTokens = await user.tokens.splice(user.tokens.indexOf(token), 1);
     await User.findOneAndUpdate({
         email: user.email,
     }, {

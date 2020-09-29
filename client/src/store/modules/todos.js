@@ -95,7 +95,7 @@ export default {
             return String(state.token);
         },
         returnUserAuthenticated(state) {
-            return state.auth;
+            return Boolean(state.auth);
         }
     }
 }

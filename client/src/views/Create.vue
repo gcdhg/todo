@@ -11,9 +11,9 @@
           aria-describedby="titleHelp"
           v-model.trim="todo.title"
         />
-        <small id="titleHelp" class="form-text text-muted"
-          >Please fill out this field.</small
-        >
+        <small id="titleHelp" class="form-text text-muted">
+          Please fill out this field.
+        </small>
       </div>
       <div class="form-group">
         <label for="inputDescribtion">Describtion</label>s
@@ -58,20 +58,6 @@
         <!--  -->
       </div>
     </form>
-    <br />
-    <div>
-      <label for="previewTodo">Preview:</label>
-      <div id="previewTodo">
-        <div class="card-header">
-          {{ returnOneTodoById.title | uppercase }}
-        </div>
-        <div class="card-body">
-          <div style="white-space: pre-line" class="card-text">
-            {{ returnOneTodoById.body }}
-          </div>
-        </div>
-      </div>
-    </div>
   </div>
 </template>
 
@@ -114,7 +100,7 @@ export default {
       this.todo = this.$store.getters.returnOneTodoById;
     },
     async updateTodoById() {
-      console.log(this.todo)
+      console.log(this.todo);
       this.updateOneToEditTodo(this.todo);
       this.todo = this.$store.getters.returnOneTodoById;
     },

@@ -1,10 +1,11 @@
 import Vue from 'vue'
 import App from './App.vue'
 import router from '@/router/router'
+import store from './store/index'
+// vue-bootstrap
 import { BootstrapVue, IconsPlugin } from 'bootstrap-vue'
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
-import store from './store/index'
 
 
 Vue.use(BootstrapVue)

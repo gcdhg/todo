@@ -30,7 +30,8 @@ module.exports.showAllTasks = async function (req, res) {
             res.status(400).json('token transaction failed')
         }
     } catch (err) {
-        res.status(400).json(err)
+        console.log(err)
+        res.status(400)
     }
 
 };
@@ -46,7 +47,8 @@ module.exports.createTask = async function (req, res) {
         await task.save();
         res.status(201).json(task)
     } catch (err) {
-        res.status(400).json(err)
+        console.log(err)
+        res.status(400)
     }
 };
 
@@ -70,13 +72,13 @@ module.exports.getTaskById = async function (req, res) {
         }
         else res.status(400).json('token transaction failed')
     } catch (err) {
-        res.status(400).json(err);
+        console.log(err)
+        res.status(400);
     }
 };
 
 module.exports.editTask = async function (req, res) {
     try {
-        console.log(req.body)
         const task = await Task.findOneAndUpdate({_id: req.body._id}, {
             title: req.body.title,
             body: req.body.body,
@@ -87,7 +89,6 @@ module.exports.editTask = async function (req, res) {
                     err
                 );
             }
-            console.log(data)
         });
         if (!task) console.log(task)
 
@@ -127,7 +128,8 @@ module.exports.completeTask = async function (req, res) {
         }
         else res.status(400).json('token transaction failed')
     } catch (err) {
-        res.status(400).json(err)
+        console.log(err)
+        res.status(400)
     }
 };
 
@@ -147,6 +149,7 @@ module.exports.deleteTask = async function (req, res) {
         }
         else res.status(400).json('token transaction failed')
     } catch (err) {
-        res.status(400).json(err)
+        console.log(err)
+        res.status(400)
     }
 };
