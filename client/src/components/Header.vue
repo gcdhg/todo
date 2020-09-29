@@ -17,16 +17,19 @@
       </b-breadcrumb-item>
       <b-navbar-nav class="ml-auto">
         <b-nav-form v-if="Boolean(returnUserAuthenticated)">
+          <b-breadcrumb-item active=false>
+            userName
+          </b-breadcrumb-item>
           <b-breadcrumb-item to="/" v-on:click="logoutUser">
             Logout
           </b-breadcrumb-item>
         </b-nav-form>
         <b-nav-form v-else>
-          <b-breadcrumb-item v-b-modal.modal-lg> Login </b-breadcrumb-item>
+          <b-breadcrumb-item v-b-modal.modal-sm> Login </b-breadcrumb-item>
         </b-nav-form>
       </b-navbar-nav>
     </b-breadcrumb>
-    <b-modal id="modal-lg" size="lg" title="Large Modal">
+    <b-modal id="modal-sm" size="sm" title="Login User">
       <Login />
     </b-modal>
   </div>

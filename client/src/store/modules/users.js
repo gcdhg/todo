@@ -15,6 +15,7 @@ export default {
                     user.token = json.token;
                     localStorage.token = String(json.token);
                     context.commit("userAuthenticated", true)
+                    window.location.href = '/'
                 }
                 else {
                     console.log("failed to fetch");
@@ -40,6 +41,7 @@ export default {
                 if (res.status === 201) {
                     localStorage.token = undefined;
                     context.commit("userAuthenticated", false)
+                    window.location.href = '/'
                 }
                 else {
                     console.log('failed to logout')

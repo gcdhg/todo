@@ -1,5 +1,5 @@
 <template>
-  <div class="home">
+  <div>
     <div v-if="!returnUserAuthenticated" class="container col-6">
       <div class="card">
         <div class="card-body">
@@ -17,9 +17,7 @@
       </div>
     </div>
     <div v-else class="container">
-      <div class="container">
-        <p class="text-left">Incoming:</p>
-      </div>
+      <h3 class="text-left">Incoming:</h3>
       <div>
         <b-button v-b-toggle.collapse-create-new-todo variant="outline-danger">
           <b-icon class="align-centr" icon="plus" aria-hidden="true"></b-icon>

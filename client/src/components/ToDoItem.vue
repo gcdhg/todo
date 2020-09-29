@@ -17,7 +17,8 @@
 
     <div class="card-body">
       <small id="titleHelp" class="form-text text-muted">
-        Please fill out this field. {{ todo.createdAt }}
+        Created at: {{ todo.createdAt }} Edited at:
+        {{ todo.editedAt }} Completed at: {{ todo.completedAt }}
       </small>
       <div style="white-space: pre-line" class="card-text">{{ todo.body }}</div>
       <div class="btn-group">
@@ -60,3 +61,9 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.pader {
+  padding-right: 10px;
+}
+</style>
