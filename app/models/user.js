@@ -3,6 +3,8 @@ const validator = require('validator');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 
+const Task = mongoose.model('todo');
+
 const Schema = mongoose.Schema;
 
 const UserSchema = new Schema({
@@ -64,6 +66,13 @@ UserSchema.statics.findByCredentials = async (email, password) => {
 
 UserSchema.statics.findByCredentialsAndDelete = async function (email, password) {
     const user = await User.findByCredentials(email, password);
+    
+    await Task.deleteMany({user: user._id}, (err) => {
+        if(err) {
+            console.log(err);
+        }
+    })
+
     await User.findOneAndDelete({
         email: user.email,
         username: user.username
@@ -81,7 +90,8 @@ UserSchema.statics.destroyToken = async function (id, token) {
     if (!user) {
         throw ('no such token')
     }
-    const newTokens = await user.tokens.splice(user.tokens.indexOf(token), 1);
+    const newTokens = user.tokens;
+    await user.tokens.splice(user.tokens.indexOf(token), 1);
     await User.findOneAndUpdate({
         email: user.email,
     }, {
@@ -90,12 +100,15 @@ UserSchema.statics.destroyToken = async function (id, token) {
     return user;
 };
 
-// UserSchema.statics.destroyAllTokens = async function (email, password) {
-//     const user = await User.findByCredentials(email, password);
-//     user.tokens = [];
-//     await user.save();
-//     return user;
-// };
+UserSchema.statics.destroyAllTokens = async function (id, token) {
+    await User.findOneAndUpdate({
+        _id: id,
+        'tokens.token': token
+    }, {
+        tokens: []
+    });
+    return user;
+};
 
 const User = mongoose.model('User', UserSchema)
 

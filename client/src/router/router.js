@@ -4,6 +4,7 @@ import Router from 'vue-router'
 import Todos from '@/views/Todos'
 import Create from '@/views/Create.vue'
 import Login from '@/views/Login.vue'
+import Join from '@/views/Join.vue'
 // import { component } from 'vue/types/umd'
 
 Vue.use(Router)
@@ -28,6 +29,11 @@ const routes = [
     path: '/login',
     name: 'Login',
     component: Login
+  },
+  {
+    path: '/join',
+    name: 'Join',
+    component: Join
   },
   {
     path: '/about',

@@ -1,4 +1,17 @@
 export default {
+    state: {
+        username: 'UserName',
+    },
+    getters: {
+        getUserName(state) {
+            return state.username;
+        }
+    },
+    mutations: {
+        updateUserName(state, username) {
+            state.username = username;
+        }
+    },
     actions: {
         async loginUser(context, user) {
             try {
@@ -14,6 +27,7 @@ export default {
                     const json = await res.json();
                     user.token = json.token;
                     localStorage.token = String(json.token);
+                    context.commit('updateUserName', json.username)
                     context.commit("userAuthenticated", true)
                     window.location.href = '/'
                 }
@@ -45,6 +59,30 @@ export default {
                 }
                 else {
                     console.log('failed to logout')
+                }
+            } catch (err) {
+                console.log(err);
+            }
+        },
+        async createUser(context, user) {
+            try {
+                const res = await fetch("http://localhost:3000/users/join", {
+                    headers: {
+                        "Content-Type": "application/json;charset=utf-8",
+                        "Origin": "http://localhost:3000/users/join",
+                    },
+                    method: "POST",
+                    body: JSON.stringify(user),
+                })
+                if (res) {
+                    const json = await res.json();
+                    user.token = json.token;
+                    localStorage.token = String(json.token);
+                    context.commit("userAuthenticated", true)
+                    window.location.href = '/login'
+                }
+                else {
+                    console.log("failed to fetch");
                 }
             } catch (err) {
                 console.log(err);

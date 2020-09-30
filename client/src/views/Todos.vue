@@ -64,6 +64,18 @@ const usedComponents = {
 
 export default {
   name: "todo",
+  data() {
+      return {
+        form: {
+          email: '',
+          name: '',
+          filter: 'all todos',
+          checked: []
+        },
+        filter: ['all todos', 'completed todos', 'uncompleted todos', 'todays todos'],
+        show: true
+      }
+    },
   async created() {
     this.updateData(localStorage.token);
   },

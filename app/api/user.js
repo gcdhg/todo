@@ -60,14 +60,14 @@ module.exports.logoutUserOnce = async function (req, res) {
     await User.destroyToken(id, token)
         .then(response => {
             if (!response.tokens.length) {
-                res.status(400).json('token deleted');
+                res.status(201).json('token deleted');
             }
             else {
-                res.status(201).json(response);
+                res.status(400).json(response);
             }
         }).catch(err => {
             console.log(err)
-            res.status(400).json(err)
+            res.status(401).json(err)
         });
 };
 
