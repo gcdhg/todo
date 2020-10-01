@@ -12,17 +12,17 @@ const auth = async (req, res, next) => {
                 }
             });
             if (!user) {
-                res.status(400).json({ error: 'No user found' });
+                return res.status(400).json({ error: 'No user found' });
             }
             req.user = user._id;
             req.token = token;
             next();
         } catch (err) {
-            res.status(401).json({ error: 'Not authorized to access this resource' });
+            return res.status(401).json({ error: 'Not authorized to access this resource' });
         }
     }
     else {
-        res.status(400).json({ error: 'No token found' });
+        return res.status(400).json({ error: 'No token found' });
     }
 }
 module.exports = auth;

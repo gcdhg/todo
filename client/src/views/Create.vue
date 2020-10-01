@@ -81,7 +81,7 @@ export default {
       urlArr,
     };
   },
-  computed: mapGetters(["returnOneTodoById", "returnCreateEditMode"]),
+  computed: mapGetters(["returnOneTodoById"]),
   async created() {
     if (urlArr[1]) {
       this.fetchDataById();

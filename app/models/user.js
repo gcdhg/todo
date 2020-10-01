@@ -26,9 +26,26 @@ const UserSchema = new Schema({
             type: String,
             required: true
         }
-    }]
+    }],
+    inProject: [{
+        project: {
+            type: Schema.ObjectId,
+            ref: 'Projects'
+        }
+    }],
 });
 
+/**
+ * Validations
+ */
+
+UserSchema.path('email').required(true, "Email cannot be blank");
+UserSchema.path('password').required(true, "Password cannot be blank");
+UserSchema.path('username').required(true, "Username cannot be blank");
+
+/**
+ * Pre-save hook
+ */
 UserSchema.pre('save', async function (next) {
 
     const user = this;
@@ -41,6 +58,10 @@ UserSchema.pre('save', async function (next) {
 
     next();
 })
+
+/**
+ * Methods
+ */
 
 UserSchema.methods.generateAuthToken = async function () {
     // Generate an auth token for the user
@@ -66,9 +87,9 @@ UserSchema.statics.findByCredentials = async (email, password) => {
 
 UserSchema.statics.findByCredentialsAndDelete = async function (email, password) {
     const user = await User.findByCredentials(email, password);
-    
-    await Task.deleteMany({user: user._id}, (err) => {
-        if(err) {
+
+    await Task.deleteMany({ user: user._id }, (err) => {
+        if (err) {
             console.log(err);
         }
     })

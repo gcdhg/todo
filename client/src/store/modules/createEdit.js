@@ -5,14 +5,10 @@ export default {
             title: '',
             body: ''
         },
-        mode: 'Create'
     },
     mutations: {
         updateTodo(state, newData) {
             state.todo = newData;
-        },
-        updateMode(state, createOrEdit) {
-            state.mode = createOrEdit;
         }
     },
     actions: {
@@ -86,9 +82,6 @@ export default {
         },
     },
     getters: {
-        returnCreateEditMode(state) {
-            return state.mod;
-        },
         returnOneTodoById(state) {
             return state.todo
         }

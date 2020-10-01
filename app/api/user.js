@@ -1,8 +1,41 @@
+const { json } = require('express');
 const mongoose = require('mongoose');
 
 const User = mongoose.model('User');
 
-// 
+module.exports.getUser = async function (req, res) {
+    try {
+        await User.findById(req.params.id, (err) => {
+            if (err) {
+                console.log(err);
+                res.status(400).json('DB error');
+            }
+        })
+            .populate([{
+                path: 'inProject.project',
+                model: 'Projects',
+                populate: {
+                    path: 'tasks.task',
+                    model: 'todo'
+                }
+            }])
+            .exec(function (err, data) {
+                if (err) {
+                    console.log(err);
+                    res.status(400).json('DB error')
+                }
+                else {
+                    res.status(200).json(data)
+                }
+            })
+    } catch (err) {
+        console.log(err);
+        res.status(400).json('operation failed');
+    }
+}
+
+
+
 module.exports.createUser = async function (req, res) {
     try {
         const user = new User(req.body);

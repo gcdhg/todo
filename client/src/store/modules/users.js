@@ -25,9 +25,8 @@ export default {
                 })
                 if (res) {
                     const json = await res.json();
-                    user.token = json.token;
                     localStorage.token = String(json.token);
-                    context.commit('updateUserName', json.username)
+                    context.commit('updateUserName', String(json.username))
                     context.commit("userAuthenticated", true)
                     window.location.href = '/'
                 }
@@ -38,7 +37,7 @@ export default {
                 console.log(err);
             }
         },
-        
+
         async logoutUser(context) {
             try {
                 const res = await fetch("http://localhost:3000/users/logout", {
