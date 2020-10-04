@@ -1,56 +1,80 @@
+const e = require('express');
 const { json } = require('express');
 const mongoose = require('mongoose');
+const validator = require('validator');
+const Project = require('../models/projects');
 
 const User = mongoose.model('User');
 
+const Schema = mongoose.Schema;
+
 module.exports.getUser = async function (req, res) {
     try {
-        await User.findById(req.params.id, (err) => {
-            if (err) {
-                console.log(err);
-                res.status(400).json('DB error');
-            }
-        })
+        const user = await User.findById(req.params.id)
             .populate([{
-                path: 'inProject.project',
-                model: 'Projects',
+                path: 'projects',
+                model: 'Project',
                 populate: {
-                    path: 'tasks.task',
-                    model: 'todo'
+                    path: 'tasks',
+                    model: 'Task'
                 }
             }])
-            .exec(function (err, data) {
-                if (err) {
-                    console.log(err);
-                    res.status(400).json('DB error')
-                }
-                else {
-                    res.status(200).json(data)
-                }
-            })
+            .exec();
+        if (user) {
+            if (req.user === req.params.id) {
+                res.status(200).json({
+                    id: user._id,
+                    username: user.username,
+                    email: user.email
+                })
+            }
+            else {
+                res.status(200).json({
+                    id: user._id,
+                    name: user.name,
+                    sername: user.surname,
+                    username: user.username,
+                    email: user.email,
+                    tasks: user.tasks,
+                    projects: user.projects
+                });
+            }
+        } else {
+            res.status(400).json('no user found')
+        }
+        
     } catch (err) {
         console.log(err);
         res.status(400).json('operation failed');
     }
-}
-
-
+};
 
 module.exports.createUser = async function (req, res) {
     try {
         const user = new User(req.body);
         await user.save();
-        res.status(201).json({ user });
+        res.status(201).json();
     } catch (err) {
-        if (err.code === 11000) {
-            res.status(409).json({
-                error: '1100',
-                body: "User with this credentials already exist"
-            });
+        console.log(err);
+        res.status(400).json(err);
+    }
+};
+
+module.exports.findUserByUsername = async function (req, res) {
+    try {
+        const user = await User.findOne({ username: req.body.username })
+        if (!user) {
+            res.status(400).json('no user found')
         }
         else {
-            res.status(400).json(err);
+            res.status(200).json({
+                id: user._id,
+                username: user.username,
+            });
         }
+    } catch (err) {
+        console.log(err);
+        res.status(400).json('operation failed');
     }
 };
 
@@ -64,20 +88,14 @@ module.exports.loginUser = async function (req, res) {
 
                 req.session.userid = user._id;
                 req.session.token = token;
-                res.status(200).json({ username: user.username, token });
+                res.status(200).json({ token });
             } catch (err) {
                 console.log(err)
-                res.status(500).json({
-                    error: 500,
-                    body: "Token generation failed"
-                })
+                res.status(400).json('Login failed')
             }
         }
         else {
-            return res.status(401).json({
-                error: 401,
-                body: 'Login failed! Check authentication credentials'
-            });
+            return res.status(401).json('Login failed');
         }
 
     } catch (err) {
@@ -87,31 +105,59 @@ module.exports.loginUser = async function (req, res) {
 };
 
 module.exports.logoutUserOnce = async function (req, res) {
-    // req.user || req.token
-    const token = req.token;
-    const id = req.user;
-    await User.destroyToken(id, token)
-        .then(response => {
-            if (!response.tokens.length) {
-                res.status(201).json('token deleted');
-            }
-            else {
-                res.status(400).json(response);
-            }
-        }).catch(err => {
-            console.log(err)
-            res.status(401).json(err)
-        });
+    try {
+        const token = (req.body.hasOwnProperty('token')) ? req.body.token : req.token
+        const id = req.user;
+
+        const isDestroied = await User.destroyToken(id, token)
+
+        if (isDestroied) {
+            res.status(201).json()
+        } else {
+            res.status(400).json()
+        }
+    } catch (err) {
+        console.log(err);
+        res.status(400).json('logout failed')
+    }
+
+};
+
+module.exports.logoutUserOnAllDevices = async function (req, res) {
+    try {
+        const token = req.token;
+        const id = req.token;
+
+        console.log(token);
+
+        const isDestroied = await User.destroyAllTokens(id, token )
+
+        if (isDestroied) {
+            res.status(201).json()
+        }
+        else {
+            res.status(400).json()
+        }
+
+    } catch (err) {
+        console.log(err);
+        res.status(400).json('logout on all devices failed')
+    }
 };
 
 module.exports.deleteUser = async function (req, res) {
-    const { email, password } = req.body
-    await User.findByCredentialsAndDelete(email, password)
-        .then(result => {
-            if (result) {
-                res.status(201).json('user deleted');
-            }
-        }).catch(err => {
-            res.status(400).json('db error ' + err);
-        })
+    try {
+        const { email, password } = req.body
+        const isDeleted = await User.findByCredentialsAndDelete(email, password)
+
+        if (isDeleted) {
+            res.status(201).json()
+        }
+        else {
+            res.status(400).json()
+        }
+    } catch (err) {
+        console.log(err);
+        res.status(400).json()
+    }
 };

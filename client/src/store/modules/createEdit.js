@@ -16,7 +16,7 @@ export default {
             try {
                 const res = await fetch("http://localhost:3000/edit/" + id, {
                     headers: {
-                        'Authorization': 'Bearer ' + context.getters.returnToken,
+                        'Authorization': 'Bearer ' + context.getters.RETURN_TOKEN,
                         "Origin": "http://localhost:3000/edit/" + id
                     }
                 });
@@ -35,7 +35,7 @@ export default {
                 const res = await fetch("http://localhost:3000/edit", {
                     method: "POST",
                     headers: {
-                        'Authorization': 'Bearer ' + context.getters.returnToken,
+                        'Authorization': 'Bearer ' + context.getters.RETURN_TOKEN,
                         "Content-Type": "application/json;charset=utf-8",
                         "Origin": "http://localhost:3000/edit"
                     },
@@ -55,13 +55,16 @@ export default {
                 console.log(err);
             }
         },
-        async createNewTodo(context, body) {
+        async createNewTodo(context, body, projectId=null) {
+            if (projectId !== null) {
+                body.projectId = projectId;
+            }
             try {
                 const res = await fetch("http://localhost:3000/create", {
                     body: JSON.stringify(body),
                     method: "POST",
                     headers: {
-                        'Authorization': 'Bearer ' + context.getters.returnToken,
+                        'Authorization': 'Bearer ' + context.getters.RETURN_TOKEN,
                         "Content-Type": "application/json;charset=utf-8",
                         "Origin": "http://localhost:3000/create",
                     },

@@ -1,7 +1,26 @@
 <template>
   <div class="container">
-    
     <form>
+      <div class="form-group">
+        <label for="exampleInputEmail1">Name</label>
+        <input
+          type="text"
+          class="form-control"
+          id="inputName"
+          required
+          v-model="user.name"
+        />
+      </div>
+      <div class="form-group">
+        <label for="inputUserName">Login</label>
+        <input
+          type="text"
+          class="form-control"
+          id="inputUserName"
+          required
+          v-model="user.username"
+        />
+      </div>
       <div class="form-group">
         <label for="exampleInputEmail1">Email address</label>
         <input
@@ -39,6 +58,8 @@ export default {
   data() {
     return {
       user: {
+        name: "",
+        username: "",
         email: "",
         password: "",
       },

@@ -12,11 +12,8 @@
         Home
       </b-breadcrumb-item>
       <b-breadcrumb-item to="/about"> About </b-breadcrumb-item>
-      <b-breadcrumb-item v-bind:active="!returnUserAuthenticated" to="/create">
-        Create
-      </b-breadcrumb-item>
       <b-navbar-nav class="ml-auto">
-        <b-nav-form v-if="returnUserAuthenticated">
+        <b-nav-form v-if="RETURN_USER_AUTHENTICATED">
           <b-breadcrumb-item active>
             {{ getUserName }}
           </b-breadcrumb-item>
@@ -41,7 +38,7 @@ import Login from "@/views/Login";
 
 export default {
   name: "Header",
-  computed: mapGetters(["returnUserAuthenticated", "getUserName"]),
+  computed: mapGetters(["RETURN_USER_AUTHENTICATED", "getUserName"]),
   methods: mapActions(["logoutUser"]),
   components: {
     Login,

@@ -2,31 +2,45 @@ const mongoose = require('mongoose');
 const { wrap: async } = require('co');
 const { NotExtended } = require('http-errors');
 
-const Project = mongoose.model('Projects');
+const Project = mongoose.model('Project');
+const User = mongoose.model('User');
 
-module.exports.getProject = async function (req, res) {
+
+module.exports.getUserAssociatedProject = async function (req, res) {
     try {
-        if (req.role === 'owner' || req.role === 'worker') {
-            await Project.findById(req.params.id, (err) => {
-                if (err) {
-                    console.log(err);
-                    res.status(400).json('DB error')
+        const user = await User.findById(req.user)
+            .populate({
+                path: 'projects',
+                populate: {
+                    path: 'tasks',
                 }
             })
-                .populate('tasks.task')
-                .exec(function (err, data) {
-                    if (err) {
-                        console.log(err);
-                        res.status(400).json('DB error');
-                    }
-                    else {
-                        res.status(200).json(data)
-                    }
-                });
-        }
+            .exec()
+
+        res.status(200).json(user.projects);
+
     } catch (err) {
         console.log(err);
         res.status(400).json('project not found');
+    }
+};
+
+module.exports.getOneProject = async function (req, res) {
+    try {
+        if (req.role !== 'user') {
+            const project = await Project.findById(req.body.projectId)
+                .populate('tasks')
+                .exec()
+            if (!project) {
+                res.status(400).json('no project found');
+            }
+            else {
+                res.status(200).json(project)
+            }
+        }
+    } catch (err) {
+        console.log(err);
+        res.status(400).json('error');
     }
 };
 
@@ -48,20 +62,19 @@ module.exports.createProject = async function (req, res) {
 
 module.exports.deleteProject = async function (req, res) {
     try {
-        const user = await User.findOne({ _id: req.user }, (err) => {
-            if (err) {
+        if (req.role === 'owner') {
+            const result = await Project.deleteProject(req.body.projectId);
+            if (result) {
+                res.status(201).json('project deleted');
+            }
+            else {
                 console.log(err);
                 res.status(400).json('project deletion failed');
             }
-        })
-        const result = await Project.deleteProject(user.project);
-        if (result) {
-            res.status(201).json('project deleted');
+        } else {
+            res.status(401).json('Not authorized to accsess');
         }
-        else {
-            console.log(err);
-            res.status(400).json('project deletion failed');
-        }
+
     } catch (err) {
         console.log(err);
         res.status(400).json('project deletion failed');
@@ -70,17 +83,20 @@ module.exports.deleteProject = async function (req, res) {
 
 module.exports.addUserToProject = async function (req, res) {
     try {
-        // req.body.id
-        const result = await Project.addUserToProject(req.body.projectId, req.body.newUser);
-        if (result) {
-            res.status(201).json('user added to project');
-        }
-        else {
+        if (req.role === 'owner') {
+            const result = await Project.addUserToProject(req.body.projectId, req.body.newUser);
+            if (result) {
+                res.status(201).json('user added to project');
+            }
+            else {
+                res.status(400).json('user adding failed');
+            }
+        } else {
             res.status(400).json('user adding failed');
         }
+
     } catch (err) {
         console.log(err);
         res.status(400).json('user adding failed');
     }
 };
-

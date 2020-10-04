@@ -5,39 +5,20 @@ const privilage = async (req, res, next) => {
     const projectId = req.body.projectId;
     if (projectId) {
         try {
-            const user = await User.findOne({ _id: req.user }, (err) => {
-                if (err) {
-                    console.log(err);
+            const project = await Project.findById(projectId)
 
-                    return res.status(400).json('DB error');
-                }
-            });
-            if (!user) {
-                return res.status(400).json('User not found');
-            }
-            const project = await Project.findOne({ _id: projectId }, (err) => {
-                if (err) {
-                    console.log(err);
-
-                    return res.status(400).json('DB error');
-                }
-            });
             if (!project) {
-                return res.status(400).json('Project not found');
-            }
-            if (String(project.owner) === String(req.user)) {
-                req.role = 'owner';
-
-                next()
+                return res.status(400).json('No project found')
             }
             else {
-                if (project.participants.filter((p) => { p.users === req.user })) {
-                    req.role = 'worker';
+                const foundProject = project.participants.filter( p => p.user === req.user)
 
-                    next()
+                if (foundProject === []) {
+                    return res.json(400).json('Not Authorized to access')
                 }
                 else {
-                    return res.status(401).json('Not Authorized to access');
+                    req.role = foundProject[0].role
+                    next()
                 }
             }
         } catch (err) {

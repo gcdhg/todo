@@ -3,36 +3,26 @@ const validator = require('validator');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 
-const Task = mongoose.model('todo');
+const Task = require('./tasks');
+const Project = require('./projects');
+
 
 const Schema = mongoose.Schema;
 
 const UserSchema = new Schema({
     name: { type: String, trim: true },
-    email: {
-        type: String, unique: true,
-        // validate: function (value) {
-        //     if (validator.isEmail(value)) {
-        //         throw new Error({ error: "Invalid Email address" });
-        //     }
-        // }
-    },
+    surname: { type: String, trim: true },
+    email: { type: String, unique: true },
     username: { type: String, unique: true, trim: true },
-    provider: { type: String, },
     password: { type: String, },
-    salt: { type: String, },
     tokens: [{
         token: {
             type: String,
             required: true
         }
     }],
-    inProject: [{
-        project: {
-            type: Schema.ObjectId,
-            ref: 'Projects'
-        }
-    }],
+    tasks: [{ type: Schema.ObjectId, ref: 'Task' }],
+    projects: [{ type: Schema.ObjectId, ref: 'Projects' }],
 });
 
 /**
@@ -42,6 +32,22 @@ const UserSchema = new Schema({
 UserSchema.path('email').required(true, "Email cannot be blank");
 UserSchema.path('password').required(true, "Password cannot be blank");
 UserSchema.path('username').required(true, "Username cannot be blank");
+
+UserSchema.path('email').validate(async function (email) {
+    return await validator.isEmail(email) && !validator.isEmpty(email)
+}, 'Wrong email');
+
+UserSchema.path('username').validate(async function (username) {
+    return await validator.isAlphanumeric(username) && !validator.isEmpty(username)
+}, 'Wrong username');
+
+UserSchema.path('name').validate(async function (name) {
+    return await validator.isAlphanumeric(name)
+}, 'Wrong name');
+
+UserSchema.path('surname').validate(async function (surname) {
+    return await validator.isAlphanumeric(surname)
+}, 'Wrong surname');
 
 /**
  * Pre-save hook
@@ -57,11 +63,20 @@ UserSchema.pre('save', async function (next) {
     }
 
     next();
-})
+});
 
-/**
- * Methods
- */
+UserSchema.pre('remove', async function (next) {
+    // const user = await this.model.findOne(this.getQuery());
+    const user = this;
+
+    console.log('works');
+    await Task.deleteMany({ user: user._id })
+
+    await Project.deleteMany({ owner: user._id })
+
+    next()
+});
+
 
 UserSchema.methods.generateAuthToken = async function () {
     // Generate an auth token for the user
@@ -88,25 +103,11 @@ UserSchema.statics.findByCredentials = async (email, password) => {
 UserSchema.statics.findByCredentialsAndDelete = async function (email, password) {
     const user = await User.findByCredentials(email, password);
 
-    await Task.deleteMany({ user: user._id }, (err) => {
-        if (err) {
-            console.log(err);
-        }
-    })
-
-    await User.findOneAndDelete({
-        email: user.email,
-        username: user.username
-    }, (err, data) => {
-        if (err) {
-            return false;
-        }
-    });
+    await User.deleteOne({ email: user.email });
     return true;
 };
 
 UserSchema.statics.destroyToken = async function (id, token) {
-    // const user = await User.findByCredentials(email, password)
     const user = await User.findOne({ _id: id, 'tokens.token': token })
     if (!user) {
         throw ('no such token')
@@ -118,17 +119,18 @@ UserSchema.statics.destroyToken = async function (id, token) {
     }, {
         tokens: newTokens
     });
-    return user;
+    return true;
 };
 
 UserSchema.statics.destroyAllTokens = async function (id, token) {
+    
     await User.findOneAndUpdate({
         _id: id,
         'tokens.token': token
     }, {
         tokens: []
     });
-    return user;
+    return true;
 };
 
 const User = mongoose.model('User', UserSchema)

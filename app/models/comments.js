@@ -6,9 +6,9 @@ const Schema = mongoose.Schema;
 const CommentSchema = new Schema({
     body: { type: String, default: '', maxlength: 1000 },
     createdAt: { type: Date, default: Date.now() },
-    task: { type: Schema.ObjectId, ref: 'todo' },
+    task: { type: Schema.ObjectId, ref: 'Task' },
 });
 
-const Comment = mongoose.model('Comments', CommentSchema)
+const Comment = mongoose.model('Comment', CommentSchema)
 
 module.exports = Comment

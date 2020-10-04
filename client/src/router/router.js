@@ -16,11 +16,6 @@ const routes = [
     component: Todos
   },
   {
-    path: '/create',
-    name: 'Create',
-    component: Create
-  },
-  {
     path: '/edit/:id',
     name: 'Edit',
     component: Create

@@ -71,6 +71,11 @@ console.log(urlArr);
 
 export default {
   name: "Create",
+  props: {
+    projectId: {
+      type: String
+    }
+  },
   data() {
     return {
       todo: {
@@ -96,15 +101,17 @@ export default {
   methods: {
     ...mapActions(["updateOneToEditTodo", "createNewTodo", "fetchData"]),
     async fetchDataById() {
+      this.todo.projectId = this.projectId;
       await this.fetchData(this.urlArr[1]);
       this.todo = this.$store.getters.returnOneTodoById;
     },
     async updateTodoById() {
-      console.log(this.todo);
+      this.todo.projectId = this.projectId;
       this.updateOneToEditTodo(this.todo);
       this.todo = this.$store.getters.returnOneTodoById;
     },
     async createTodo() {
+      this.todo.projectId = this.projectId;
       await this.createNewTodo(this.todo);
       this.todo = this.$store.getters.returnOneTodoById;
     },

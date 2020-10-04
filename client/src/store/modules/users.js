@@ -27,7 +27,7 @@ export default {
                     const json = await res.json();
                     localStorage.token = String(json.token);
                     context.commit('updateUserName', String(json.username))
-                    context.commit("userAuthenticated", true)
+                    context.commit("USER_AUTHENTICATED", true)
                     window.location.href = '/'
                 }
                 else {
@@ -42,7 +42,7 @@ export default {
             try {
                 const res = await fetch("http://localhost:3000/users/logout", {
                     headers: {
-                        'Authorization': 'Bearer ' + context.getters.returnToken,
+                        'Authorization': 'Bearer ' + context.getters.RETURN_TOKEN,
                         "Content-Type": "application/json;charset=utf-8",
                         "Origin": "http://localhost:3000/users/logout",
                     },
@@ -53,7 +53,7 @@ export default {
                 }
                 if (res.status === 201) {
                     localStorage.token = undefined;
-                    context.commit("userAuthenticated", false)
+                    context.commit("USER_AUTHENTICATED", false)
                     window.location.href = '/'
                 }
                 else {
@@ -77,7 +77,7 @@ export default {
                     const json = await res.json();
                     user.token = json.token;
                     localStorage.token = String(json.token);
-                    context.commit("userAuthenticated", true)
+                    context.commit("USER_AUTHENTICATED", true)
                     window.location.href = '/login'
                 }
                 else {
