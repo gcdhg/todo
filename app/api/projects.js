@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const { wrap: async } = require('co');
 const { NotExtended } = require('http-errors');
+const { model, findById } = require('../models/user');
 
 const Project = mongoose.model('Project');
 const User = mongoose.model('User');
@@ -9,16 +10,25 @@ const User = mongoose.model('User');
 module.exports.getUserAssociatedProject = async function (req, res) {
     try {
         const user = await User.findById(req.user)
-            .populate({
+            .populate([{
                 path: 'projects',
-                populate: {
+                model: 'Project',
+                populate: [{
                     path: 'tasks',
-                }
-            })
-            .exec()
+                    model: 'Task'
+                }, {
+                    path: 'participants.user',
+                    model: 'User',
+                    select: 'username'
+                }]
+            }])
+            .exec();
 
-        res.status(200).json(user.projects);
-
+        if (user) {
+            res.status(200).json(user.projects);
+        } else {
+            res.status(400).json('no user found')
+        }
     } catch (err) {
         console.log(err);
         res.status(400).json('project not found');
@@ -27,17 +37,21 @@ module.exports.getUserAssociatedProject = async function (req, res) {
 
 module.exports.getOneProject = async function (req, res) {
     try {
-        if (req.role !== 'user') {
-            const project = await Project.findById(req.body.projectId)
-                .populate('tasks')
-                .exec()
-            if (!project) {
-                res.status(400).json('no project found');
-            }
-            else {
-                res.status(200).json(project)
-            }
-        }
+        const user = await User.findById(req.user)
+            .populate({
+                path: 'projects',
+                model: 'Project',
+                populate: {
+                    path: 'tasks',
+                    model: 'Task'
+                }
+            })
+            .exec()
+        
+        const foundProject = await user.projects.filter(p => p.title === req.params.project.replace(/-/g, ' '));
+
+        res.status(200).json(foundProject);
+
     } catch (err) {
         console.log(err);
         res.status(400).json('error');

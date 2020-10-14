@@ -2,6 +2,7 @@ const e = require('express');
 const { json } = require('express');
 const mongoose = require('mongoose');
 const validator = require('validator');
+const { model } = require('../models/projects');
 const Project = require('../models/projects');
 
 const User = mongoose.model('User');
@@ -10,39 +11,63 @@ const Schema = mongoose.Schema;
 
 module.exports.getUser = async function (req, res) {
     try {
-        const user = await User.findById(req.params.id)
-            .populate([{
-                path: 'projects',
-                model: 'Project',
-                populate: {
+        if (req.params.id) {
+            const user = await User.findOne({
+                username: req.params.id
+            })
+                .populate([{
+                    path: 'projects',
+                    model: 'Project',
+                    populate: [{
+                        path: 'tasks',
+                        model: 'Task'
+                    }, {
+                        path: 'participants.user',
+                        model: 'User',
+                        select: 'username'
+                    }]
+                }, {
                     path: 'tasks',
                     model: 'Task'
+                }])
+                .exec();
+            if (user) {
+                if (req.user === user._id) {
+                    res.status(200).json({
+                        id: user._id,
+                        username: user.username,
+                        email: user.email
+                    })
                 }
-            }])
-            .exec();
-        if (user) {
-            if (req.user === req.params.id) {
-                res.status(200).json({
-                    id: user._id,
-                    username: user.username,
-                    email: user.email
-                })
+                else {
+                    res.status(200).json({
+                        id: user._id,
+                        name: user.name,
+                        surname: user.surname,
+                        username: user.username,
+                        email: user.email,
+                        tasks: user.tasks,
+                        projects: user.projects
+                    });
+                }
+            } else {
+                res.status(400).json('no user found')
             }
-            else {
-                res.status(200).json({
-                    id: user._id,
-                    name: user.name,
-                    sername: user.surname,
-                    username: user.username,
-                    email: user.email,
-                    tasks: user.tasks,
-                    projects: user.projects
-                });
-            }
-        } else {
-            res.status(400).json('no user found')
         }
-        
+        else {
+            const user = await User.findOne({
+                _id: req.user
+            })
+            res.status(200).json({
+                id: user._id,
+                name: user.name,
+                surname: user.surname,
+                username: user.username,
+                email: user.email,
+                tasks: user.tasks,
+                projects: user.projects
+            })
+        }
     } catch (err) {
         console.log(err);
         res.status(400).json('operation failed');
@@ -88,7 +113,10 @@ module.exports.loginUser = async function (req, res) {
 
                 req.session.userid = user._id;
                 req.session.token = token;
-                res.status(200).json({ token });
+                res.status(200).json({
+                    username: user.username,
+                    token: token
+                });
             } catch (err) {
                 console.log(err)
                 res.status(400).json('Login failed')
@@ -130,7 +158,7 @@ module.exports.logoutUserOnAllDevices = async function (req, res) {
 
         console.log(token);
 
-        const isDestroied = await User.destroyAllTokens(id, token )
+        const isDestroied = await User.destroyAllTokens(id, token)
 
         if (isDestroied) {
             res.status(201).json()

@@ -12,7 +12,8 @@ const cors = require('cors');
 const session = require('express-session');
 const MongoStore = require('connect-mongo')(session);
 
-const taskRouter = require('./routes/routes');
+// routes
+const taskRouter = require('./routes/tasks');
 const usersRouter = require('./routes/users');
 const projectsRouter = require('./routes/projects');
 const commentsRouter = require('./routes/comments')
@@ -20,6 +21,7 @@ const { signedCookie } = require('cookie-parser');
 
 // database connection
 const database = require('./config/db/database')(mongoose, process.env.MONGODB_URL)
+
 // creatin express app
 const app = express();
 
@@ -41,6 +43,7 @@ app.use(
     }
   })
 );
+
 // enables sessions
 app.use(
   session({
@@ -55,7 +58,8 @@ app.use(
     }
   })
 );
-// enebals Cross-Origin Resource Sharing 
+
+// enables Cross-Origin Resource Sharing 
 app.use(cors());
 app.options('*', cors());
 // adding routers

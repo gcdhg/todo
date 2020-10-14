@@ -11,13 +11,15 @@ const privilage = async (req, res, next) => {
                 return res.status(400).json('No project found')
             }
             else {
-                const foundProject = project.participants.filter( p => p.user === req.user)
+                const foundProject = await project.participants.find( async (p) => p.user === req.user)
 
-                if (foundProject === []) {
+                console.log(foundProject);
+
+                if (foundProject === undefined) {
                     return res.json(400).json('Not Authorized to access')
                 }
                 else {
-                    req.role = foundProject[0].role
+                    req.role = foundProject.role
                     next()
                 }
             }

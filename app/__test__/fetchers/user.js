@@ -23,6 +23,7 @@ module.exports = {
             body: JSON.stringify(user),
         });
     },
+
     async loginUser(user) {
         return await fetch("http://localhost:3000/users/login", {
             headers: {
@@ -34,6 +35,16 @@ module.exports = {
                 email: user.email,
                 password: user.password
             }),
+        })
+    },
+
+    async getUser(userId, token) {
+        return await fetch(`http://localhost:3000/users/${userId}`, {
+            headers: {
+                'Authorization': `Bearer ${token.token}`,
+                "Content-Type": "application/json;charset=utf-8",
+                "Origin": `http://localhost:3000/users/${userId}`,
+            },
         })
     },
 
@@ -64,16 +75,7 @@ module.exports = {
         })
     },
 
-    async getUser(userId, token) {
-        return await fetch(`http://localhost:3000/users/${userId}`, {
-            headers: {
-                'Authorization': `Bearer ${token.token}`,
-                "Content-Type": "application/json;charset=utf-8",
-                "Origin": `http://localhost:3000/users/${userId}`,
-            },
-        })
-    },
-    async logoutUserOnce(token, bodyToken=undefined) {
+    async logoutUserOnce(token, bodyToken = undefined) {
         return await fetch("http://localhost:3000/users/logout", {
             headers: {
                 'Authorization': `Bearer ${token.token}`,
@@ -86,6 +88,7 @@ module.exports = {
             })
         })
     },
+
     async logoutUserOnAllDevices(token) {
         return await fetch("http://localhost:3000/users/logout/all", {
             headers: {

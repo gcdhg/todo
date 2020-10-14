@@ -15,24 +15,22 @@ const UserSchema = new Schema({
     email: { type: String, unique: true },
     username: { type: String, unique: true, trim: true },
     password: { type: String, },
-    tokens: [{
-        token: {
-            type: String,
-            required: true
-        }
-    }],
+    tokens: [{ token: { type: String, required: true } }],
     tasks: [{ type: Schema.ObjectId, ref: 'Task' }],
-    projects: [{ type: Schema.ObjectId, ref: 'Projects' }],
+    projects: [{ type: Schema.ObjectId, ref: 'Project' }],
 });
 
 /**
  * Validations
  */
 
+// pre required validators
 UserSchema.path('email').required(true, "Email cannot be blank");
 UserSchema.path('password').required(true, "Password cannot be blank");
 UserSchema.path('username').required(true, "Username cannot be blank");
 
+
+//path validdators
 UserSchema.path('email').validate(async function (email) {
     return await validator.isEmail(email) && !validator.isEmpty(email)
 }, 'Wrong email');
@@ -65,14 +63,17 @@ UserSchema.pre('save', async function (next) {
     next();
 });
 
-UserSchema.pre('remove', async function (next) {
-    // const user = await this.model.findOne(this.getQuery());
-    const user = this;
+/**
+ * Pre-delete hook
+ */
 
-    console.log('works');
-    await Task.deleteMany({ user: user._id })
+UserSchema.pre('deleteOne', async function (next) {
+    const user = await this.model.findOne(this.getQuery());
+    // const user = this;
 
-    await Project.deleteMany({ owner: user._id })
+    await Task.deleteMany({ user: user._conditions._id })
+
+    await Project.deleteMany({ owner: user._conditions._id })
 
     next()
 });
@@ -123,7 +124,7 @@ UserSchema.statics.destroyToken = async function (id, token) {
 };
 
 UserSchema.statics.destroyAllTokens = async function (id, token) {
-    
+
     await User.findOneAndUpdate({
         _id: id,
         'tokens.token': token

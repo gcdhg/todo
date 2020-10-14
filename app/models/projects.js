@@ -20,15 +20,18 @@ const ProjectSchema = new Schema({
 
 ProjectSchema.pre('save', async function (next) {
     const project = this;
-
-    await User.findOneAndUpdate({ _id: project.owner }, {
-        $push: {
-            projects: project._id,
-            role: 'owner'
-        }
-    });
-
-    next();
+    
+    if (project.isNew) {
+        await User.findOneAndUpdate({ _id: project.owner }, {
+            $push: {
+                projects: project._id,
+                role: 'owner'
+            }
+        });
+    }
+    else {
+        next();
+    }
 })
 
 

@@ -13,11 +13,18 @@ const Project = mongoose.model('Project')
 module.exports.showAllPrivateTasks = async function (req, res) {
     try {
         const user = await User.findById(req.user)
-            .populate('tasks')
+            .populate([{
+                path: 'tasks',
+                module: 'Task'
+            }])
             .exec()
 
         if (user) {
-            res.status(200).json(user.tasks);
+            res.status(200).json({
+                tasks: user.tasks,
+                userId: user._id,
+                username: user.username
+            });
         }
         else {
             res.status(400).json('No user found');
@@ -37,11 +44,16 @@ module.exports.createTask = async function (req, res) {
         const projectOrUser = (req.body.projectId) ? { project: req.body.projectId } : { user: req.user };
         const protTask = {
             title: req.body.title,
+            state: {
+                currentState: req.body.state
+            },
             planedAt: req.body.planedAt,
         };
         const newTask = Object.assign({}, protTask, projectOrUser);
 
-        if (req.role === 'owner' || req.role === 'owner') {
+        console.log(newTask);
+
+        if (req.role === 'owner' || req.role === 'user') {
 
             const task = new Task(newTask);
 
@@ -72,7 +84,7 @@ module.exports.getTaskById = async function (req, res) {
                 project: projectOrUser.project,
                 user: projectOrUser.user
             });
-    
+
             if (task) {
                 res.status(200).json(task);
             }
@@ -92,24 +104,31 @@ module.exports.getTaskById = async function (req, res) {
 
 module.exports.editTask = async function (req, res) {
     try {
-        const projectOrUser = (req.body.projectId) ? { project: req.body.projectId } : { user: req.user };
+        console.log(req.body);
+        if (req.body.title) {
+            const projectOrUser = (req.body.projectId) ? { project: req.body.projectId } : { user: req.user };
 
-        if (req.role === 'owner' || req.role === 'user') {
+            if (req.role === 'owner' || req.role === 'user') {
 
-            const task = await Task.findOneAndUpdate({
-                _id: req.body.id,
-                project: projectOrUser.project,
-                user: projectOrUser.user
-            }, {
-                title: req.body.title,
-                editedAt: Date.now()
-            });
+                const task = await Task.findOneAndUpdate({
+                    _id: req.params.id,
+                    project: projectOrUser.project,
+                    user: projectOrUser.user
+                }, {
+                    title: req.body.title,
+                    editedAt: Date.now()
+                });
 
-            res.status(200).json(task)
+                res.status(200).json(task)
+            }
+            else {
+                res.status(400).json('Not Authorized to access');
+            }
         }
         else {
-            res.status(400).json('Not Authorized to access');
+            res.status(400).json('Network error')
         }
+
 
     } catch (err) {
         console.log(err)
@@ -119,19 +138,15 @@ module.exports.editTask = async function (req, res) {
 
 module.exports.deleteTask = async function (req, res) {
     try {
-        const projectOrUser = (req.body.projectId) ? { project: req.body.projectId } : { user: req.user };
+        const projectOrUser = (req.body.projectId !== undefined) ? { project: req.body.projectId } : { user: req.user };
 
         if (req.role === 'owner' || req.role === 'user') {
 
-            var id = req.body.id;
+            const deleteTask = Object.assign({}, { _id: req.params.id }, projectOrUser);
 
-            await Task.remove({
-                _id: id,
-                project: projectOrUser.projectId,
-                user: projectOrUser.user
-            });
+            await Task.deleteOne(deleteTask);
 
-            res.status(201)
+            res.status(201).json('task deleted')
         }
         else {
             res.status(400).json('Not Authorized to access');
@@ -144,7 +159,7 @@ module.exports.deleteTask = async function (req, res) {
 
 module.exports.changeState = async function (req, res) {
     try {
-        const possibleStates = ['on-hold', 'active', 'pending', 'on-review', 'completed'];
+        const possibleStates = ['on-hold', 'active', 'on-review', 'completed'];
         if (!possibleStates.includes(req.body.state)) {
             res.status(400).json('no such state');
         }
@@ -152,9 +167,10 @@ module.exports.changeState = async function (req, res) {
             if (req.body.projectId) {
                 const indexOfNewState = possibleStates.indexOf(req.body.state);
 
-                const task = await Task.findById(req.body.id);
+                const task = await Task.findById(req.params.id);
 
                 const user = (indexOfNewState === 0) ? undefined : req.user;
+                console.log(user);
 
                 if (req.role === 'owner' || (req.role === 'user' && req.user === task.user)) {
 
@@ -203,7 +219,7 @@ module.exports.changeState = async function (req, res) {
             }
             else {
                 const task = await Task.findOneAndUpdate({
-                    _id: req.body.id,
+                    _id: req.params.id,
                     user: req.user
                 }, {
                     state: req.body.state
