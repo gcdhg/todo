@@ -12,10 +12,13 @@ var privilage = require('../config/middleware/privilage.js');
 const middle = [auth, privilage];
 
 router.get('/get', auth, tasks.showAllPrivateTasks);
-router.post('/create', middle, tasks.createTask);
 router.get('/:id', middle, tasks.getTaskById);
+
+router.post('/create', middle, tasks.createTask);
+
 router.put('/:id', middle, tasks.editTask);
-router.delete('/:id', middle, tasks.deleteTask);
 router.put('/state/:id', middle, tasks.changeState);
+
+router.delete('/:id', middle, tasks.deleteTask);
 
 module.exports = router;

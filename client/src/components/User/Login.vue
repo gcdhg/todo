@@ -74,7 +74,7 @@ export default {
         this.email = "";
         this.password = "";
       } else {
-        this.$router.push(`/${this.RETURN_USERNAME}/profile`);
+        this.$router.push(`/${this.RETURN_USERNAME}`);
       }
     },
     async makeToast(append = false) {

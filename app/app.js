@@ -63,7 +63,7 @@ app.use(
 app.use(cors());
 app.options('*', cors());
 // adding routers
-app.use('/', taskRouter);
+app.use('/tasks', taskRouter);
 app.use('/users', usersRouter);
 app.use('/projects', projectsRouter);
 app.use('/comments', commentsRouter);

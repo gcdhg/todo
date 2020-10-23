@@ -3,17 +3,14 @@ const { default: fetch } = require("node-fetch");
 module.exports = {
     state: {
         projectList: [],
-        project: [],
+        project: {},
         id: '',
     },
     mutations: {
         UPDATE_PROJECTS(state, newProject) {
             state.projectList = newProject;
         },
-        UPDATE_PROJECT_ID(state, newId) {
-            state.id = newId;
-        },
-        UPDATE_ONE_PROJECT(state, newProject){
+        UPDATE_ONE_PROJECT(state, newProject) {
             state.project = newProject;
         }
     },
@@ -59,17 +56,31 @@ module.exports = {
                 const json = await res.json();
                 context.commit('UPDATE_ONE_PROJECT', json);
             }
-        }
+        },
+        async EDIT_PROJECT_TITLE(context, project) {
+            const res = await fetch(`http://localhost:3000/projects/edit`, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': `Bearer ${context.getters.RETURN_TOKEN}`,
+                    "Content-Type": "application/json;charset=utf-8",
+                    "Origin": `http://localhost:3000/projects/edit`,
+                },
+                body: JSON.stringify({
+                    projectId: project.projectId,
+                    title: project.title
+                })
+            })
+            if (res.status === 201) {
+                context.commit('UPDATE_ONE_PROJECT', { title: project.title });
+            }
+        },
     },
     getters: {
         RETURN_PROJECTS(state) {
             return state.projectList;
         },
-        RETURN_PROJECT_ID(state) {
-            return state.id;
-        },
         RETURN_ONE_PROJECT(state) {
-            return state.project
+            return state.project;
         }
     }
 }

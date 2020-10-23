@@ -18,7 +18,7 @@
     <b-button
       border-variant="dark"
       class="col-3 fixed-height"
-      variant="success"
+      variant="danger"
       @click="show = true"
     >
       Create New Project
@@ -78,7 +78,6 @@ export default {
       this.newProjectTitle = "";
     },
     async redirectToProject(value) {
-      this.$store.commit('UPDATE_PROJECT_ID', value._id);
       this.$router.push({
         name: "Project",
         params: {

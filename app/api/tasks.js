@@ -51,8 +51,6 @@ module.exports.createTask = async function (req, res) {
         };
         const newTask = Object.assign({}, protTask, projectOrUser);
 
-        console.log(newTask);
-
         if (req.role === 'owner' || req.role === 'user') {
 
             const task = new Task(newTask);
@@ -65,8 +63,8 @@ module.exports.createTask = async function (req, res) {
             res.status(401).json('Not Authorized to access');
         }
     } catch (err) {
-        console.log(err)
-        res.status(400)
+        console.log(err);
+        res.status(400).json();
     }
 };
 

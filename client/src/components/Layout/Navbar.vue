@@ -20,12 +20,12 @@
           </b-nav-form>
 
           <b-nav-item-dropdown right>
-            <!-- Using 'button-content' slot -->
+            <!-- Using 'button-content' slot --> 
             <template v-slot:button-content>
               <em>{{ RETURN_USERNAME }}</em>
             </template>
             <b-dropdown-item v-bind:to="`/${RETURN_USERNAME}`">Profile</b-dropdown-item>
-            <b-dropdown-item href="#">Sign Out</b-dropdown-item>
+            <b-dropdown-item @click="logoutUser">Sign Out</b-dropdown-item>
           </b-nav-item-dropdown>
         </b-navbar-nav>
       </b-collapse>
@@ -34,10 +34,17 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
+import { mapActions, mapGetters } from "vuex";
 
 export default {
   computed: mapGetters(["RETURN_USERNAME"]),
+  methods: {
+    ...mapActions(["LOGOUT_USER_ONCE"]),
+    async logoutUser () {
+      this.LOGOUT_USER_ONCE();
+      this.$router.push('/');
+    }
+  }
 };
 </script>
 

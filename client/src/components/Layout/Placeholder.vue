@@ -7,11 +7,11 @@
         </h2>
         <hr />
         <h5 class="card-text text-center">
-          <a class="dashed" href="/join">Create user</a>
-          <a class="dashed" href="/login">Login</a>
-          <a class="dashed" href="https://github.com/gcdhg/todo"
-            >Source code on github</a
-          >
+          <a class="dashed" href="/join"> Create user </a>
+          <a class="dashed" href="/login"> Login </a>
+          <a class="dashed" href="https://github.com/gcdhg/todo">
+            Source code on github
+          </a>
         </h5>
       </div>
     </div>
@@ -19,11 +19,15 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex";
 export default {
-    mounted () {
-        // this.$router.push(`/${}`);
+  computed: mapGetters(["RETURN_USER_AUTHENTICATED", "RETURN_USERNAME"]),
+  mounted() {
+    if (this.RETURN_USER_AUTHENTICATED) {
+      this.$router.push(`/${this.RETURN_USERNAME}`);
     }
-}
+  },
+};
 </script>
 
 <style scoped>

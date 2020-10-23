@@ -5,7 +5,8 @@ module.exports = {
         username: localStorage.username,
         token: localStorage.token,
         user: {},
-        mode: 'personalData'
+        mode: 'projects',
+        isAuth: localStorage?.token ?? false,
     },
     mutations: {
         UPDATE_USERNAME(state, newUserName) {
@@ -21,6 +22,9 @@ module.exports = {
         },
         UPDATE_MODE(state, newMode) {
             state.mode = newMode
+        },
+        UPDATE_AUTH(state) {
+            state.isAuth = localStorage?.token ?? false;
         }
     },
     actions: {
@@ -39,15 +43,36 @@ module.exports = {
                 });
                 if (res.status === (200 || 201)) {
                     const json = await res.json();
-                    await context.commit('UPDATE_TOKEN', json.token)
-                    await context.commit('UPDATE_USERNAME', json.username)
-                    return true
+                    await context.commit('UPDATE_TOKEN', json.token);
+                    await context.commit('UPDATE_USERNAME', json.username);
+                    await context.commit('UPDATE_AUTH');
+                    return true;
                 }
                 else {
-                    return false
+                    localStorage.removeItem('token');
+                    localStorage.removeItem('username');
+                    return false;
                 }
             } catch (err) {
                 console.log(err);
+            }
+        },
+        async LOGOUT_USER_ONCE(context, token) {
+            const res = await fetch(`http://localhost:3000/users/logout`, {
+                method: "POST",
+                headers: {
+                    'Authorization': `Bearer ${context.getters.RETURN_TOKEN}`,
+                    "Content-Type": "application/json;charset=utf-8",
+                    "Origin": `http://localhost:3000/users/logout`,
+                },
+                body: JSON.stringify({
+                    token: token ?? context.getters.RETURN_TOKEN
+                })
+            });
+            if (res.status == 201) {
+                localStorage.removeItem('token');
+                localStorage.removeItem('username');
+                await context.commit('UPDATE_AUTH');
             }
         },
         async GET_USER_DATA(context, userdata) {
@@ -63,7 +88,7 @@ module.exports = {
                 context.commit('UPDATE_USER_DATA', json);
             }
         },
-        async CHANGE_MODE (context, newMode) {
+        async CHANGE_MODE(context, newMode) {
             context.commit('UPDATE_MODE', newMode);
         }
     },
@@ -75,10 +100,13 @@ module.exports = {
             return state.username;
         },
         RETURN_USER_DATA(state) {
-            return state.user
+            return state.user;
         },
         RETURN_MODE(state) {
-            return state.mode
+            return state.mode;
+        },
+        RETURN_USER_AUTHENTICATED(state) {
+            return state.isAuth;
         }
     }
 }
