@@ -1,8 +1,8 @@
 const dotenv = require('dotenv').config();
 
 const mongoose = require('mongoose');
-const userfunctions = require('./helpers/user');
-const taskfunctions = require('./helpers/task')
+const userfunctions = require('./fetchers/user');
+const taskfunctions = require('./fetchers/task')
 
 const Project = require('../models/projects');
 const Task = require('../models/tasks');
