@@ -1,22 +1,19 @@
-var express = require("express");
-var router = express.Router();
+const express = require("express");
+const router = express.Router();
 
-var Todo = require("../models/tasks.js");
-var User = require("../models/user.js");
-var Project = require("../models/projects.js");
+const Todo = require("@Models/tasks.js");
+const User = require("@Models/user.js");
+const Project = require("@Models/projects.js");
 
 const userApi = require("../api/user");
-var auth = require("../config/middleware/auth.js");
-var privilage = require("../config/middleware/privilage.js");
+const auth = require("../config/middleware/auth.js");
 
-const middle = [auth, privilage];
-
-router.get("/:id", auth, userApi.getUser);
 router.post("/create", userApi.createUser);
 router.post("/find", auth, userApi.findUserByUsername);
 router.post("/login", userApi.loginUser);
-router.post("/logout", auth, userApi.logoutUserOnce);
-router.post("/logout/all", auth, userApi.logoutUserOnAllDevices);
+router.patch("/logout", auth, userApi.logoutUserOnce);
+router.put("/logout/all", auth, userApi.logoutUserOnAllDevices);
 router.delete("/delete", auth, userApi.deleteUser);
+router.get("/:id", auth, userApi.getUser);
 
 module.exports = router;

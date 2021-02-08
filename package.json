@@ -9,11 +9,11 @@
     "test": "jest"
   },
   "_moduleAliases": {
-    "@rootApp": "./app",
-    "@ToDoApi": "./app/api",
-    "@ToDoModels": "./app/models",
-    "@ToDoRoutes": "./app/routes",
-    "@ToDoMiddleware": "./app/config/middleware"
+    "@root": "./app",
+    "@Api": "./app/api",
+    "@Models": "./app/models",
+    "@Routes": "./app/routes",
+    "@Middleware": "./app/config/middleware"
   },
   "dependencies": {
     "bcrypt": "^5.0.0",
@@ -29,7 +29,8 @@
     "lodash": "^4.17.20",
     "method-override": "^3.0.0",
     "module-alias": "^2.2.2",
-    "mongoose": "^5.9.28",
+    "mongodb": "^3.6.3",
+    "mongoose": "^5.11.14",
     "morgan": "^1.10.0",
     "validator": "^13.1.17"
   },

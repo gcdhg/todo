@@ -1,7 +1,9 @@
 const mongoose = require("mongoose");
 
-const Project = require("./projects");
-const User = require("./user");
+const validator = require("validator");
+
+const Project = require("./projects.js");
+const User = require("./user.js");
 
 const Schema = mongoose.Schema;
 
@@ -22,33 +24,28 @@ const TaskSchema = new Schema({
 
 TaskSchema.path("title").required(true, "Title connot be blank");
 
-TaskSchema.pre("save", async function (next) {
-  const task = this;
+// TaskSchema.pre("save", async function (next) {
+//   const task = this;
 
-  if (task.isNew && task.user) {
-    await User.findByIdAndUpdate(task.user, {
-      $push: {
-        tasks: task._id,
-      },
-    });
+//   if (task.isNew && task.user) {
+//     await User.findByIdAndUpdate(task.user, {
+//       $push: { tasks: task._id },
+//     });
 
-    next();
-  } else if (task.isNew && task.project) {
-    await Project.findByIdAndUpdate(task.project, {
-      $push: {
-        tasks: task._id,
-      },
-    });
+//     next();
+//   } else if (task.isNew && task.project) {
+//     await Project.findByIdAndUpdate(task.project, {
+//       $push: { tasks: task._id },
+//     });
 
-    next();
-  } else {
-    throw "wrong data";
-  }
-});
+//     next();
+//   } else {
+//     throw "wrong data";
+//   }
+// });
 
 TaskSchema.pre("deleteOne", async function (next) {
   const task = this;
-
   if (task._conditions.user) {
     const user = await User.findById(task._conditions.user);
     await user.tasks.splice(user.tasks.indexOf(task._conditions._id), 1);

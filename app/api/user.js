@@ -1,171 +1,131 @@
-const e = require("express");
-const { json } = require("express");
 const mongoose = require("mongoose");
 const validator = require("validator");
-const { model } = require("../models/projects");
-const Project = require("../models/projects");
+const _ = require("lodash");
 
 const User = mongoose.model("User");
+const Task = mongoose.model("Task");
+const Project = mongoose.model("Project");
 
 const Schema = mongoose.Schema;
 
-module.exports.getUser = async function (req, res) {
-  try {
-    const user = await User.findOne({
-      username: req.params.id,
-    })
-      .populate([
-        {
-          path: "projects",
-          model: "Project",
-          populate: [
-            {
-              path: "tasks",
-              model: "Task",
-            },
-            {
-              path: "participants.user",
-              model: "User",
-              select: "username",
-            },
-          ],
-        },
-        {
-          path: "tasks",
-          model: "Task",
-        },
-      ])
-      .exec();
-    if (user) {
-      if (req.user === user._id) {
-        res.status(200).json({
-          id: user._id,
-          username: user.username,
-          email: user.email,
-        });
-      } else {
-        res.status(200).json({
-          id: user._id,
-          name: user.name,
-          surname: user.surname,
-          username: user.username,
-          email: user.email,
-          tasks: user.tasks,
-          projects: user.projects,
-        });
-      }
-    } else {
-      res.status(400).json("no user found");
+module.exports = {
+  async createUser(req, res) {
+    try {
+      const user = new User(req.body);
+      await user.save();
+      res.status(201).json();
+    } catch (err) {
+      console.log(err);
+      res.status(400).json(err);
     }
-  } catch (err) {
-    console.log(err);
-    res.status(400).json("operation failed");
-  }
-};
+  },
 
-module.exports.createUser = async function (req, res) {
-  try {
-    const user = new User(req.body);
-    await user.save();
-    res.status(201).json();
-  } catch (err) {
-    console.log(err);
-    res.status(400).json(err);
-  }
-};
+  async loginUser(req, res) {
+    try {
+      const { email, password } = req.body;
+      const user = await User.findByRecords(email, password);
+      const token = await user.generateAuthToken();
 
-module.exports.findUserByUsername = async function (req, res) {
-  try {
-    const user = await User.findOne({ username: req.body.username });
-    if (!user) {
-      res.status(400).json("no user found");
-    } else {
+      req.session.userid = user._id;
+      req.session.token = token;
       res.status(200).json({
-        id: user._id,
         username: user.username,
+        token: token,
       });
+    } catch (err) {
+      // console.log(err);
+      res.status(401).json(err);
     }
-  } catch (err) {
-    console.log(err);
-    res.status(400).json("operation failed");
-  }
-};
+  },
 
-module.exports.loginUser = async function (req, res) {
-  try {
-    const { email, password } = req.body;
-    const user = await User.findByCredentials(email, password);
-    if (user) {
-      try {
-        const token = await user.generateAuthToken();
+  async deleteUser(req, res) {
+    try {
+      const { email, password } = req.body;
+      const user = await User.findByRecords(email, password);
 
-        req.session.userid = user._id;
-        req.session.token = token;
-        res.status(200).json({
-          username: user.username,
-          token: token,
-        });
-      } catch (err) {
-        console.log(err);
-        res.status(400).json("Login failed");
-      }
-    } else {
-      return res.status(401).json("Login failed");
+      const isDeleted = User.deleteOne({ email: user.email });
+      const task = Task.deleteMany({ user: user._id });
+      const project = Project.deleteMany({ owner: user._id });
+
+      const fel = await Promise.all([task, project, isDeleted]);
+      // console.log(fel);
+      const status = 201;
+      res.status(status).json();
+    } catch (err) {
+      console.log(err);
+      res.status(400).json(err);
     }
-  } catch (err) {
-    console.log(err);
-    res.status(400).json(err);
-  }
-};
+  },
 
-module.exports.logoutUserOnce = async function (req, res) {
-  try {
-    const token = req.body.hasOwnProperty("token") ? req.body.token : req.token;
-    const id = req.user;
+  // async updateUserData(req, res) {
+  //   try {
+  //     const { name, surname, username, email, password } = req.body;
+  //   } catch (err) {
+  //     console.log(err);
+  //     res.status(400).json();
+  //   }
+  // },
 
-    const isDestroied = await User.destroyToken(id, token);
-
-    if (isDestroied) {
-      res.status(201).json();
-    } else {
-      res.status(400).json();
+  async logoutUserOnce(req, res) {
+    try {
+      const token = _.has(req.body, "token") ? req.body.token : req.token;
+      const id = req.user;
+      const isDestroied = await User.destroyToken(id, token);
+      const status = isDestroied ? 201 : 400;
+      res.status(status).json();
+    } catch (err) {
+      // console.log(err);
+      res.status(401).json("logout failed");
     }
-  } catch (err) {
-    console.log(err);
-    res.status(400).json("logout failed");
-  }
-};
+  },
 
-module.exports.logoutUserOnAllDevices = async function (req, res) {
-  try {
-    const token = req.token;
-    const id = req.user;
-
-    const isDestroied = await User.destroyAllTokens(id, token);
-
-    if (isDestroied) {
-      res.status(201).json();
-    } else {
-      res.status(400).json();
+  async getUser(req, res) {
+    try {
+      const [user, token] = [req.user, req.token];
+      const foundUser = await (await User.findOne({ username: req.params.id }))
+        .populated("projects")
+        .exec();
+      const { _id: id, name, surname, email, tasks, projects } = foundUser;
+      const isGuest = user === foundUser._id;
+      const mapping = {
+        true: { id, name, surname },
+        false: { ...this.true, email, tasks, projects },
+      };
+      const result = mapping[isGuest];
+      res.status(200).json(result);
+    } catch (err) {
+      res.status(404).json();
     }
-  } catch (err) {
-    console.log(err);
-    res.status(400).json("logout on all devices failed");
-  }
-};
+  },
 
-module.exports.deleteUser = async function (req, res) {
-  try {
-    const { email, password } = req.body;
-    const isDeleted = await User.findByCredentialsAndDelete(email, password);
-
-    if (isDeleted) {
-      res.status(201).json();
-    } else {
-      res.status(400).json();
+  async findUserByUsername(req, res) {
+    try {
+      const user = await User.findOne({ username: req.body.username });
+      const { _id: id, name, surname } = user;
+      const mapping = {
+        false: { id, name, surname },
+        true: {},
+      };
+      const isUser = !user;
+      const status = isUser ? 400 : 200;
+      const result = mapping[isUser];
+      res.status(status).json(result);
+    } catch (err) {
+      console.log(err);
+      res.status(400).json("operation failed");
     }
-  } catch (err) {
-    console.log(err);
-    res.status(400).json();
-  }
+  },
+
+  async logoutUserOnAllDevices(req, res) {
+    try {
+      const [token, id] = [req.token, req.user];
+
+      const isDestroied = await User.destroyAllTokens(id, token);
+      const status = isDestroied ? 201 : 400;
+      res.status(status).json();
+    } catch (err) {
+      console.log(err);
+      res.status(400).json("logout failed");
+    }
+  },
 };

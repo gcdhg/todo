@@ -1,10 +1,12 @@
+require("module-alias/register");
 const mongoose = require("mongoose");
+
 const validator = require("validator");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 
-const Task = require("./tasks");
-const Project = require("./projects");
+const Task = require("./tasks.js");
+const Project = require("./projects.js");
 
 const Schema = mongoose.Schema;
 
@@ -16,6 +18,7 @@ const UserSchema = new Schema({
   password: { type: String },
   tokens: [{ token: { type: String, required: true } }],
   tasks: [{ type: Schema.ObjectId, ref: "Task" }],
+  owned: [{ type: Schema.ObjectId, ref: "Project" }],
   projects: [{ type: Schema.ObjectId, ref: "Project" }],
 });
 
@@ -33,11 +36,11 @@ UserSchema.path("email").validate(async function (email) {
   return (await validator.isEmail(email)) && !validator.isEmpty(email);
 }, "Wrong email");
 
-UserSchema.path("username").validate(async function (username) {
-  return (
-    (await validator.isAlphanumeric(username)) && !validator.isEmpty(username)
-  );
-}, "Wrong username");
+UserSchema.path("username").validate(
+  async (username) =>
+    validator.isAlphanumeric(username) && !validator.isEmpty(username),
+  "Wrong username"
+);
 
 UserSchema.path("name").validate(async function (name) {
   return await validator.isAlphanumeric(name);
@@ -52,26 +55,9 @@ UserSchema.path("surname").validate(async function (surname) {
  */
 UserSchema.pre("save", async function (next) {
   const user = this;
-
   if (user.isModified("password")) {
-    user.password = await bcrypt.hash(user.password, 8).catch((err) => {
-      throw "failed to encrypt data";
-    });
+    user.password = await bcrypt.hash(user.password, 8);
   }
-
-  next();
-});
-
-/**
- * Pre-delete hook
- */
-
-UserSchema.pre("deleteOne", async function (next) {
-  const user = await this.model.findOne(this.getQuery());
-
-  await Task.deleteMany({ user: user._conditions._id });
-  await Project.deleteMany({ owner: user._conditions._id });
-
   next();
 });
 
@@ -84,25 +70,21 @@ UserSchema.methods.generateAuthToken = async function () {
   return token;
 };
 
-UserSchema.statics.findByCredentials = async function (email, password) {
+UserSchema.statics.findByRecords = async function (email, password) {
   // Search for a user by email and password.
   const user = await User.findOne({ email });
   if (!user) {
-    throw "Invalid login credentials";
+    throw Error("Invalid login Records");
   }
   const isPasswordMatch = await bcrypt.compare(password, user.password);
   if (!isPasswordMatch) {
-    throw "Invalid login credentials";
+    throw Error("Invalid login Records");
   }
   return user;
 };
 
-UserSchema.statics.findByCredentialsAndDelete = async function (
-  email,
-  password
-) {
-  const user = await User.findByCredentials(email, password);
-
+UserSchema.statics.findByRecordsAndDelete = async function (email, password) {
+  const user = await User.findByRecords(email, password);
   await User.deleteOne({ email: user.email });
   return true;
 };
@@ -114,27 +96,15 @@ UserSchema.statics.destroyToken = async function (id, token) {
   }
   const newTokens = user.tokens;
   await user.tokens.splice(user.tokens.indexOf(token), 1);
-  await User.findOneAndUpdate(
-    {
-      email: user.email,
-    },
-    {
-      tokens: newTokens,
-    }
-  );
+  // await User.findOneAndUpdate({ email: user.email }, { tokens: newTokens });
+  await user.save();
   return true;
 };
 
 UserSchema.statics.destroyAllTokens = async function (id, token) {
-  await User.findOneAndUpdate(
-    {
-      _id: id,
-      "tokens.token": token,
-    },
-    {
-      tokens: [],
-    }
-  );
+  const user = await User.findOne({ _id: id, "tokens.token": token });
+  user.tokens = [];
+  await user.save();
   return true;
 };
 

@@ -1,25 +1,22 @@
-var express = require("express");
-var router = express.Router();
+const express = require("express");
+const router = express.Router();
 
-var Todo = require("../models/tasks.js");
-var User = require("../models/user.js");
-var Project = require("../models/projects.js");
+const Todo = require("../models/tasks.js");
+const User = require("../models/user.js");
+const Project = require("../models/projects.js");
 
-var projects = require("../api/projects");
+const projects = require("../api/projects");
 
-var auth = require("../config/middleware/auth.js");
-var privilage = require("../config/middleware/privilage.js");
+const auth = require("../config/middleware/auth.js");
 
-const middle = [auth, privilage];
-
-router.get("/get", auth, projects.getUserAssociatedProject);
+router.get("/get", auth, projects.getUserProject);
 router.get("/:project", auth, projects.getOneProject);
 
 router.post("/create", auth, projects.createProject);
 
-router.put("/add", middle, projects.addUserToProject);
-router.put("/edit", middle, projects.editOneProject);
+router.put("/add", auth, projects.addUserToProject);
+router.patch("/edit", auth, projects.editOneProject);
 
-router.delete("/delete", middle, projects.deleteProject);
+router.delete("/delete", auth, projects.deleteProject);
 
 module.exports = router;
