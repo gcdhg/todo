@@ -7,6 +7,20 @@
           <b-form-group
             id="input-group-email"
             label="Email address:"
+            label-for="input-username"
+            description="We'll never share your username with anyone else."
+          >
+            <b-form-input
+              id="input-1"
+              type="text"
+              v-model="username"
+              required
+              placeholder="Enter username"
+            ></b-form-input>
+          </b-form-group>
+          <b-form-group
+            id="input-group-email"
+            label="Email address:"
             label-for="input-email"
             description="We'll never share your email with anyone else."
           >
@@ -33,8 +47,8 @@
             ></b-form-input>
           </b-form-group>
 
-          <b-button @click.prevent="loginUser" type="submit" variant="primary"
-            >Submit</b-button
+          <b-button @click.prevent="createUser" type="submit" variant="primary"
+            >Create</b-button
           >
           <b-button type="reset" variant="danger">Reset</b-button>
         </b-form>
@@ -59,24 +73,21 @@ export default {
     return {
       email: "",
       password: "",
+      username: "",
     };
   },
   computed: mapGetters(["RETURN_USERNAME"]),
   methods: {
-    ...mapActions(["LOGIN_USER"]),
-    async loginUser() {
+    ...mapActions(["CREATE_USER"]),
+    async createUser() {
       const user = {
+        username: this.username,
         email: this.email,
         password: this.password,
       };
-      const isLogedIn = await this.LOGIN_USER(user);
-      if (!isLogedIn) {
-        await this.makeToast();
-        this.email = "";
-        this.password = "";
-      } else {
-        this.$router.push(`/${this.RETURN_USERNAME}`);
-      }
+      await this.CREATE_USER(user);
+
+      this.$router.push(`/login`);
     },
     async makeToast(append = false) {
       await this.$bvToast.toast(`Wrong user data`, {

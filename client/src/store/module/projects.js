@@ -1,6 +1,9 @@
-const { default: fetch } = require("node-fetch");
+// const { default: fetch } = require("node-fetch");
+// import userFetch from "./fetchers/user";
+import projectFetch from "./fetchers/project";
+// import taskFetch from "./fetchers/task";
 
-module.exports = {
+export default {
   state: {
     projectList: [],
     project: {},
@@ -16,60 +19,42 @@ module.exports = {
   },
   actions: {
     async GET_ALL_USER_PROJECTS(context) {
-      const res = await fetch("http://localhost:3000/projects/get", {
-        headers: {
-          Authorization: `Bearer ${context.getters.RETURN_TOKEN}`,
-          "Content-Type": "application/json;charset=utf-8",
-          Origin: "http://localhost:3000/projects/get",
-        },
-      });
+      const res = await projectFetch.getAllProjects(
+        context.getters.RETURN_TOKEN
+      );
       if (res.status === (200 || 201)) {
         const json = await res.json();
         context.commit("UPDATE_PROJECTS", json);
       }
     },
-    async CREATE_NEW_PROJECT(context, newProject) {
-      const res = await fetch("http://localhost:3000/projects/create", {
-        headers: {
-          Authorization: `Bearer ${context.getters.RETURN_TOKEN}`,
-          "Content-Type": "application/json;charset=utf-8",
-          Origin: "http://localhost:3000/projects/create",
-        },
-        method: "POST",
-        body: JSON.stringify({
-          title: newProject,
-        }),
-      });
+    async CREATE_NEW_PROJECT(context, project) {
+      const res = await projectFetch.createProject(
+        context.getters.RETURN_TOKEN,
+        project
+      );
+
       if (res.status === (200 || 201)) {
         await context.dispatch("GET_ALL_USER_PROJECTS");
       }
     },
     async GET_ONE_PROJECT(context, project) {
-      const res = await fetch(`http://localhost:3000/projects/${project}`, {
-        headers: {
-          Authorization: `Bearer ${context.getters.RETURN_TOKEN}`,
-          "Content-Type": "application/json;charset=utf-8",
-          Origin: `http://localhost:3000/projects/${project}`,
-        },
-      });
+      const res = await projectFetch.getOneprojectById(
+        context.getters.RETURN_TOKEN,
+        project
+      );
+
       if (res.status === 200) {
         const json = await res.json();
         context.commit("UPDATE_ONE_PROJECT", json);
       }
     },
     async EDIT_PROJECT_TITLE(context, project) {
-      const res = await fetch(`http://localhost:3000/projects/edit`, {
-        method: "PUT",
-        headers: {
-          Authorization: `Bearer ${context.getters.RETURN_TOKEN}`,
-          "Content-Type": "application/json;charset=utf-8",
-          Origin: `http://localhost:3000/projects/edit`,
-        },
-        body: JSON.stringify({
-          projectId: project.projectId,
-          title: project.title,
-        }),
-      });
+      const res = await projectFetch.editOneprojectById(
+        context.getters.RETURN_TOKEN,
+        project.projectId,
+        project
+      );
+
       if (res.status === 201) {
         context.commit("UPDATE_ONE_PROJECT", { title: project.title });
       }

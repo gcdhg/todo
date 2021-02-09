@@ -46,7 +46,6 @@ describe("User", () => {
     // ? create user
     const statusCreateUser = await userFun.createUser(user);
     expect(statusCreateUser.status).toBe(201);
-
     const userCreated = await User.findOne({
       username: user.username,
     });

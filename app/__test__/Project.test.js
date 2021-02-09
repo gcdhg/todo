@@ -3,7 +3,7 @@ const dotenv = require("dotenv").config();
 const mongoose = require("mongoose");
 const userFun = require("./fetchers/user");
 const taskfun = require("./fetchers/task");
-const projFun = require('./fetchers/project')
+const projFun = require("./fetchers/project");
 
 const Project = mongoose.model("Project");
 const Task = mongoose.model("Task");

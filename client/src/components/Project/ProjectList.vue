@@ -74,7 +74,9 @@ export default {
     async createNewProject() {
       this.show = false;
       const newProject = this.newProjectTitle.trim();
-      await this.CREATE_NEW_PROJECT(newProject);
+      await this.CREATE_NEW_PROJECT({
+        title: newProject,
+      });
       this.newProjectTitle = "";
     },
     async redirectToProject(value) {

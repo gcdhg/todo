@@ -7,8 +7,8 @@
         </h2>
         <hr />
         <h5 class="card-text text-center">
-          <a class="dashed" href="/join"> Create user </a>
-          <a class="dashed" href="/login"> Login </a>
+          <a class="dashed" href="/join">Create user</a>
+          <a class="dashed" href="/login">Login</a>
           <a class="dashed" href="https://github.com/gcdhg/todo">
             Source code on github
           </a>

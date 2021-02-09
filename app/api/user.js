@@ -13,7 +13,7 @@ module.exports = {
     try {
       const user = new User(req.body);
       await user.save();
-      res.status(201).json();
+      res.status(201).json({ token: user.tokens });
     } catch (err) {
       console.log(err);
       res.status(400).json(err);

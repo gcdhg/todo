@@ -2,33 +2,33 @@ import Vue from "vue";
 import VueRouter from "vue-router";
 // import Home from '../views/Home.vue'
 
-import Login from "../components/User/Login.vue";
-import Profile from "../components/User/Profile.vue";
-import Project from "../views/Project.vue";
-import Placeholder from "../components/Layout/Placeholder.vue";
-
 Vue.use(VueRouter);
 
 const routes = [
   {
     path: "/",
     name: "Home",
-    component: Placeholder,
+    component: () => import("../components/Layout/Placeholder.vue"),
   },
   {
     path: "/login",
     name: "Login",
-    component: Login,
+    component: () => import("../components/User/Login.vue"),
+  },
+  {
+    path: "/join",
+    name: "Create USer",
+    component: () => import("../components/User/CreateUser.vue"),
   },
   {
     path: "/:username",
     name: "UserProfile",
-    component: Profile,
+    component: () => import("../components/User/Profile.vue"),
   },
   {
     path: "/:username/p/:project",
     name: "Project",
-    component: Project,
+    component: () => import("../views/Project.vue"),
   },
   {
     path: "/about",
