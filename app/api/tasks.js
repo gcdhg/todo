@@ -7,6 +7,24 @@ const User = mongoose.model("User");
 const Project = mongoose.model("Project");
 
 /**
+ * Create task if user owns project or it's his private task
+ **/
+module.exports.createTask = async function (req, res) {
+  try {
+    const { title, planedAt, projectId } = req.body;
+    const user = req.user;
+    const task = new Task({ title, planedAt, user, projectId });
+
+    await task.save();
+
+    res.status(201).json(task);
+  } catch (err) {
+    console.log(err);
+    res.status(400).json();
+  }
+};
+
+/**
  * Get all tasks created by user (including once in owned project)
  */
 
@@ -26,23 +44,7 @@ module.exports.showAllPrivateTasks = async function (req, res) {
   }
 };
 
-/**
- * Create task if user owns project or it's his private task
- **/
-module.exports.createTask = async function (req, res) {
-  try {
-    const { title, planedAt, projectId } = req.body;
-    const user = req.user;
-    const task = new Task({ title, planedAt, user, projectId });
 
-    await task.save();
-
-    res.status(201).json(task);
-  } catch (err) {
-    console.log(err);
-    res.status(400).json();
-  }
-};
 
 /**
  * Get Task by id and if it's private task user can edit it
@@ -123,7 +125,7 @@ module.exports.deleteTask = async function (req, res) {
     }
   } catch (err) {
     console.log(err);
-    res.status(400);
+    res.status(400).json();
   }
 };
 

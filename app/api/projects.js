@@ -103,22 +103,22 @@ module.exports.deleteProject = async function (req, res) {
   }
 };
 
-module.exports.addUserToProject = async function (req, res) {
-  try {
-    const user = await User.findById(req.user);
-    const { owned } = user;
-    isOwner = owned.some((p) => req.body.projectId === p);
-    if (isOwner) {
-      const result = await Project.addUserToProject(
-        req.body.projectId,
-        req.body.newUser
-      );
-      res.status(201).json();
-    } else {
-      res.status(400).json("user adding failed");
-    }
-  } catch (err) {
-    console.log(err);
-    res.status(400).json("user adding failed");
-  }
-};
+// module.exports.addUserToProject = async function (req, res) {
+//   try {
+//     const user = await User.findById(req.user);
+//     const { owned } = user;
+//     isOwner = owned.some((p) => req.body.projectId === p);
+//     if (isOwner) {
+//       const result = await Project.addUserToProject(
+//         req.body.projectId,
+//         req.body.newUser
+//       );
+//       res.status(201).json();
+//     } else {
+//       res.status(400).json("user adding failed");
+//     }
+//   } catch (err) {
+//     console.log(err);
+//     res.status(400).json("user adding failed");
+//   }
+// };

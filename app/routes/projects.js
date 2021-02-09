@@ -14,7 +14,7 @@ router.get("/:project", auth, projects.getOneProject);
 
 router.post("/create", auth, projects.createProject);
 
-router.put("/add", auth, projects.addUserToProject);
+// router.put("/add", auth, projects.addUserToProject);
 router.patch("/edit", auth, projects.editOneProject);
 
 router.delete("/delete", auth, projects.deleteProject);

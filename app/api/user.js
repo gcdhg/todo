@@ -83,6 +83,7 @@ module.exports = {
     try {
       const [user, token] = [req.user, req.token];
       const foundUser = await (await User.findOne({ username: req.params.id }))
+        .populate("tasks")
         .populated("projects")
         .exec();
       const { _id: id, name, surname, email, tasks, projects } = foundUser;

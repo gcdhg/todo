@@ -46,10 +46,7 @@ describe("TODO", () => {
 
   it("create user and create, edit, delete todo", async () => {
     // ? create user
-    const statusCreateUser = await userFun.createUser(user);
-    const userCreated = await User.findOne({
-      username: user.username,
-    });
+    await userFun.createUser(user);
     // ? login user
     const statusLogin = await userFun.loginUser({
       email: user.email,
