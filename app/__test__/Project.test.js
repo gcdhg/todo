@@ -39,10 +39,11 @@ describe("TODO", () => {
   });
 
   afterAll(async () => {
-    await User.deleteOne({
+    await User.deleteMany({
       email: user.email,
     });
     await Project.deleteMany();
+
     await database.close();
   });
 
@@ -66,14 +67,14 @@ describe("TODO", () => {
     expect(newProjReq.status).toBe(201);
     expect(createdProject).toMatchObject([{ title: "new project" }]);
     // ? edit Project
-    const editTask = await projFun.editOneprojectById(
+    const editProj = await projFun.editOneprojectById(
       tokenLogin.token,
       createdProject[0]._id,
       {
-        title: "very new todo",
+        title: "very new todo project",
       }
     );
-    expect(editTask.status).toBe(201);
+    expect(editProj.status).toBe(201);
     // ? get Project by id
     const newProj = await newProjReq.json();
     const getProjById = await projFun.getOneprojectById(

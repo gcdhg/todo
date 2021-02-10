@@ -26,12 +26,13 @@ module.exports = {
     });
   },
 
-  async getUser(userId, token) {
-    return await fetch(`http://localhost:3000/users/${userId}`, {
+  async getUser(userName, token) {
+    return await fetch(`http://localhost:3000/users/${userName}`, {
+      method: "GET",
       headers: {
         Authorization: `Bearer ${token.token}`,
         "Content-Type": "application/json;charset=utf-8",
-        Origin: `http://localhost:3000/users/${userId}`,
+        Origin: `http://localhost:3000/users/${userName}`,
       },
     });
   },

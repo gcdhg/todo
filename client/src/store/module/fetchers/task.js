@@ -33,11 +33,11 @@ export default {
   //       })
 
   async getAllPrivateTasks(token) {
-    return await fetch("http://localhost:3000/get", {
+    return await fetch("http://localhost:3000/tasks/get", {
       headers: {
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json;charset=utf-8",
-        Origin: "http://localhost:3000/get",
+        Origin: "http://localhost:3000/tasks/get",
       },
     });
   },

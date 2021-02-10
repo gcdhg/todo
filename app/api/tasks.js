@@ -12,8 +12,7 @@ const Project = mongoose.model("Project");
 module.exports.createTask = async function (req, res) {
   try {
     const { title, planedAt, projectId } = req.body;
-    const user = req.user;
-    const task = new Task({ title, planedAt, user, projectId });
+    const task = new Task({ title, planedAt, user: req.user, projectId });
 
     await task.save();
 
@@ -31,20 +30,18 @@ module.exports.createTask = async function (req, res) {
 module.exports.showAllPrivateTasks = async function (req, res) {
   try {
     const user = await User.findById(req.user).populate("tasks").exec();
-    const { tasks, _id: userId, name, surname } = user;
+    const { tasks, _id: userId, username } = user;
     const mapping = {
       true: {},
-      false: { tasks, userId, name, surname },
+      false: { tasks, userId, username },
     };
-    const status = !user ? 200 : 400;
+    const status = user !== undefined ? 200 : 400;
     res.status(status).json(mapping[!user]);
   } catch (err) {
     console.log(err);
-    res.status(400);
+    res.status(400).json(err);
   }
 };
-
-
 
 /**
  * Get Task by id and if it's private task user can edit it
@@ -53,24 +50,13 @@ module.exports.showAllPrivateTasks = async function (req, res) {
 
 module.exports.getTaskById = async function (req, res) {
   try {
-    const user = await User.findById(req.user);
-    const { tasks, owner } = user;
-    const task = await Task.findById(req.params.id);
-    const isPrivate = task.user.toString() === req.user.toString();
-    const isProject = owner
-      ? owner.some((p) => req.body?.projectId === p)
-      : false;
-    const isValid = isPrivate || isProject;
-    if (isValid) {
-      const task = await Task.findOne({
-        _id: req.params.id,
-        project: req.body?.project,
-        user: req.user,
-      });
-      res.status(200).json(task);
-    } else {
-      res.status(402).json();
-    }
+    const task = await Task.findOne({
+      _id: req.params.id,
+      user: req.user,
+      projectId: req.body.projectId,
+    });
+    const status = task === undefined ? 402 : 200;
+    res.status(status).json(task);
   } catch (err) {
     console.log(err);
     res.status(400);
@@ -79,24 +65,17 @@ module.exports.getTaskById = async function (req, res) {
 
 module.exports.editTask = async function (req, res) {
   try {
-    const user = await User.findById(req.user);
-    const { tasks, owner } = user;
-    const task = await Task.findById(req.params.id);
-    const isPrivate = task.user.toString() === req.user.toString();
-    const isProject = owner
-      ? owner.some((p) => req.body?.projectId === p)
-      : false;
-    const isValid = isPrivate || isProject;
-    if (isValid) {
-      const task = await Task.findOneAndUpdate({
-        _id: req.params.id,
-        project: req.body?.project,
-        user: req.user,
-      });
-      res.status(201).json(task);
-    } else {
-      res.status(402).json();
+    const task = await Task.findOne({
+      _id: req.params.id,
+      user: req.user,
+      projectId: req.body.projectId,
+    });
+    for (let key of Object.keys(req.body)) {
+      task[key] = req.body[key];
     }
+    await task.save();
+
+    res.status(201).json(task);
   } catch (err) {
     console.log(err);
     res.status(400).json(err);

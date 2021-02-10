@@ -13,6 +13,7 @@ const User = mongoose.model("User");
 describe("TODO", () => {
   let database;
   let token;
+  let id;
 
   const user = {
     name: "todoman",
@@ -41,13 +42,15 @@ describe("TODO", () => {
     await User.deleteOne({
       email: user.email,
     });
-    await Task.deleteMany();
+    await Task.deleteOne({ _id: id });
     await database.close();
   });
 
   it("create user and create, edit, delete todo", async () => {
     // ? create user
     await userFun.createUser(user);
+    const dbUser = await User.findOne({ username: user.username });
+    id = dbUser._id;
     // ? login user
     const statusLogin = await userFun.loginUser({
       email: user.email,
@@ -60,7 +63,7 @@ describe("TODO", () => {
     });
     const createdTask = await Task.find({ title: "new todo" });
     expect(newTodoReq.status).toBe(201);
-    expect(createdTask).toMatchObject([{ title: "new todo" }]);
+    expect(createdTask[0]).toMatchObject({ title: "new todo" });
     // ? edit Task
     const editTask = await taskfun.editTask(
       tokenLogin.token,
@@ -78,7 +81,7 @@ describe("TODO", () => {
     );
     expect(getTaskById.status).toBe(200);
     const getTask = await getTaskById.json();
-    expect(getTask).toMatchObject(newTask);
+    expect(getTask).toMatchObject({ title: "very new todo" });
     // ? delete Task
     const deleteTask = await taskfun.deleteTask(
       tokenLogin.token,

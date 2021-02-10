@@ -33,7 +33,8 @@ export default {
       console.log(res.status);
       if (res.status === 201) {
         // const json = await res.json();
-        context.actions("LOGIN_USER", user);
+        await context.dispatch("LOGIN_USER", user);
+        console.log(context.actions);
         return true;
       } else {
         return false;
@@ -66,11 +67,10 @@ export default {
         context.commit("UPDATE_AUTH");
       }
     },
-    async GET_USER_DATA(context, userdata) {
-      const res = await userFetch.getUser(
-        userdata,
-        context.getters.RETURN_TOKEN
-      );
+    async GET_USER_DATA(context) {
+      const res = await userFetch.getUser(context.getters.RETURN_USERNAME, {
+        token: context.getters.RETURN_TOKEN,
+      });
       if (res.status === (200 || 201)) {
         const json = await res.json();
         context.commit("UPDATE_USER_DATA", json);

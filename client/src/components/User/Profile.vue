@@ -56,8 +56,12 @@ import ProjectList from "../Project/ProjectList";
 
 export default {
   async mounted() {
-    this.GET_USER_DATA(this.$route.params.username);
-    await this.GET_ALL_USER_PROJECTS();
+    // this.GET_USER_DATA(this.$route.params.username);
+    await Promise.all([
+      this.GET_USER_DATA(),
+      this.GET_ALL_USER_PROJECTS(),
+      this.GET_ALL_USER_TASKS(),
+    ]);
   },
   computed: mapGetters([
     "RETURN_USERNAME",
@@ -66,7 +70,12 @@ export default {
     "RETURN_PROJECTS",
   ]),
   methods: {
-    ...mapActions(["GET_USER_DATA", "CHANGE_MODE", "GET_ALL_USER_PROJECTS"]),
+    ...mapActions([
+      "GET_USER_DATA",
+      "CHANGE_MODE",
+      "GET_ALL_USER_PROJECTS",
+      "GET_ALL_USER_TASKS",
+    ]),
     async getPersonalData() {
       await this.CHANGE_MODE("personalData");
     },
