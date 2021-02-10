@@ -11,9 +11,10 @@ const Schema = mongoose.Schema;
 module.exports = {
   async createUser(req, res) {
     try {
-      const user = new User(req.body);
+      const { name, surname, username, email, password } = req.body;
+      const user = new User({ name, surname, username, email, password });
       await user.save();
-      res.status(201).json({ token: user.tokens });
+      res.status(201).json({ status: "user created" });
     } catch (err) {
       console.log(err);
       res.status(400).json(err);
@@ -48,9 +49,7 @@ module.exports = {
       const project = Project.deleteMany({ owner: user._id });
 
       const fel = await Promise.all([task, project, isDeleted]);
-      // console.log(fel);
-      const status = 201;
-      res.status(status).json();
+      res.status(201).json();
     } catch (err) {
       console.log(err);
       res.status(400).json(err);
@@ -82,10 +81,30 @@ module.exports = {
   async getUser(req, res) {
     try {
       const [user, token] = [req.user, req.token];
-      const foundUser = await (await User.findOne({ username: req.params.id }))
-        .populate("tasks")
-        .populated("projects")
-        .exec();
+
+      const foundUser = await User.findOne({ username: req.params.id })
+        // .populate([
+        //   {
+        //     path: "projects",
+        //     model: "Project",
+        //     populate: [
+        //       {
+        //         path: "tasks",
+        //         model: "Task",
+        //       },
+        //       {
+        //         path: "participants.user",
+        //         model: "User",
+        //         select: "username",
+        //       },
+        //     ],
+        //   },
+        //   {
+        //     path: "tasks",
+        //     model: "Task",
+        //   },
+        // ])
+        // .exec();
       const { _id: id, name, surname, email, tasks, projects } = foundUser;
       const isGuest = user === foundUser._id;
       const mapping = {
@@ -95,6 +114,7 @@ module.exports = {
       const result = mapping[isGuest];
       res.status(200).json(result);
     } catch (err) {
+      console.log(err);
       res.status(404).json();
     }
   },
@@ -107,9 +127,8 @@ module.exports = {
         false: { id, name, surname },
         true: {},
       };
-      const isUser = !user;
-      const status = isUser ? 400 : 200;
-      const result = mapping[isUser];
+      const status = !user ? 400 : 200;
+      const result = mapping[!user];
       res.status(status).json(result);
     } catch (err) {
       console.log(err);

@@ -16,9 +16,9 @@ describe("TODO", () => {
   let token;
 
   const user = {
-    name: "todoman3",
-    username: "todoman3",
-    email: "todoma3n@gmail.com",
+    name: "todoman1",
+    username: "todoman1",
+    email: "todoman1@gmail.com",
     password: "todo4man",
   };
 
@@ -43,6 +43,7 @@ describe("TODO", () => {
       email: user.email,
     });
     await Project.deleteMany();
+    await database.close();
   });
 
   it("create user and create, edit, delete todo", async () => {

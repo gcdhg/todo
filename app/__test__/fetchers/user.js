@@ -38,6 +38,7 @@ module.exports = {
 
   async getUser(userId, token) {
     return await fetch(`http://localhost:3000/users/${userId}`, {
+      method: 'GET',
       headers: {
         Authorization: `Bearer ${token.token}`,
         "Content-Type": "application/json;charset=utf-8",

@@ -16,17 +16,17 @@
           </b-list-group-item>
           <b-list-group-item
             type="button"
+            v-bind:active="RETURN_MODE === 'tasks'"
+            @click="getTasks"
+          >
+            Tasks
+          </b-list-group-item>
+          <b-list-group-item
+            type="button"
             v-bind:active="RETURN_MODE === 'projects'"
             @click="getProjects"
           >
             Projects
-          </b-list-group-item>
-          <b-list-group-item
-            type="button"
-            v-bind:active="RETURN_MODE === 'freinds'"
-            @click="getFreinds"
-          >
-            Friends
           </b-list-group-item>
         </b-list-group>
       </b-card>
@@ -70,12 +70,12 @@ export default {
     async getPersonalData() {
       await this.CHANGE_MODE("personalData");
     },
+    async getTasks() {
+      await this.CHANGE_MODE("tasks");
+    },
     async getProjects() {
       await this.CHANGE_MODE("projects");
       await this.GET_ALL_USER_PROJECTS();
-    },
-    async getFreinds() {
-      await this.CHANGE_MODE("freinds");
     },
   },
   components: {

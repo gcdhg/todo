@@ -1,7 +1,4 @@
-// const { default: fetch } = require("node-fetch");
-// import userFetch from "./fetchers/user";
 import projectFetch from "./fetchers/project";
-// import taskFetch from "./fetchers/task";
 
 export default {
   state: {

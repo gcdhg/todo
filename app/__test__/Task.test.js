@@ -42,6 +42,7 @@ describe("TODO", () => {
       email: user.email,
     });
     await Task.deleteMany();
+    await database.close();
   });
 
   it("create user and create, edit, delete todo", async () => {

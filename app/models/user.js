@@ -13,8 +13,8 @@ const Schema = mongoose.Schema;
 const UserSchema = new Schema({
   name: { type: String, trim: true },
   surname: { type: String, trim: true },
-  email: { type: String, unique: true },
-  username: { type: String, unique: true, trim: true },
+  email: { type: String, unique: true, dropDups: true },
+  username: { type: String, unique: true, trim: true, dropDups: true },
   password: { type: String },
   tokens: [{ token: { type: String, required: true } }],
   tasks: [{ type: Schema.ObjectId, ref: "Task" }],
