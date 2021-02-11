@@ -92,7 +92,7 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from "vuex";
+import { mapActions } from "vuex";
 
 export default {
   data() {
@@ -106,7 +106,6 @@ export default {
       },
     };
   },
-  computed: mapGetters(["RETURN_USERNAME"]),
   methods: {
     ...mapActions(["CREATE_USER"]),
     async onSubmit(event) {

@@ -75,14 +75,14 @@ module.exports = {
     });
   },
 
-  async logoutUserOnce(token, bodyToken = undefined) {
+  async logoutUserOnce(token, bodyToken) {
     return await fetch("http://localhost:3000/users/logout", {
       headers: {
         Authorization: `Bearer ${token.token}`,
         "Content-Type": "application/json;charset=utf-8",
         Origin: "http://localhost:3000/users/logout",
       },
-      method: "PATCH",
+      method: "DELETE",
       body: JSON.stringify({
         token: bodyToken === undefined ? undefined : bodyToken.token,
       }),

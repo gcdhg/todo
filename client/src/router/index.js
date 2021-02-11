@@ -21,6 +21,10 @@ const routes = [
     component: () => import("../components/User/CreateUser"),
   },
   {
+    path: "/login",
+    component: () => import("../components/User/Login"),
+  },
+  {
     path: "/:username",
     name: "Menu",
     component: Menu,

@@ -14,9 +14,9 @@ export default {
       state.user = data;
     },
     DROP_TOKEN(state) {
-      localStorage.removeItem('token');
+      localStorage.removeItem("token");
       state.token = localStorage.token;
-    }
+    },
   },
   actions: {
     async CREATE_USER(context, user) {
@@ -60,9 +60,10 @@ export default {
       return false;
     },
 
-    async LOGOUT_USER_ONCE(context, token) {
+    async LOGOUT_USER_ONCE(context, tokenToDelete) {
+      const token = tokenToDelete ?? context.getters.RETURN_TOKEN;
       const res = await userFetch.logoutUserOnce(
-        context.getters.RETURN_TOKEN,
+        { token: context.getters.RETURN_TOKEN },
         token
       );
       if (res.status == 201) {

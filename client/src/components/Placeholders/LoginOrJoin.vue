@@ -24,12 +24,9 @@ export default {
   computed: mapGetters(["RETURN_USER_DATA", "RETURN_TOKEN"]),
   async mounted() {
     if (this.RETURN_TOKEN !== undefined) {
-      // const res = await this.GET_USER_DATA();
-      // if (res) {
-        this.$nextTick(() => {
-          this.$router.push(`/${this.RETURN_USER_DATA.username}/profile`);
-        });
-      // }
+      this.$nextTick(() => {
+        this.$router.push(`/${this.RETURN_USER_DATA.username}/profile`);
+      });
     }
   },
   methods: {
@@ -38,7 +35,7 @@ export default {
       this.$router.push("/join");
     },
     async loginUser() {
-      this.$router.push("/join");
+      this.$router.push("/login");
     },
   },
 };

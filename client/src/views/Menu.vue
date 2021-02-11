@@ -30,8 +30,8 @@
             Projects
           </b-list-group-item>
         </b-list-group>
+        <b-button @click="logout">Logout</b-button>
       </b-card>
-
       <b-card class="col-9">
         <router-view></router-view>
       </b-card>
@@ -51,7 +51,7 @@ export default {
     await this.GET_USER_DATA();
   },
   methods: {
-    ...mapActions(["CHANGE_MODE", "GET_USER_DATA"]),
+    ...mapActions(["CHANGE_MODE", "GET_USER_DATA", "LOGOUT_USER_ONCE"]),
     async getPersonalData() {
       if (this.RETURN_MODE !== "profile") {
         await this.CHANGE_MODE("profile");
@@ -68,6 +68,9 @@ export default {
       if (this.RETURN_MODE !== "projects") {
         await this.CHANGE_MODE("projects");
       }
+    },
+    async logout() {
+      await this.LOGOUT_USER_ONCE();
     },
   },
 };
