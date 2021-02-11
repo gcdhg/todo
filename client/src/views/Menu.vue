@@ -43,6 +43,9 @@
 import { mapActions, mapGetters } from "vuex";
 
 export default {
+  async mounted() {
+    this.$router.push(`/${this.RETURN_USER_DATA.username}/tasks`);
+  },
   computed: mapGetters(["RETURN_MODE", "RETURN_USER_DATA"]),
   async created() {
     await this.GET_USER_DATA();

@@ -8,7 +8,9 @@
       ></b-form-input>
     </b-row>
     <!-- {{ GET_PRIVATE_TASKS }} -->
-    <TaskList v-bind:tasks="GET_PRIVATE_TASKS" />
+    <b-row>
+      <TaskList v-bind:tasks="GET_PRIVATE_TASKS" />
+    </b-row>
   </div>
 </template>
 

@@ -28,6 +28,25 @@ export default {
         context.commit("UPDATE_ALL_PRIVATE_TASKS", json);
       }
     },
+    async EDIT_TASK(context, task) {
+      const res = await taskFetch.editTask(
+        context.getters.RETURN_TOKEN,
+        task._id,
+        task
+      );
+      if (res.status === 201) {
+        await context.dispatch("GET_ALL_USER_TASKS");
+      }
+    },
+    async DELETE_TASK(context, task) {
+      const res = await taskFetch.deleteTask(
+        context.getters.RETURN_TOKEN,
+        task._id
+      );
+      if (res.status === 201) {
+        await context.dispatch("GET_ALL_USER_TASKS");
+      }
+    },
   },
   getters: {
     GET_PRIVATE_TASKS(state) {

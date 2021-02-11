@@ -58,18 +58,26 @@ describe("TODO", () => {
     token = token.token;
     let arr = [];
     for (let i = 0; i < 3; i += 1) {
-      const task = taskFun.createTask(token, {
+      const task = await taskFun.createTask(token, {
         title: "new todo private tasks",
       });
-      arr = [...arr, task];
+      expect(task.status).toBe(201);
     }
-    await Promise.all(arr);
+    // ? get all tasks
     const statusCreateTask = await taskFun.getAllPrivateTasks(token);
     expect(statusCreateTask.status).toBe(200);
     const json = await statusCreateTask.json();
     const userDB = await User.findOne({
       username: user.username,
-    });
-    expect(userDB.tasks).toEqual(expect.arrayContaining(json.tasks));
+    }).populate([
+      {
+        path: "tasks",
+        model: "Task",
+      },
+    ]);
+    // console.log(json);
+    const tasks = json.map((i) => i._id);
+    const dbIds = userDB.tasks.map((i) => i._id);
+    expect(dbIds.join("")).toBe(tasks.join(""));
   });
 });

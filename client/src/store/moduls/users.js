@@ -13,6 +13,10 @@ export default {
     UPDATE_USER_DATA(state, data) {
       state.user = data;
     },
+    DROP_TOKEN(state) {
+      localStorage.removeItem('token');
+      state.token = localStorage.token;
+    }
   },
   actions: {
     async CREATE_USER(context, user) {
@@ -46,11 +50,12 @@ export default {
       const res = await userFetch.getUserByToken({
         token: context.getters.RETURN_TOKEN,
       });
-      if (res.status === (200 || 201)) {
+      if (res.status === 200) {
         const json = await res.json();
-        console.log(json);
         context.commit("UPDATE_USER_DATA", json);
         return true;
+      } else {
+        context.commit("DROP_TOKEN");
       }
       return false;
     },

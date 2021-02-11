@@ -93,7 +93,7 @@ module.exports = {
     try {
       const [user, token] = [req.user, req.token];
 
-      const foundUser = await User.findOne({ username: req.user });
+      const foundUser = await User.findOne({ username: req.params.id });
       // .populate([
       //   {
       //     path: "projects",

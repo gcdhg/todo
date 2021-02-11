@@ -39,14 +39,6 @@ module.exports.createTask = async function (req, res) {
 
 module.exports.showAllPrivateTasks = async function (req, res) {
   try {
-    // const user = await User.findById(req.user).populate("tasks").exec();
-    // const { tasks, _id: userId, username } = user;
-    // const mapping = {
-    //   true: {},
-    //   false: { tasks, userId, username },
-    // };
-    // const status = user !== undefined ? 200 : 400;
-    // res.status(status).json(mapping[!user]);
     const tasks = await Task.find({ user: req.user });
     res.status(200).json(tasks);
   } catch (err) {
