@@ -1,6 +1,8 @@
+// const dotenv = require("dotenv").config();
+
 const fetch = require("node-fetch");
 
-export default {
+module.exports = {
   async createTask(token, newTask) {
     return await fetch("http://localhost:3000/tasks/create", {
       headers: {
@@ -34,6 +36,7 @@ export default {
 
   async getAllPrivateTasks(token) {
     return await fetch("http://localhost:3000/tasks/get", {
+      method: "GET",
       headers: {
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json;charset=utf-8",

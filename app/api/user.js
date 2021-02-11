@@ -78,33 +78,44 @@ module.exports = {
     }
   },
 
+  async getUserByToken(req, res) {
+    try {
+      // console.log(req.token);
+      const user = await User.findById(req.user);
+      res.status(200).json(user);
+    } catch (err) {
+      console.log(err);
+      res.status(404).json();
+    }
+  },
+
   async getUser(req, res) {
     try {
       const [user, token] = [req.user, req.token];
 
-      const foundUser = await User.findOne({ username: req.params.id })
-        // .populate([
-        //   {
-        //     path: "projects",
-        //     model: "Project",
-        //     populate: [
-        //       {
-        //         path: "tasks",
-        //         model: "Task",
-        //       },
-        //       {
-        //         path: "participants.user",
-        //         model: "User",
-        //         select: "username",
-        //       },
-        //     ],
-        //   },
-        //   {
-        //     path: "tasks",
-        //     model: "Task",
-        //   },
-        // ])
-        // .exec();
+      const foundUser = await User.findOne({ username: req.user });
+      // .populate([
+      //   {
+      //     path: "projects",
+      //     model: "Project",
+      //     populate: [
+      //       {
+      //         path: "tasks",
+      //         model: "Task",
+      //       },
+      //       {
+      //         path: "participants.user",
+      //         model: "User",
+      //         select: "username",
+      //       },
+      //     ],
+      //   },
+      //   {
+      //     path: "tasks",
+      //     model: "Task",
+      //   },
+      // ])
+      // .exec();
       const { _id: id, name, surname, email, tasks, projects } = foundUser;
       const isGuest = user === foundUser._id;
       const mapping = {

@@ -1,6 +1,12 @@
 <template>
-  <div>
-    {{ task[index].title }}
+  <div class="mt-3">
+    <b-card-group deck>
+      <b-card bg-variant="light" class="text-left">
+        <b-card-text>
+          {{ task[index].title }}
+        </b-card-text>
+      </b-card>
+    </b-card-group>
   </div>
 </template>
 
@@ -15,6 +21,10 @@ export default {
       },
     },
     index: Number,
+  },
+  methods: {
+    async editTask() {},
+    async deletTask() {},
   },
 };
 </script>

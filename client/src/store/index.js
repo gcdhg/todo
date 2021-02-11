@@ -1,9 +1,9 @@
 import Vue from "vue";
 import Vuex from "vuex";
 
-import users from "./module/users";
-import projects from "./module/projects";
-import tasks from "./module/tasks";
+import users from "@/store/moduls/users";
+import tasks from "@/store/moduls/tasks";
+import controllers from "@/store/moduls/controllers";
 
 Vue.use(Vuex);
 
@@ -13,7 +13,7 @@ export default new Vuex.Store({
   actions: {},
   modules: {
     users,
-    projects,
+    controllers,
     tasks,
   },
 });

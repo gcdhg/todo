@@ -9,7 +9,6 @@
             id="input-group-name"
             label="Name:"
             label-for="input-name"
-            description="We'll never share your name with anyone else."
           >
             <b-form-input
               id="input-1"
@@ -24,7 +23,6 @@
             id="input-group-surname"
             label="Surname:"
             label-for="input-surname"
-            description="We'll never share your surname with anyone else."
           >
             <b-form-input
               id="input-2"
@@ -39,7 +37,6 @@
             id="input-group-username"
             label="Username:"
             label-for="input-username"
-            description="We'll never share your username with anyone else."
           >
             <b-form-input
               id="input-3"
@@ -54,7 +51,6 @@
             id="input-group-email"
             label="Email address:"
             label-for="input-email"
-            description="We'll never share your email with anyone else."
           >
             <b-form-input
               id="input-4"
@@ -121,6 +117,7 @@ export default {
           this.$router.push(`/${this.form.username}`);
         });
       }
+      await this.makeToast();
     },
     async onReset(event) {
       event.preventDefault();

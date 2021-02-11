@@ -47,6 +47,17 @@ module.exports = {
     });
   },
 
+  async getAllPrivateTasks(token) {
+    return await fetch("http://localhost:3000/tasks/get", {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json;charset=utf-8",
+        Origin: "http://localhost:3000/tasks/get",
+      },
+    });
+  },
+
   async deleteUser(user, token) {
     return fetch("http://localhost:3000/users/delete", {
       headers: {

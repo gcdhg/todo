@@ -26,13 +26,25 @@ module.exports = {
     });
   },
 
-  async getUser(userName, token) {
-    return await fetch(`http://localhost:3000/users/${userName}`, {
+  async getUser(userId, token) {
+    return await fetch(`http://localhost:3000/users/${userId}`, {
       method: "GET",
       headers: {
         Authorization: `Bearer ${token.token}`,
         "Content-Type": "application/json;charset=utf-8",
-        Origin: `http://localhost:3000/users/${userName}`,
+        Origin: `http://localhost:3000/users/${userId}`,
+      },
+    });
+  },
+
+  async getUserByToken(token) {
+    console.log(token.token);
+    return await fetch(`http://localhost:3000/users/bytoken`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token.token}`,
+        "Content-Type": "application/json;charset=utf-8",
+        Origin: `http://localhost:3000/users/bytoken`,
       },
     });
   },
@@ -85,7 +97,6 @@ module.exports = {
         Origin: "http://localhost:3000/users/logout/all",
       },
       method: "PUT",
-      body: JSON.stringify(),
     });
   },
 };

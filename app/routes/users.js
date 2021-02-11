@@ -14,6 +14,7 @@ router.post("/login", userApi.loginUser);
 router.patch("/logout", auth, userApi.logoutUserOnce);
 router.put("/logout/all", auth, userApi.logoutUserOnAllDevices);
 router.delete("/delete", auth, userApi.deleteUser);
+router.get("/bytoken", auth, userApi.getUserByToken);
 router.get("/:id", auth, userApi.getUser);
 
 module.exports = router;

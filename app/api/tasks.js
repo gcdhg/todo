@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
-const { wrap: async } = require("co");
-const { NotExtended } = require("http-errors");
+// const { wrap: async } = require("co");
+// const { NotExtended } = require("http-errors");
+const _ = require("lodash");
 
 const Task = mongoose.model("Task");
 const User = mongoose.model("User");
@@ -12,10 +13,19 @@ const Project = mongoose.model("Project");
 module.exports.createTask = async function (req, res) {
   try {
     const { title, planedAt, projectId } = req.body;
-    const task = new Task({ title, planedAt, user: req.user, projectId });
+    const user = await User.findById(req.user);
 
-    await task.save();
-
+    if (_.has(req.body, "projectId")) {
+      isValid = user.owned.some((project) => project === req.body.projectId);
+      const task = isValid
+        ? new Task({ title, planedAt, user: req.user, projectId })
+        : "No rights to create tasks in this project";
+      const status = isValid ? 201 : 401;
+      return res.status(status).json(task);
+    }
+    const task = new Task({ title, planedAt, user: req.user });
+    user.tasks = [...user.tasks, task._id];
+    await Promise.all([task.save(), user.save()]);
     res.status(201).json(task);
   } catch (err) {
     console.log(err);
@@ -29,14 +39,16 @@ module.exports.createTask = async function (req, res) {
 
 module.exports.showAllPrivateTasks = async function (req, res) {
   try {
-    const user = await User.findById(req.user).populate("tasks").exec();
-    const { tasks, _id: userId, username } = user;
-    const mapping = {
-      true: {},
-      false: { tasks, userId, username },
-    };
-    const status = user !== undefined ? 200 : 400;
-    res.status(status).json(mapping[!user]);
+    // const user = await User.findById(req.user).populate("tasks").exec();
+    // const { tasks, _id: userId, username } = user;
+    // const mapping = {
+    //   true: {},
+    //   false: { tasks, userId, username },
+    // };
+    // const status = user !== undefined ? 200 : 400;
+    // res.status(status).json(mapping[!user]);
+    const tasks = await Task.find({ user: req.user });
+    res.status(200).json(tasks);
   } catch (err) {
     console.log(err);
     res.status(400).json(err);
