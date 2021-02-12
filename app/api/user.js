@@ -7,6 +7,10 @@ const Task = mongoose.model("Task");
 const Project = mongoose.model("Project");
 
 module.exports = {
+  /**
+   * Create user. Get data from requst body and store it in database
+   */
+
   async createUser(req, res) {
     try {
       const { name, surname, username, email, password } = req.body;
@@ -18,6 +22,12 @@ module.exports = {
       res.status(400).json(err);
     }
   },
+
+  /**
+   * Check that credetials is valid.
+   * Generate token and store it in database.
+   * Sends it to client
+   */
 
   async loginUser(req, res) {
     try {
@@ -36,6 +46,13 @@ module.exports = {
       res.status(401).json(err);
     }
   },
+
+  /**
+   * Check that credetials is valid.
+   * Find all user Tasks and delete
+   * Find all user Projects and delete
+   * Find user and delete
+   */
 
   async deleteUser(req, res) {
     try {
@@ -63,6 +80,13 @@ module.exports = {
   //   }
   // },
 
+  /**
+   *
+   * Check if there is any tokens in request body
+   * if it's in body find it in user data and delete it
+   * if there is no token in body then delete token used to auth in the request
+   */
+
   async logoutUserOnce(req, res) {
     try {
       const token = _.has(req.body, "token") ? req.body.token : req.token;
@@ -76,7 +100,13 @@ module.exports = {
     }
   },
 
-  async getUserByToken(req, res) {
+  /**
+   * Get user data from database by his _id
+   * user _id parsed from token
+   * and then full user data returned in response
+   */
+
+  async getUserById(req, res) {
     try {
       // console.log(req.token);
       const user = await User.findById(req.user);
@@ -87,38 +117,38 @@ module.exports = {
     }
   },
 
-  async getUser(req, res) {
-    try {
-      const [user, token] = [req.user, req.token];
+  /**
+   * Find user in database using his unique username
+   * if targeted user === curent(the one who made request)
+   * then behaves like getUserById
+   */
 
-      const foundUser = await User.findOne({ username: req.params.id });
-      // .populate([
-      //   {
-      //     path: "projects",
-      //     model: "Project",
-      //     populate: [
-      //       {
-      //         path: "tasks",
-      //         model: "Task",
-      //       },
-      //       {
-      //         path: "participants.user",
-      //         model: "User",
-      //         select: "username",
-      //       },
-      //     ],
-      //   },
-      //   {
-      //     path: "tasks",
-      //     model: "Task",
-      //   },
-      // ])
-      // .exec();
-      const { _id: id, name, surname, email, tasks, projects } = foundUser;
-      const isGuest = user === foundUser._id;
+  async getUserByUsername(req, res) {
+    try {
+      const user = req.user;
+
+      const foundUser = await User.findOne({ username: req.params.username });
+      const {
+        _id: id,
+        name,
+        surname,
+        username,
+        email,
+        tasks,
+        projects,
+      } = foundUser;
+      const isGuest = user === id;
       const mapping = {
-        true: { id, name, surname },
-        false: { ...this.true, email, tasks, projects },
+        true: { id, username },
+        false: {
+          ...this.true,
+          name,
+          surname,
+          username,
+          email,
+          tasks,
+          projects,
+        },
       };
       const result = mapping[isGuest];
       res.status(200).json(result);
@@ -128,22 +158,9 @@ module.exports = {
     }
   },
 
-  async findUserByUsername(req, res) {
-    try {
-      const user = await User.findOne({ username: req.body.username });
-      const { _id: id, name, surname, username } = user;
-      const mapping = {
-        false: { id, name, surname, username },
-        true: {},
-      };
-      const status = !user ? 400 : 200;
-      const result = mapping[!user];
-      res.status(status).json(result);
-    } catch (err) {
-      console.log(err);
-      res.status(400).json("operation failed");
-    }
-  },
+  /**
+   * Finds user and deletes all tokens
+   */
 
   async logoutUserOnAllDevices(req, res) {
     try {

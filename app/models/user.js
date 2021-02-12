@@ -51,6 +51,19 @@ UserSchema.path("surname").validate(async function (surname) {
 }, "Wrong surname");
 
 /**
+ * pre-delete hook
+ */
+
+// UserSchema.pre("deleteOne", async function (next) {
+//   const user = await this.model.findOne(this.getQuery());
+//   console.log(user);
+//   await Task.deleteMany({ user: user._conditions._id });
+//   await Project.deleteMany({ owner: user._conditions._id });
+
+//   next();
+// });
+
+/**
  * Pre-save hook
  */
 UserSchema.pre("save", async function (next) {

@@ -39,12 +39,12 @@ module.exports = {
 
   async getUserByToken(token) {
     console.log(token.token);
-    return await fetch(`http://localhost:3000/users/bytoken`, {
+    return await fetch(`http://localhost:3000/users/get`, {
       method: "GET",
       headers: {
         Authorization: `Bearer ${token.token}`,
         "Content-Type": "application/json;charset=utf-8",
-        Origin: `http://localhost:3000/users/bytoken`,
+        Origin: `http://localhost:3000/users/get`,
       },
     });
   },

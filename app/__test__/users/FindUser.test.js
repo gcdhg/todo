@@ -64,7 +64,7 @@ describe("TODO", () => {
     });
     token = await token.json();
     // ? find user by username
-    let foundUser = await userFun.findUserByUsername(user2.username, token);
+    let foundUser = await userFun.getUserByUsername(user2.username, token);
     expect(foundUser.status).toBe(200);
     foundUser = await foundUser.json();
     expect(foundUser.username).toBe(user2.username);

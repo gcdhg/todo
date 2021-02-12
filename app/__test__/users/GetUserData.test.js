@@ -47,8 +47,6 @@ describe("TODO", () => {
   it("create user and get his data", async () => {
     // ? create user
     await userFun.createUser(user);
-    // ? get user from db
-
     // ? login user
     const login = await userFun.loginUser({
       email: user.email,
@@ -63,7 +61,7 @@ describe("TODO", () => {
     // ? get token from login
     token = await login.json();
     // ? get user data
-    const getUserData = await userFun.getUser(token.username, token);
+    const getUserData = await userFun.getUserByUsername(token.username, token);
     // ? check status code
     expect(getUserData.status).toBe(200);
   });

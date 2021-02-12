@@ -33,7 +33,7 @@ module.exports.createTask = async function (req, res) {
 };
 
 /**
- * Get all tasks created by user (including once in owned project)
+ * Get all tasks created by user (including those in owned project)
  */
 
 module.exports.showAllPrivateTasks = async function (req, res) {
@@ -66,6 +66,10 @@ module.exports.getTaskById = async function (req, res) {
   }
 };
 
+/**
+ * Edit task if user owns project or it's his private task
+ **/
+
 module.exports.editTask = async function (req, res) {
   try {
     const task = await Task.findOne({
@@ -84,6 +88,10 @@ module.exports.editTask = async function (req, res) {
     res.status(400).json(err);
   }
 };
+
+/**
+ * Delete task if user owns project or it's his private task
+ **/
 
 module.exports.deleteTask = async function (req, res) {
   try {
@@ -110,6 +118,10 @@ module.exports.deleteTask = async function (req, res) {
     res.status(400).json();
   }
 };
+
+/**
+ * Change task state
+ **/
 
 module.exports.changeState = async function (req, res) {
   try {

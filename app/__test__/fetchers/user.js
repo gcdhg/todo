@@ -38,12 +38,26 @@ module.exports = {
 
   async getUser(userId, token) {
     return await fetch(`http://localhost:3000/users/${userId}`, {
-      method: 'GET',
+      method: "GET",
       headers: {
         Authorization: `Bearer ${token.token}`,
         "Content-Type": "application/json;charset=utf-8",
         Origin: `http://localhost:3000/users/${userId}`,
       },
+    });
+  },
+
+  async getUserByUsername(username, token) {
+    return await fetch(`http://localhost:3000/users/username/${username}`, {
+      headers: {
+        Authorization: `Bearer ${token.token}`,
+        "Content-Type": "application/json;charset=utf-8",
+        Origin: `zhttp://localhost:3000/users/username/${username}`,
+      },
+      method: "GET",
+      // body: JSON.stringify({
+      //   username: username,
+      // }),
     });
   },
 
@@ -67,20 +81,6 @@ module.exports = {
       },
       method: "DELETE",
       body: JSON.stringify(user),
-    });
-  },
-
-  async findUserByUsername(username, token) {
-    return await fetch("http://localhost:3000/users/find", {
-      headers: {
-        Authorization: `Bearer ${token.token}`,
-        "Content-Type": "application/json;charset=utf-8",
-        Origin: "http://localhost:3000/users/find",
-      },
-      method: "POST",
-      body: JSON.stringify({
-        username: username,
-      }),
     });
   },
 
