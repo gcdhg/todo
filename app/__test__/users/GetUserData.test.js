@@ -2,8 +2,9 @@ const dotenv = require("dotenv").config();
 
 const jwt = require("jsonwebtoken");
 const mongoose = require("mongoose");
-const userFun = require("./fetchers/user");
-const taskfun = require("./fetchers/task");
+const userFun = require("../fetchers/user");
+const taskfun = require("../fetchers/task");
+const projFun = require("../fetchers/project");
 
 const User = mongoose.model("User");
 

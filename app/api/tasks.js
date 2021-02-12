@@ -1,11 +1,8 @@
 const mongoose = require("mongoose");
-// const { wrap: async } = require("co");
-// const { NotExtended } = require("http-errors");
 const _ = require("lodash");
 
 const Task = mongoose.model("Task");
 const User = mongoose.model("User");
-const Project = mongoose.model("Project");
 
 /**
  * Create task if user owns project or it's his private task
@@ -14,14 +11,16 @@ module.exports.createTask = async function (req, res) {
   try {
     const { title, planedAt, projectId } = req.body;
     const user = await User.findById(req.user);
-
     if (_.has(req.body, "projectId")) {
-      isValid = user.owned.some((project) => project === req.body.projectId);
-      const task = isValid
-        ? new Task({ title, planedAt, user: req.user, projectId })
-        : "No rights to create tasks in this project";
-      const status = isValid ? 201 : 401;
-      return res.status(status).json(task);
+      const isValid = user.owned.some((project) => project == projectId);
+      if (isValid) {
+        const task = new Task({ title, planedAt, user: req.user, projectId });
+        await task.save();
+        return res.status(201).json(task);
+      }
+      return res
+        .status(401)
+        .json({ error: "No rights to create tasks in this project" });
     }
     const task = new Task({ title, planedAt, user: req.user });
     user.tasks = [...user.tasks, task._id];

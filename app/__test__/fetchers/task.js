@@ -19,20 +19,6 @@ module.exports = {
       }),
     });
   },
-  //   await fetch("http://localhost:3000/tasks/create", {
-  //         headers: {
-  //           Authorization: `Bearer ${context.getters.RETURN_TOKEN}`,
-  //           "Content-Type": "application/json;charset=utf-8",
-  //           Origin: "http://localhost:3000/tasks/create",
-  //         },
-  //         method: "POST",
-  //         body: JSON.stringify({
-  //           title: newTask.title,
-  //           planedAt: newTask.planedAt,
-  //           projectId: newTask.project,
-  //           "state.currentState": newTask.state,
-  //         }),
-  //       })
 
   async getAllPrivateTasks(token) {
     return await fetch("http://localhost:3000/tasks/get", {

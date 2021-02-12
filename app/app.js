@@ -16,7 +16,6 @@ const MongoStore = require("connect-mongo")(session);
 const taskRouter = require("./routes/tasks");
 const usersRouter = require("./routes/users");
 const projectsRouter = require("./routes/projects");
-const commentsRouter = require("./routes/comments");
 const { signedCookie } = require("cookie-parser");
 
 // database connection
@@ -69,7 +68,6 @@ app.options("*", cors());
 app.use("/tasks", taskRouter);
 app.use("/users", usersRouter);
 app.use("/projects", projectsRouter);
-app.use("/comments", commentsRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

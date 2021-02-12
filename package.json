@@ -10,6 +10,7 @@
   },
   "_moduleAliases": {
     "@root": "./app",
+    "@Test": "./app/__test__",
     "@Api": "./app/api",
     "@Models": "./app/models",
     "@Routes": "./app/routes",

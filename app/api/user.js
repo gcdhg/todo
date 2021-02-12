@@ -6,8 +6,6 @@ const User = mongoose.model("User");
 const Task = mongoose.model("Task");
 const Project = mongoose.model("Project");
 
-const Schema = mongoose.Schema;
-
 module.exports = {
   async createUser(req, res) {
     try {
@@ -133,9 +131,9 @@ module.exports = {
   async findUserByUsername(req, res) {
     try {
       const user = await User.findOne({ username: req.body.username });
-      const { _id: id, name, surname } = user;
+      const { _id: id, name, surname, username } = user;
       const mapping = {
-        false: { id, name, surname },
+        false: { id, name, surname, username },
         true: {},
       };
       const status = !user ? 400 : 200;

@@ -2,8 +2,9 @@ const dotenv = require("dotenv").config();
 
 const jwt = require("jsonwebtoken");
 const mongoose = require("mongoose");
-const userFun = require("./fetchers/user");
-const taskFun = require("./fetchers/task");
+const userFun = require("../fetchers/user");
+const taskfun = require("../fetchers/task");
+const projFun = require("../fetchers/project");
 
 const User = mongoose.model("User");
 const Task = mongoose.model("Task");
@@ -58,13 +59,13 @@ describe("TODO", () => {
     token = token.token;
     let arr = [];
     for (let i = 0; i < 3; i += 1) {
-      const task = await taskFun.createTask(token, {
+      const task = await taskfun.createTask(token, {
         title: "new todo private tasks",
       });
       expect(task.status).toBe(201);
     }
     // ? get all tasks
-    const statusCreateTask = await taskFun.getAllPrivateTasks(token);
+    const statusCreateTask = await taskfun.getAllPrivateTasks(token);
     expect(statusCreateTask.status).toBe(200);
     const json = await statusCreateTask.json();
     const userDB = await User.findOne({

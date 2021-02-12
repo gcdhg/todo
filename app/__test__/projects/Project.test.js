@@ -1,8 +1,9 @@
 const dotenv = require("dotenv").config();
 
 const mongoose = require("mongoose");
-const userFun = require("./fetchers/user");
-const taskfun = require("./fetchers/task");
+const userFun = require("../fetchers/user");
+const taskfun = require("../fetchers/task");
+const projFun = require("../fetchers/project");
 
 const Project = mongoose.model("Project");
 const Task = mongoose.model("Task");
@@ -13,13 +14,12 @@ const User = mongoose.model("User");
 describe("TODO", () => {
   let database;
   let token;
-  let id;
 
   const user = {
-    name: "todoman",
-    username: "todoman",
-    email: "todoman@gmail.com",
-    password: "todoman",
+    name: "todoman1",
+    username: "todoman1",
+    email: "todoman1@gmail.com",
+    password: "todo4man",
   };
 
   beforeAll(async () => {
@@ -39,54 +39,54 @@ describe("TODO", () => {
   });
 
   afterAll(async () => {
-    await User.deleteOne({
+    await User.deleteMany({
       email: user.email,
     });
-    await Task.deleteOne({ _id: id });
+    await Project.deleteMany();
+
     await database.close();
   });
 
   it("create user and create, edit, delete todo", async () => {
     // ? create user
-    await userFun.createUser(user);
-    const dbUser = await User.findOne({ username: user.username });
-    id = dbUser._id;
+    const statusCreateUser = await userFun.createUser(user);
+    const userCreated = await User.findOne({
+      username: user.username,
+    });
     // ? login user
     const statusLogin = await userFun.loginUser({
       email: user.email,
       password: user.password,
     });
     const tokenLogin = await statusLogin.json();
-    // ? create task
-    const newTodoReq = await taskfun.createTask(tokenLogin.token, {
-      title: "new todo",
+    // ? create project
+    const newProjReq = await projFun.createProject(tokenLogin.token, {
+      title: "new project",
     });
-    const createdTask = await Task.find({ title: "new todo" });
-    expect(newTodoReq.status).toBe(201);
-    expect(createdTask[0]).toMatchObject({ title: "new todo" });
-    // ? edit Task
-    const editTask = await taskfun.editTask(
+    const createdProject = await Project.find({ title: "new project" });
+    expect(newProjReq.status).toBe(201);
+    expect(createdProject).toMatchObject([{ title: "new project" }]);
+    // ? edit Project
+    const editProj = await projFun.editOneprojectById(
       tokenLogin.token,
-      createdTask[0]._id,
+      createdProject[0]._id,
       {
-        title: "very new todo",
+        title: "very new todo project",
       }
     );
-    expect(editTask.status).toBe(201);
-    // ? get Task by id
-    const newTask = await newTodoReq.json();
-    const getTaskById = await taskfun.getTaskById(
+    expect(editProj.status).toBe(201);
+    // ? get Project by id
+    const newProj = await newProjReq.json();
+    const getProjById = await projFun.getOneprojectById(
       tokenLogin.token,
-      newTask._id
+      newProj._id
     );
-    expect(getTaskById.status).toBe(200);
-    const getTask = await getTaskById.json();
-    expect(getTask).toMatchObject({ title: "very new todo" });
+    expect(getProjById.status).toBe(200);
     // ? delete Task
-    const deleteTask = await taskfun.deleteTask(
+    const deleteProject = await projFun.deleteProject(
       tokenLogin.token,
-      createdTask[0]._id
+      newProj._id
     );
-    expect(deleteTask.status).toBe(201);
+    expect(deleteProject.status).toBe(201);
   });
 });

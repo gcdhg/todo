@@ -19,7 +19,6 @@ const TaskSchema = new Schema({
   planedAt: { type: Date },
   editedAt: { type: Date, default: null },
   completedAt: { type: Date, default: null },
-  comments: [{ comment: { type: Schema.ObjectId, ref: "Comment" } }],
 });
 
 TaskSchema.path("title").required(true, "Title connot be blank");

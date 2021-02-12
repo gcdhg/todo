@@ -66,6 +66,17 @@ module.exports = {
     });
   },
 
+  async getUserProjects(token) {
+    return await fetch("http://localhost:3000/projects/get", {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json;charset=utf-8",
+        Origin: "http://localhost:3000/projects/get",
+      },
+    });
+  },
+
   async addUserToProject(token, newUser) {
     return await fetch("http://localhost:3000/projects/add", {
       body: JSON.stringify(newUser),

@@ -1,8 +1,9 @@
 const dotenv = require("dotenv").config();
 
 const mongoose = require("mongoose");
-const userFun = require("./fetchers/user");
-const taskfunctions = require("./fetchers/task");
+const userFun = require("../fetchers/user");
+const taskfun = require("../fetchers/task");
+const projFun = require("../fetchers/project");
 
 const Project = mongoose.model("Project");
 const Task = mongoose.model("Task");
@@ -81,7 +82,7 @@ describe("User", () => {
     const logoutOnAllFetch = await userFun.logoutUserOnAllDevices(token);
     expect(logoutOnAllFetch.status).toBe(201);
     // ? check logout
-    const createTask = await taskfunctions.createTask(
+    const createTask = await taskfun.createTask(
       { token },
       {
         title: "must be falty",

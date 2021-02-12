@@ -1,7 +1,4 @@
 const mongoose = require("mongoose");
-const { wrap: async } = require("co");
-const { NotExtended } = require("http-errors");
-const { model, findById } = require("../models/user");
 const Task = require("../models/tasks");
 
 const Project = mongoose.model("Project");
@@ -9,9 +6,9 @@ const User = mongoose.model("User");
 
 module.exports.getUserProject = async function (req, res) {
   try {
-    const user = await User.findById(req.user).populate("projects").exec();
-    const status = !user ? 400 : 200;
-    res.status(status).json(user.projects || {});
+    const projects = await Project.find({ owner: req.user });
+    const status = !projects ? 400 : 200;
+    res.status(status).json(projects || {});
   } catch (err) {
     console.log(err);
     res.status(400).json("project not found");
@@ -73,8 +70,8 @@ module.exports.createProject = async function (req, res) {
       tasks: [],
     });
     const saveProject = project.save();
-    const [userUpd, ] = await Promise.all([userProm, saveProject]);
-    userUpd.owned.push(project._id);
+    const [userUpd] = await Promise.all([userProm, saveProject]);
+    userUpd.owned = [...userUpd.owned, project._id];
     await userUpd.save();
     res.status(201).json(project);
   } catch (err) {
