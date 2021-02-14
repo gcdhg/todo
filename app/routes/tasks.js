@@ -5,8 +5,8 @@ const Todo = require("@Models/tasks.js");
 const User = require("@Models/user.js");
 const Project = require("@Models/projects.js");
 
-const tasks = require("../api/tasks");
-const auth = require("../config/middleware/auth.js");
+const tasks = require("@Api/tasks");
+const auth = require("@Middleware/auth.js");
 
 router.get("/get", auth, tasks.showAllPrivateTasks);
 router.post("/create", auth, tasks.createTask);

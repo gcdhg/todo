@@ -7,8 +7,6 @@ const Contributor = require("@Entitty/Contributor");
 const Project = require("@Models/projects");
 // lodash
 const _ = require("lodash");
-// errors
-// const InsufficientRights = require("@Error/InsufficientRights");
 
 const entity = async (req, _res, next) => {
   try {

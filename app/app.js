@@ -12,12 +12,10 @@ const cors = require("cors");
 const session = require("express-session");
 const MongoStore = require("connect-mongo")(session);
 
-// const err = require("@Middleware/errors");
-
 // routes
-const taskRouter = require("./routes/tasks");
-const usersRouter = require("./routes/users");
-const projectsRouter = require("./routes/projects");
+const taskRouter = require("@Routes/tasks");
+const usersRouter = require("@Routes/users");
+const projectsRouter = require("@Routes/projects");
 const { signedCookie } = require("cookie-parser");
 
 // database connection

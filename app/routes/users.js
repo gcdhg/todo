@@ -5,8 +5,8 @@ const Todo = require("@Models/tasks.js");
 const User = require("@Models/user.js");
 const Project = require("@Models/projects.js");
 
-const userApi = require("../api/user");
-const auth = require("../config/middleware/auth.js");
+const userApi = require("@Api/user");
+const auth = require("@Middleware/auth.js");
 
 router.post("/create", userApi.createUser);
 router.post("/login", userApi.loginUser);

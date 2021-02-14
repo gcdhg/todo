@@ -1,8 +1,11 @@
 const mongoose = require("mongoose");
 const _ = require("lodash");
 
-const Task = mongoose.model("Task");
+// const Task = mongoose.model("Task");
+// const User = mongoose.model("User");
+
 const User = mongoose.model("User");
+const Task = mongoose.model("Task");
 
 /**
  * Create task if user owns project or it's his private task

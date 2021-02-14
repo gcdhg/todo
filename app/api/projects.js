@@ -1,11 +1,12 @@
 const mongoose = require("mongoose");
 
-const Task = require("@Models/tasks");
-const Project = require("@Models/projects");
-const User = require("@Models/user");
+// const Task = require("@Models/tasks");
+// const Project = require("@Models/projects");
+// const User = require("@Models/user");
 
-// const Project = mongoose.model("Project");
-// const User = mongoose.model("User");
+const User = mongoose.model("User");
+const Task = mongoose.model("Task");
+const Project = mongoose.model("Project");
 
 module.exports.getUserProjects = async function (req, res, next) {
   try {

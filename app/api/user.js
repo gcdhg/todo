@@ -6,6 +6,10 @@ const User = mongoose.model("User");
 const Task = mongoose.model("Task");
 const Project = mongoose.model("Project");
 
+// const Task = require("@Models/tasks");
+// const Project = require("@Models/projects");
+// const User = require("@Models/user");
+
 module.exports = {
   /**
    * Create user. Get data from requst body and store it in database

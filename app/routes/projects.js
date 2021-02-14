@@ -5,9 +5,9 @@ const Todo = require("@Models/tasks.js");
 const User = require("@Models/user.js");
 const Project = require("@Models/projects.js");
 
-const projects = require("../api/projects");
+const projects = require("@Api/projects");
 
-const auth = require("../config/middleware/auth.js");
+const auth = require("@Middleware/auth.js");
 
 router.get("/all", auth, projects.getUserProjects);
 router.get("/:project", auth, projects.getOneProject);
