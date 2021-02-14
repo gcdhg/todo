@@ -7,18 +7,18 @@ const User = require("@Models/user");
 // const Project = mongoose.model("Project");
 // const User = mongoose.model("User");
 
-module.exports.getUserProjects = async function (req, res) {
+module.exports.getUserProjects = async function (req, res, next) {
   try {
     const projects = await Project.find({ owner: req.user });
     const status = !projects ? 400 : 200;
     res.status(status).json(projects || {});
   } catch (err) {
-    console.log(err);
-    res.status(400).json("project not found");
+    err.status = err.status || 404;
+    next(err);
   }
 };
 
-module.exports.getOneProject = async function (req, res) {
+module.exports.getOneProject = async function (req, res, next) {
   try {
     const project = await Project.findOne({
       _id: req.params.project,
@@ -43,8 +43,8 @@ module.exports.getOneProject = async function (req, res) {
       // .exec();
     res.status(200).json(project);
   } catch (err) {
-    console.log(err);
-    res.status(400).json("error");
+    err.status = err.status || 404;
+    next(err);
   }
 };
 
@@ -55,8 +55,8 @@ module.exports.editOneProject = async function (req, res) {
     });
     res.status(201).json(project);
   } catch (err) {
-    console.log(err);
-    res.status(400).json("error");
+    err.status = err.status || 404;
+    next(err);
   }
 };
 
@@ -78,8 +78,8 @@ module.exports.createProject = async function (req, res) {
     await userUpd.save();
     res.status(201).json(project);
   } catch (err) {
-    console.log(err);
-    res.status(400).json("project creation failed");
+    err.status = err.status || 400;
+    next(err);
   }
 };
 
@@ -98,8 +98,8 @@ module.exports.deleteProject = async function (req, res) {
     }
     res.status(201).json();
   } catch (err) {
-    console.log(err);
-    res.status(400).json("project deletion failed");
+    err.status = err.status || 400;
+    next(err);
   }
 };
 

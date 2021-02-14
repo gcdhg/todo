@@ -7,7 +7,7 @@ const User = mongoose.model("User");
 /**
  * Create task if user owns project or it's his private task
  **/
-module.exports.createTask = async function (req, res) {
+module.exports.createTask = async function (req, res, next) {
   try {
     const { title, planedAt, projectId } = req.body;
     const user = await User.findById(req.user);
@@ -27,8 +27,8 @@ module.exports.createTask = async function (req, res) {
     await Promise.all([task.save(), user.save()]);
     res.status(201).json(task);
   } catch (err) {
-    console.log(err);
-    res.status(400).json();
+    err.status = err.status || 400;
+    next(err);
   }
 };
 
@@ -36,13 +36,13 @@ module.exports.createTask = async function (req, res) {
  * Get all tasks created by user (including those in owned project)
  */
 
-module.exports.showAllPrivateTasks = async function (req, res) {
+module.exports.showAllPrivateTasks = async function (req, res, next) {
   try {
     const tasks = await Task.find({ user: req.user });
     res.status(200).json(tasks);
   } catch (err) {
-    console.log(err);
-    res.status(400).json(err);
+    err.status = err.status || 400;
+    next(err);
   }
 };
 
@@ -51,7 +51,7 @@ module.exports.showAllPrivateTasks = async function (req, res) {
  * and if it's project task he can comment it
  */
 
-module.exports.getTaskById = async function (req, res) {
+module.exports.getTaskById = async function (req, res, next) {
   try {
     const task = await Task.findOne({
       _id: req.params.id,
@@ -61,8 +61,8 @@ module.exports.getTaskById = async function (req, res) {
     const status = task === undefined ? 402 : 200;
     res.status(status).json(task);
   } catch (err) {
-    console.log(err);
-    res.status(400);
+    err.status = err.status || 400;
+    next(err);
   }
 };
 
@@ -70,7 +70,7 @@ module.exports.getTaskById = async function (req, res) {
  * Edit task if user owns project or it's his private task
  **/
 
-module.exports.editTask = async function (req, res) {
+module.exports.editTask = async function (req, res, next) {
   try {
     const task = await Task.findOneAndUpdate(
       {
@@ -83,8 +83,8 @@ module.exports.editTask = async function (req, res) {
     );
     res.status(201).json(task);
   } catch (err) {
-    console.log(err);
-    res.status(400).json(err);
+    err.status = err.status || 400;
+    next(err);
   }
 };
 
@@ -92,7 +92,7 @@ module.exports.editTask = async function (req, res) {
  * Delete task if user owns project or it's his private task
  **/
 
-module.exports.deleteTask = async function (req, res) {
+module.exports.deleteTask = async function (req, res, next) {
   try {
     const user = await User.findById(req.user);
     const { tasks, owner } = user;
@@ -113,8 +113,8 @@ module.exports.deleteTask = async function (req, res) {
       res.status(402).json();
     }
   } catch (err) {
-    console.log(err);
-    res.status(400).json();
+    err.status = err.status || 400;
+    next(err);
   }
 };
 
@@ -122,7 +122,7 @@ module.exports.deleteTask = async function (req, res) {
  * Change task state
  **/
 
-module.exports.changeState = async function (req, res) {
+module.exports.changeState = async function (req, res, next) {
   try {
     const user = await User.findById(req.user);
     const { tasks, owner, projects } = user;
@@ -142,7 +142,7 @@ module.exports.changeState = async function (req, res) {
       res.status(402).json();
     }
   } catch (err) {
-    console.log(err);
-    res.status(400);
+    err.status = err.status || 400;
+    next(err);
   }
 };

@@ -80,6 +80,6 @@ describe("TODO", () => {
     // console.log(json);
     const tasks = json.map((i) => i._id);
     const dbIds = userDB.tasks.map((i) => i._id);
-    expect(dbIds.join("")).toBe(tasks.join(""));
+    expect(dbIds.join("").toString()).toBe(tasks.join("").toString());
   });
 });

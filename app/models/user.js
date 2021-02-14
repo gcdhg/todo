@@ -106,9 +106,9 @@ UserSchema.statics.findByRecordsAndDelete = async function (email, password) {
 UserSchema.statics.destroyToken = async function (id, token) {
   const user = await User.findOne({ _id: id, "tokens.token": token });
   if (!user) {
-    throw "no such token";
+    throw new Error({ status: 401 });
   }
-  const newTokens = user.tokens;
+  // const newTokens = user.tokens;
   await user.tokens.splice(user.tokens.indexOf(token), 1);
   // await User.findOneAndUpdate({ email: user.email }, { tokens: newTokens });
   await user.save();

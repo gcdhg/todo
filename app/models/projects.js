@@ -27,7 +27,7 @@ ProjectSchema.pre("save", async function (next) {
       {
         $push: {
           projects: project._id,
-          role: 'owner',
+          role: "owner",
           owned: project._id,
         },
       }
@@ -69,7 +69,7 @@ ProjectSchema.statics.addUserToProject = async function (
     { _id: projectId },
     {
       $push: {
-        participants: {
+        contributors: {
           users: userId,
           role: userRole,
         },
@@ -92,10 +92,10 @@ ProjectSchema.statics.deleteUserFromProject = async function (
 ) {
   const project = await Project.findOne({ _id: projectId });
 
-  const userIndex = await project.participants.findIndex(
+  const userIndex = await project.contributors.findIndex(
     (obj) => obj.users === userId
   );
-  await project.participants.splice(project.participants.indexOf(userIndex), 1);
+  await project.contributors.splice(project.contributors.indexOf(userIndex), 1);
   await project.update();
 
   return true;
@@ -104,13 +104,13 @@ ProjectSchema.statics.deleteUserFromProject = async function (
 ProjectSchema.statics.changeRoleOfTheUser = async function (
   projectId,
   userId,
-  userRole = "worker"
+  userRole = "contributor"
 ) {
   const project = await Project.findOne({ _id: projectId });
-  const userIndex = await project.participants.findIndex(
+  const userIndex = await project.contributors.findIndex(
     (obj) => obj.users === userId
   );
-  project.participants[userIndex].role = userRole;
+  project.contributors[userIndex].role = userRole;
 
   await project.update();
 };
@@ -118,7 +118,7 @@ ProjectSchema.statics.changeRoleOfTheUser = async function (
 ProjectSchema.statics.deleteProject = async function (projectId) {
   await Project.remove({ _id: projectId }, (err) => {
     if (err) {
-      throw "DB error: " + err;
+      throw new Error({ status: 404 });
     }
   });
 

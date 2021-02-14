@@ -6,8 +6,6 @@ const User = mongoose.model("User");
 const Task = mongoose.model("Task");
 const Project = mongoose.model("Project");
 
-// const dbErr = require('@Error/DatabaseError');
-
 module.exports = {
   /**
    * Create user. Get data from requst body and store it in database
@@ -20,8 +18,7 @@ module.exports = {
       await user.save();
       res.status(201).json({ status: "user created" });
     } catch (err) {
-      err.status = 422;
-      // res.status(400).json(err);
+      err.status = err.status || 422;
       next(err);
     }
   },
@@ -45,9 +42,7 @@ module.exports = {
         token: token,
       });
     } catch (err) {
-      err.status = 401;
-      // console.log(err);
-      // res.status(401).json(err);
+      err.status = err.status || 401;
       next(err);
     }
   },
@@ -59,7 +54,7 @@ module.exports = {
    * Find user and delete
    */
 
-  async deleteUser(req, res) {
+  async deleteUser(req, res, next) {
     try {
       const { email, password } = req.body;
       const user = await User.findByRecords(email, password);
@@ -71,8 +66,8 @@ module.exports = {
       const fel = await Promise.all([task, project, isDeleted]);
       res.status(201).json();
     } catch (err) {
-      console.log(err);
-      res.status(400).json(err);
+      err.status = err.status || 400;
+      next(err);
     }
   },
 
@@ -92,7 +87,7 @@ module.exports = {
    * if there is no token in body then delete token used to auth in the request
    */
 
-  async logoutUserOnce(req, res) {
+  async logoutUserOnce(req, res, next) {
     try {
       const token = _.has(req.body, "token") ? req.body.token : req.token;
       const id = req.user;
@@ -100,8 +95,8 @@ module.exports = {
       const status = isDestroied ? 201 : 400;
       res.status(status).json();
     } catch (err) {
-      // console.log(err);
-      res.status(401).json("logout failed");
+      err.status = err.status || 401;
+      next(err);
     }
   },
 
@@ -111,14 +106,14 @@ module.exports = {
    * and then full user data returned in response
    */
 
-  async getUserById(req, res) {
+  async getUserById(req, res, next) {
     try {
       // console.log(req.token);
       const user = await User.findById({ _id: req.params.id });
       res.status(200).json(user);
     } catch (err) {
-      console.log(err);
-      res.status(404).json();
+      err.status = err.status || 404;
+      next(err);
     }
   },
 
@@ -128,14 +123,14 @@ module.exports = {
    * and then full user data returned in response
    */
 
-  async getUserByToken(req, res) {
+  async getUserByToken(req, res, next) {
     try {
       // console.log(req.token);
       const user = await User.findById(req.user);
       res.status(200).json(user);
     } catch (err) {
-      console.log(err);
-      res.status(404).json();
+      err.status = err.status || 404;
+      next(err);
     }
   },
 
@@ -145,7 +140,7 @@ module.exports = {
    * then behaves like getUserById
    */
 
-  async getUserByUsername(req, res) {
+  async getUserByUsername(req, res, next) {
     try {
       const user = req.user;
 
@@ -175,8 +170,8 @@ module.exports = {
       const result = mapping[isGuest];
       res.status(200).json(result);
     } catch (err) {
-      console.log(err);
-      res.status(404).json();
+      err.status = err.status || 404;
+      next(err);
     }
   },
 
@@ -184,7 +179,7 @@ module.exports = {
    * Finds user and deletes all tokens
    */
 
-  async logoutUserOnAllDevices(req, res) {
+  async logoutUserOnAllDevices(req, res, next) {
     try {
       const [token, id] = [req.token, req.user];
 
@@ -192,8 +187,8 @@ module.exports = {
       const status = isDestroied ? 201 : 400;
       res.status(status).json();
     } catch (err) {
-      console.log(err);
-      res.status(400).json("logout failed");
+      err.status = err.status || 400;
+      next(err);
     }
   },
 };

@@ -39,7 +39,7 @@ TaskSchema.pre("save", async function (next) {
 
     next();
   } else {
-    throw "wrong data";
+    throw new Error({ status: 422 });
   }
 });
 
