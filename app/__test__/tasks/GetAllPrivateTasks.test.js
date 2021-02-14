@@ -1,13 +1,14 @@
 const dotenv = require("dotenv").config();
 
-const jwt = require("jsonwebtoken");
-const mongoose = require("mongoose");
 const userFun = require("../fetchers/user");
 const taskfun = require("../fetchers/task");
 const projFun = require("../fetchers/project");
 
-const User = mongoose.model("User");
-const Task = mongoose.model("Task");
+const mongoose = require("mongoose");
+
+const Project = require("../../models/projects");
+const User = require("../../models/user");
+const Task = require("../../models/tasks");
 
 // const fetch = require("node-fetch");
 

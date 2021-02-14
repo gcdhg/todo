@@ -1,15 +1,14 @@
 const dotenv = require("dotenv").config();
 
-const mongoose = require("mongoose");
 const userFun = require("../fetchers/user");
 const taskfun = require("../fetchers/task");
 const projFun = require("../fetchers/project");
 
-const Project = mongoose.model("Project");
-const Task = mongoose.model("Task");
-const User = mongoose.model("User");
+const mongoose = require("mongoose");
 
-// const fetch = require("node-fetch");
+const Project = require("../../models/projects");
+const User = require("../../models/user");
+const Task = require("../../models/tasks");
 
 describe("TODO", () => {
   let database;
@@ -65,7 +64,7 @@ describe("TODO", () => {
     });
     const createdProject = await Project.find({ title: "new project" });
     expect(newProjReq.status).toBe(201);
-    expect(createdProject).toMatchObject([{ title: "new project" }]);
+    expect(createdProject[0]).toMatchObject({ title: "new project" });
     // ? edit Project
     const editProj = await projFun.editOneprojectById(
       tokenLogin.token,

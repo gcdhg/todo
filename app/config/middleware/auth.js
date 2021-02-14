@@ -1,4 +1,6 @@
 const jwt = require("jsonwebtoken");
+// const mongoose = require("mongoose");
+// const User = mongoose.model("User");
 const User = require("@Models/user");
 
 const auth = async (req, res, next) => {
@@ -12,13 +14,14 @@ const auth = async (req, res, next) => {
     }
     req.user = user._id;
     req.token = token;
-
     next();
   } catch (err) {
     // console.log(err);
-    return res
-      .status(401)
-      .json({ error: "Not authorized to access this resource" });
+    err.status = 401;
+    next(err);
+    // return res
+    //   .status(401)
+    //   .json({ error: "Not authorized to access this resource" });
   }
 };
 module.exports = auth;

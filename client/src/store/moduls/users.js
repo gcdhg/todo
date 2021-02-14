@@ -35,6 +35,7 @@ export default {
         const res = await userFetch.loginUser(user);
         if (res.status === (200 || 201)) {
           const json = await res.json();
+          console.log(res.Session);
           context.commit("UPDATE_TOKEN", json.token);
           await context.dispatch("GET_USER_DATA");
           return true;
@@ -47,7 +48,7 @@ export default {
     },
 
     async GET_USER_DATA(context) {
-      const res = await userFetch.getUserByToken({
+      const res = await userFetch.getUser({
         token: context.getters.RETURN_TOKEN,
       });
       if (res.status === 200) {
@@ -67,8 +68,8 @@ export default {
         token
       );
       if (res.status == 201) {
-        localStorage.removeItem("token");
-        context.commit("UPDATE_AUTH");
+        // localStorage.removeItem("token");
+        await context.dispatch("GET_USER_DATA");
       }
     },
 

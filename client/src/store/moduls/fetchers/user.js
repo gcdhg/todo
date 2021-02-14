@@ -26,7 +26,18 @@ module.exports = {
     });
   },
 
-  async getUser(userId, token) {
+  async getUser(token) {
+    return await fetch(`http://localhost:3000/users/token`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token.token}`,
+        "Content-Type": "application/json;charset=utf-8",
+        Origin: `http://localhost:3000/users/token`,
+      },
+    });
+  },
+
+  async getUserById(userId, token) {
     return await fetch(`http://localhost:3000/users/${userId}`, {
       method: "GET",
       headers: {
@@ -37,14 +48,24 @@ module.exports = {
     });
   },
 
-  async getUserByToken(token) {
-    console.log(token.token);
-    return await fetch(`http://localhost:3000/users/get`, {
-      method: "GET",
+  async getUserByUsername(username, token) {
+    return await fetch(`http://localhost:3000/users/username/${username}`, {
       headers: {
         Authorization: `Bearer ${token.token}`,
         "Content-Type": "application/json;charset=utf-8",
-        Origin: `http://localhost:3000/users/get`,
+        Origin: `zhttp://localhost:3000/users/username/${username}`,
+      },
+      method: "GET",
+    });
+  },
+
+  async getAllPrivateTasks(token) {
+    return await fetch("http://localhost:3000/tasks/get", {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json;charset=utf-8",
+        Origin: "http://localhost:3000/tasks/get",
       },
     });
   },
@@ -61,21 +82,8 @@ module.exports = {
     });
   },
 
-  async findUserByUsername(username, token) {
-    return await fetch("http://localhost:3000/users/find", {
-      headers: {
-        Authorization: `Bearer ${token.token}`,
-        "Content-Type": "application/json;charset=utf-8",
-        Origin: "http://localhost:3000/users/find",
-      },
-      method: "POST",
-      body: JSON.stringify({
-        username: username,
-      }),
-    });
-  },
-
-  async logoutUserOnce(token, bodyToken) {
+  // async logoutUserOnce(token, bodyToken = undefined) {
+  async logoutUserOnce(token) {
     return await fetch("http://localhost:3000/users/logout", {
       headers: {
         Authorization: `Bearer ${token.token}`,
@@ -83,9 +91,9 @@ module.exports = {
         Origin: "http://localhost:3000/users/logout",
       },
       method: "DELETE",
-      body: JSON.stringify({
-        token: bodyToken === undefined ? undefined : bodyToken.token,
-      }),
+      // body: JSON.stringify({
+      //   token: bodyToken === undefined ? undefined : bodyToken.token,
+      // }),
     });
   },
 
@@ -97,6 +105,7 @@ module.exports = {
         Origin: "http://localhost:3000/users/logout/all",
       },
       method: "PUT",
+      body: JSON.stringify(),
     });
   },
 };

@@ -5,8 +5,8 @@ const validator = require("validator");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 
-const Task = require("./tasks.js");
-const Project = require("./projects.js");
+// const Task = require("./tasks.js");
+// const Project = require("./projects.js");
 
 const Schema = mongoose.Schema;
 
@@ -84,16 +84,17 @@ UserSchema.methods.generateAuthToken = async function () {
 };
 
 UserSchema.statics.findByRecords = async function (email, password) {
-  // Search for a user by email and password.
-  const user = await User.findOne({ email });
-  if (!user) {
-    throw Error("Invalid login Records");
+  try {
+    const user = await User.findOne({ email });
+    const isPasswordMatch = await bcrypt.compare(password, user.password);
+    if (isPasswordMatch) {
+      return user;
+    }
+    throw new Error();
+  } catch (err) {
+    err.status = 401;
+    throw err;
   }
-  const isPasswordMatch = await bcrypt.compare(password, user.password);
-  if (!isPasswordMatch) {
-    throw Error("Invalid login Records");
-  }
-  return user;
 };
 
 UserSchema.statics.findByRecordsAndDelete = async function (email, password) {

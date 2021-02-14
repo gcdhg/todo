@@ -1,13 +1,3 @@
-const { model } = require("mongoose");
-
-const dotenv = require("dotenv").config();
-
-const mongoose = require("mongoose");
-
-const Project = require("../../models/projects");
-const Task = require("../../models/tasks");
-const User = mongoose.model("User");
-
 const fetch = require("node-fetch");
 
 module.exports = {

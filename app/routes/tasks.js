@@ -1,9 +1,9 @@
 const express = require("express");
 const router = express.Router();
 
-const Todo = require("../models/tasks.js");
-const User = require("../models/user.js");
-const Project = require("../models/projects.js");
+const Todo = require("@Models/tasks.js");
+const User = require("@Models/user.js");
+const Project = require("@Models/projects.js");
 
 const tasks = require("../api/tasks");
 const auth = require("../config/middleware/auth.js");

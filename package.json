@@ -14,7 +14,8 @@
     "@Api": "./app/api",
     "@Models": "./app/models",
     "@Routes": "./app/routes",
-    "@Middleware": "./app/config/middleware"
+    "@Middleware": "./app/config/middleware",
+    "@Entitty": "./app/entities"
   },
   "dependencies": {
     "bcrypt": "^5.0.0",
@@ -31,7 +32,7 @@
     "method-override": "^3.0.0",
     "module-alias": "^2.2.2",
     "mongodb": "^3.6.3",
-    "mongoose": "^5.11.14",
+    "mongoose": "^5.11.15",
     "morgan": "^1.10.0",
     "validator": "^13.1.17"
   },

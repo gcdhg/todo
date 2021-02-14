@@ -11,7 +11,7 @@ const ProjectSchema = new Schema({
   createdAt: { type: Date, default: Date.now() },
   owner: { type: Schema.ObjectId, ref: "User", required: true },
   tasks: [{ type: Schema.ObjectId, ref: "Task" }],
-  participants: [
+  contributors: [
     {
       user: { type: Schema.ObjectId, ref: "User" },
       role: { type: String, default: "worker" },
@@ -19,42 +19,42 @@ const ProjectSchema = new Schema({
   ],
 });
 
-// ProjectSchema.pre("save", async function (next) {
-//   const project = this;
+ProjectSchema.pre("save", async function (next) {
+  const project = this;
+  if (project.isNew) {
+    await User.findOneAndUpdate(
+      { _id: project.owner },
+      {
+        $push: {
+          projects: project._id,
+          role: 'owner',
+          owned: project._id,
+        },
+      }
+    );
+  } else {
+    next();
+  }
+});
 
-//   if (project.isNew) {
-//     await User.findOneAndUpdate(
-//       { _id: project.owner },
-//       {
-//         $push: {
-//           projects: project._id,
-//           role: "owner",
-//         },
-//       }
-//     );
-//   } else {
-//     next();
-//   }
-// });
+ProjectSchema.pre("remove", async function (next) {
+  const project = this;
 
-// ProjectSchema.pre("remove", async function (next) {
-//   const project = this;
+  await Task.deleteMany({ project: project._id });
 
-//   await Task.deleteMany({ project: project._id });
+  const user = await User.findById(project.owner);
 
-//   const user = await User.findById(project.owner);
+  const newProjectsArr = await user.projects.splice(
+    user.projects.indexOf(project._id),
+    1
+  );
 
-//   const newProjectsArr = await user.projects.splice(
-//     user.projects.indexOf(project._id),
-//     1
-//   );
+  await User.findByIdAndUpdate(user._id, {
+    tasks: newProjectsArr,
+  });
 
-//   await User.findByIdAndUpdate(user._id, {
-//     tasks: newProjectsArr,
-//   });
-
-//   next();
-// });
+  next();
+});
 
 /**
  * Statics

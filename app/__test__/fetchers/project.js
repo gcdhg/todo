@@ -1,24 +1,17 @@
 const dotenv = require("dotenv").config();
 
-const mongoose = require("mongoose");
-
-const Project = require("../../models/projects");
-const Task = require("../../models/tasks");
-
-const User = mongoose.model("User");
-
 const fetch = require("node-fetch");
 
 module.exports = {
-  async getAllProjects(token) {
-    return await fetch("http://localhost:3000/projects/get", {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json;charset=utf-8",
-        Origin: "http://localhost:3000projects/get",
-      },
-    });
-  },
+  // async getAllProjects(token) {
+  //   return await fetch("http://localhost:3000/projects/all", {
+  //     headers: {
+  //       Authorization: `Bearer ${token}`,
+  //       "Content-Type": "application/json;charset=utf-8",
+  //       Origin: "http://localhost:3000/projects/all",
+  //     },
+  //   });
+  // },
 
   async getOneprojectById(token, id) {
     return await fetch(`http://localhost:3000/projects/${id}`, {
@@ -31,7 +24,7 @@ module.exports = {
   },
 
   async editOneprojectById(token, id) {
-    return await fetch(`http://localhost:3000/projects//edit`, {
+    return await fetch(`http://localhost:3000/projects/edit`, {
       method: "PATCH",
       headers: {
         Authorization: `Bearer ${token}`,
@@ -67,12 +60,12 @@ module.exports = {
   },
 
   async getUserProjects(token) {
-    return await fetch("http://localhost:3000/projects/get", {
+    return await fetch("http://localhost:3000/projects/all", {
       method: "GET",
       headers: {
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json;charset=utf-8",
-        Origin: "http://localhost:3000/projects/get",
+        Origin: "http://localhost:3000/projects/all",
       },
     });
   },

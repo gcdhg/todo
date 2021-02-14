@@ -1,11 +1,14 @@
 const dotenv = require("dotenv").config();
 
-const mongoose = require("mongoose");
 const userFun = require("../fetchers/user");
+const taskfun = require("../fetchers/task");
+const projFun = require("../fetchers/project");
 
-const User = mongoose.model("User");
+const mongoose = require("mongoose");
 
-// const fetch = require("node-fetch");
+const Project = require("../../models/projects");
+const User = require("../../models/user");
+const Task = require("../../models/tasks");
 
 describe("TODO", () => {
   let database;

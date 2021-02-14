@@ -1,13 +1,14 @@
 const dotenv = require("dotenv").config();
 
-const mongoose = require("mongoose");
 const userFun = require("../fetchers/user");
 const taskfun = require("../fetchers/task");
 const projFun = require("../fetchers/project");
 
-const Project = mongoose.model("Project");
-const Task = mongoose.model("Task");
-const User = mongoose.model("User");
+const mongoose = require("mongoose");
+
+const Project = require("../../models/projects");
+const User = require("../../models/user");
+const Task = require("../../models/tasks");
 
 describe("User", () => {
   let database;
@@ -44,7 +45,9 @@ describe("User", () => {
   });
 
   it("create, login, update, delete, get, find, logout on all devices user", async () => {
-    // ? create user
+    /**
+     * ? create user
+     */
     const statusCreateUser = await userFun.createUser(user);
     expect(statusCreateUser.status).toBe(201);
     const userCreated = await User.findOne({
@@ -55,7 +58,9 @@ describe("User", () => {
       surname: user.surname,
       email: user.email,
     });
-    // ? check login user
+    /**
+     * ? check login user
+     */
     Array(3).map(async (t) => {
       const statusLogin = await userFun.loginUser({
         email: user.email,
@@ -64,24 +69,32 @@ describe("User", () => {
       expect(statusLogin.status).toBe(200);
       return statusLogin;
     });
-    // ? login
+    /**
+     * ? login
+     */
     const login = await userFun.loginUser({
       email: user.email,
       password: user.password,
     });
     const tokenl = await login.json();
     token = tokenl.token;
-    // ? login with false data
+    /**
+     * ? login with false data
+     */
     const statusLoginFalse = await userFun.loginUser({
       email: "wrongemail@email.com",
       password: "wrongpassword",
     });
     expect(statusLoginFalse.status).toBe(401);
-    // ? logout on all devices
+    /**
+     * ? logout on all devices
+     */
 
     const logoutOnAllFetch = await userFun.logoutUserOnAllDevices(token);
     expect(logoutOnAllFetch.status).toBe(201);
-    // ? check logout
+    /**
+     * ? check logout
+     */
     const createTask = await taskfun.createTask(
       { token },
       {
@@ -89,18 +102,22 @@ describe("User", () => {
       }
     );
     expect(createTask.status).toBe(401);
-
-    // ? login
-
+    /**
+     * ? login
+     */
     const statusLogin = await userFun.loginUser({
       email: user.email,
       password: user.password,
     });
     const tokenLogin = await statusLogin.json();
     token = tokenLogin.token;
-
-    // ? delete user
+    /**
+     * ? delete user
+     */
     const statusDelete = await userFun.deleteUser(user, token);
+    /**
+     * ? check status
+     */
     expect(statusDelete.status).toBe(201);
   });
 });

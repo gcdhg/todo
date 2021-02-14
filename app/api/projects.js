@@ -1,10 +1,13 @@
 const mongoose = require("mongoose");
-const Task = require("../models/tasks");
 
-const Project = mongoose.model("Project");
-const User = mongoose.model("User");
+const Task = require("@Models/tasks");
+const Project = require("@Models/projects");
+const User = require("@Models/user");
 
-module.exports.getUserProject = async function (req, res) {
+// const Project = mongoose.model("Project");
+// const User = mongoose.model("User");
+
+module.exports.getUserProjects = async function (req, res) {
   try {
     const projects = await Project.find({ owner: req.user });
     const status = !projects ? 400 : 200;
@@ -19,25 +22,25 @@ module.exports.getOneProject = async function (req, res) {
   try {
     const project = await Project.findOne({
       _id: req.params.project,
-      "participants.user": req.user,
+      "contributors.user": req.user,
     })
-      .populate([
-        {
-          path: "tasks",
-          model: "Task",
-        },
-        {
-          path: "participants.user",
-          model: "User",
-          select: "username",
-        },
-        {
-          path: "owner",
-          model: "User",
-          select: "username",
-        },
-      ])
-      .exec();
+      // .populate([
+      //   {
+      //     path: "tasks",
+      //     model: "Task",
+      //   },
+      //   {
+      //     path: "participants.user",
+      //     model: "User",
+      //     select: "username",
+      //   },
+      //   {
+      //     path: "owner",
+      //     model: "User",
+      //     select: "username",
+      //   },
+      // ])
+      // .exec();
     res.status(200).json(project);
   } catch (err) {
     console.log(err);
@@ -66,7 +69,7 @@ module.exports.createProject = async function (req, res) {
     const project = new Project({
       title,
       owner: user,
-      participants: [{ user, role: "owner" }],
+      contributors: [{ user, role: "owner" }],
       tasks: [],
     });
     const saveProject = project.save();

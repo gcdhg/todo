@@ -56,7 +56,7 @@ module.exports.getTaskById = async function (req, res) {
     const task = await Task.findOne({
       _id: req.params.id,
       user: req.user,
-      projectId: req.body.projectId,
+      // projectId: req.body.projectId,
     });
     const status = task === undefined ? 402 : 200;
     res.status(status).json(task);
@@ -72,16 +72,15 @@ module.exports.getTaskById = async function (req, res) {
 
 module.exports.editTask = async function (req, res) {
   try {
-    const task = await Task.findOne({
-      _id: req.params.id,
-      user: req.user,
-      projectId: req.body.projectId,
-    });
-    for (let key of Object.keys(req.body)) {
-      task[key] = req.body[key];
-    }
-    await task.save();
-
+    const task = await Task.findOneAndUpdate(
+      {
+        _id: req.params.id,
+        // user: req.user,
+        // project: req.body?.projectId,
+      },
+      { $set: req.body },
+      { new: true }
+    );
     res.status(201).json(task);
   } catch (err) {
     console.log(err);

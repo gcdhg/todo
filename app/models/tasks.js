@@ -23,25 +23,25 @@ const TaskSchema = new Schema({
 
 TaskSchema.path("title").required(true, "Title connot be blank");
 
-// TaskSchema.pre("save", async function (next) {
-//   const task = this;
+TaskSchema.pre("save", async function (next) {
+  const task = this;
 
-//   if (task.isNew && task.user) {
-//     await User.findByIdAndUpdate(task.user, {
-//       $push: { tasks: task._id },
-//     });
+  if (task.isNew && task.user) {
+    await User.findByIdAndUpdate(task.user, {
+      $push: { tasks: task._id },
+    });
 
-//     next();
-//   } else if (task.isNew && task.project) {
-//     await Project.findByIdAndUpdate(task.project, {
-//       $push: { tasks: task._id },
-//     });
+    next();
+  } else if (task.isNew && task.project) {
+    await Project.findByIdAndUpdate(task.project, {
+      $push: { tasks: task._id },
+    });
 
-//     next();
-//   } else {
-//     throw "wrong data";
-//   }
-// });
+    next();
+  } else {
+    throw "wrong data";
+  }
+});
 
 TaskSchema.pre("deleteOne", async function (next) {
   const task = this;

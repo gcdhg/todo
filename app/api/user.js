@@ -6,20 +6,23 @@ const User = mongoose.model("User");
 const Task = mongoose.model("Task");
 const Project = mongoose.model("Project");
 
+// const dbErr = require('@Error/DatabaseError');
+
 module.exports = {
   /**
    * Create user. Get data from requst body and store it in database
    */
 
-  async createUser(req, res) {
+  async createUser(req, res, next) {
     try {
       const { name, surname, username, email, password } = req.body;
       const user = new User({ name, surname, username, email, password });
       await user.save();
       res.status(201).json({ status: "user created" });
     } catch (err) {
-      console.log(err);
-      res.status(400).json(err);
+      err.status = 422;
+      // res.status(400).json(err);
+      next(err);
     }
   },
 
@@ -29,7 +32,7 @@ module.exports = {
    * Sends it to client
    */
 
-  async loginUser(req, res) {
+  async loginUser(req, res, next) {
     try {
       const { email, password } = req.body;
       const user = await User.findByRecords(email, password);
@@ -42,8 +45,10 @@ module.exports = {
         token: token,
       });
     } catch (err) {
+      err.status = 401;
       // console.log(err);
-      res.status(401).json(err);
+      // res.status(401).json(err);
+      next(err);
     }
   },
 
@@ -107,6 +112,23 @@ module.exports = {
    */
 
   async getUserById(req, res) {
+    try {
+      // console.log(req.token);
+      const user = await User.findById({ _id: req.params.id });
+      res.status(200).json(user);
+    } catch (err) {
+      console.log(err);
+      res.status(404).json();
+    }
+  },
+
+  /**
+   * Get user data from database by his _id
+   * user _id parsed from token
+   * and then full user data returned in response
+   */
+
+  async getUserByToken(req, res) {
     try {
       // console.log(req.token);
       const user = await User.findById(req.user);

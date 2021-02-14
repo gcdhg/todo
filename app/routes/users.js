@@ -9,12 +9,12 @@ const userApi = require("../api/user");
 const auth = require("../config/middleware/auth.js");
 
 router.post("/create", userApi.createUser);
-// router.post("/find", auth, userApi.findUserByUsername);
 router.post("/login", userApi.loginUser);
 router.delete("/logout", auth, userApi.logoutUserOnce);
 router.put("/logout/all", auth, userApi.logoutUserOnAllDevices);
 router.delete("/delete", auth, userApi.deleteUser);
 router.get("/id/:id", auth, userApi.getUserById);
+router.get("/token", auth, userApi.getUserByToken);
 router.get("/username/:username", auth, userApi.getUserByUsername);
 
 module.exports = router;

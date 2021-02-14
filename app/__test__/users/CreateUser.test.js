@@ -1,14 +1,16 @@
 const dotenv = require("dotenv").config();
 
 const jwt = require("jsonwebtoken");
-const mongoose = require("mongoose");
+
 const userFun = require("../fetchers/user");
 const taskfun = require("../fetchers/task");
 const projFun = require("../fetchers/project");
 
-const User = mongoose.model("User");
+const mongoose = require("mongoose");
 
-// const fetch = require("node-fetch");
+const Project = require("../../models/projects");
+const User = require("../../models/user");
+const Task = require("../../models/tasks");
 
 describe("TODO", () => {
   let database;
@@ -59,7 +61,7 @@ describe("TODO", () => {
       surname: user.surname,
       email: user.email,
     });
-    // ? login user 
+    // ? login user
     const login = await userFun.loginUser({
       email: user.email,
       password: user.password,
