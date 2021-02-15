@@ -49,7 +49,9 @@ describe("TODO", () => {
   });
 
   it("create user and create, edit, delete todo", async () => {
-    // ? create user
+    /**
+     * ? check status
+     */
     await userFun.createUser(user);
     /**
      * ? get user id

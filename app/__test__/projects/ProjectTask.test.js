@@ -16,10 +16,10 @@ describe("TODO", () => {
   let id;
 
   const user = {
-    name: "projectman1",
-    username: "projectman1",
-    email: "projectman1@gmail.com",
-    password: "projectman1",
+    name: "projectman11",
+    username: "projectman11",
+    email: "projectman11@gmail.com",
+    password: "projectman11",
   };
 
   beforeAll(async () => {
@@ -86,57 +86,60 @@ describe("TODO", () => {
 
     project = await project.json();
     /**
+     * ? check that project is recorded in user
+     */
+    let projectRecord = await userFun.getUserByToken({ token });
+    /**
+     * ? check status
+     */
+    expect(projectRecord.status).toBe(200);
+    /**
+     * ? check data user
+     */
+    projectRecord = await projectRecord.json();
+    expect(projectRecord.projects).toHaveLength(1);
+    expect(projectRecord.projects[0]).toEqual(project._id);
+
+    /**
      * ? get user projects
      */
     let projects = await projFun.getUserProjects(token);
     expect(projects.status).toBe(200);
     projects = await projects.json();
     /**
-     * ? check recived array length
+     * ? create project task
      */
-    expect(projects).toHaveLength(1);
-    /**
-     * ? check that data is valid
-     */
-    expect(projects[0]).toMatchObject(project);
-    /**
-     * ? create task in Project
-     */
-    let task = await taskfun.createTask(token, {
-      title: "new project task",
-      project: project._id,
+    // console.log(projects);
+    let taskP = await taskfun.createTask(token, {
+      title: "project task",
+      project: projects[0]._id,
     });
+    expect(taskP.status).toBe(201);
+    taskP = await taskP.json();
+    /**
+     * ? check that task is recorded in project
+     */
+    let checkProject = await projFun.getOneprojectById(token, projects[0]._id);
+    expect(checkProject.status).toBe(200);
+    checkProject = await checkProject.json();
+    /**
+     * ? check data project
+     */
+    expect(checkProject.tasks).toHaveLength(1);
+    expect(checkProject.tasks[0]).toEqual(taskP._id);
+    /**
+     * ? check that tasks recorded in user
+     */
+    let checkTasks = await userFun.getUserByToken({ token });
     /**
      * ? check status
      */
-    expect(task.status).toBe(201);
-    task = await task.json();
+    expect(checkTasks.status).toBe(200);
     /**
-     * ? get project data
+     * ? check data user
      */
-    let oneProject = await projFun.getOneprojectById(token, project._id);
-    /**
-     * ? check status
-     */
-    expect(oneProject.status).toBe(200);
-    oneProject = await oneProject.json();
-
-    expect(oneProject).toMatchObject({
-      title: "new project",
-    });
-    // ? delete Project without valid user data
-    const deleteProjectWithFakeData = await projFun.deleteProject(token);
-    /**
-     * ? check status
-     */
-    expect(deleteProjectWithFakeData.status).toBe(403);
-    /**
-     * ? delete Project with valid user data
-     */
-    const deleteProject = await projFun.deleteProject(token, dbProject[0]._id);
-    /**
-     * ? check status
-     */
-    expect(deleteProject.status).toBe(201);
+    checkTasks = await checkTasks.json();
+    expect(checkTasks.tasks).toHaveLength(1);
+    expect(checkTasks.tasks[0]).toEqual(taskP._id);
   });
 });

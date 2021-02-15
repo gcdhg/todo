@@ -7,13 +7,16 @@ const Project = require("@Models/projects.js");
 
 const tasks = require("@Api/tasks");
 const auth = require("@Middleware/auth.js");
+const entity = require("@Middleware/entity");
 
-router.get("/get", auth, tasks.showAllPrivateTasks);
-router.post("/create", auth, tasks.createTask);
-router.put("/state/:id", auth, tasks.changeState);
+const middle = [auth, entity];
 
-router.get("/:id", auth, tasks.getTaskById);
-router.put("/:id", auth, tasks.editTask);
-router.delete("/:id", auth, tasks.deleteTask);
+router.get("/get", middle, tasks.showAllPrivateTasks);
+router.post("/create", middle, tasks.createTask);
+router.put("/state/:id", middle, tasks.changeState);
+
+router.get("/:id", middle, tasks.getTaskById);
+router.put("/:id", middle, tasks.editTask);
+router.delete("/:id", middle, tasks.deleteTask);
 
 module.exports = router;

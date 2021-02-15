@@ -6,10 +6,6 @@ const User = mongoose.model("User");
 const Task = mongoose.model("Task");
 const Project = mongoose.model("Project");
 
-// const Task = require("@Models/tasks");
-// const Project = require("@Models/projects");
-// const User = require("@Models/user");
-
 module.exports = {
   /**
    * Create user. Get data from requst body and store it in database
@@ -22,6 +18,7 @@ module.exports = {
       await user.save();
       res.status(201).json({ status: "user created" });
     } catch (err) {
+      // console.log(err);
       err.status = err.status || 422;
       next(err);
     }
@@ -46,6 +43,7 @@ module.exports = {
         token: token,
       });
     } catch (err) {
+      // console.log(err);
       err.status = err.status || 401;
       next(err);
     }
@@ -70,6 +68,7 @@ module.exports = {
       const fel = await Promise.all([task, project, isDeleted]);
       res.status(201).json();
     } catch (err) {
+      // console.log(err);
       err.status = err.status || 400;
       next(err);
     }
@@ -99,6 +98,7 @@ module.exports = {
       const status = isDestroied ? 201 : 400;
       res.status(status).json();
     } catch (err) {
+      // console.log(err);
       err.status = err.status || 401;
       next(err);
     }
@@ -116,6 +116,8 @@ module.exports = {
       const user = await User.findById({ _id: req.params.id });
       res.status(200).json(user);
     } catch (err) {
+      // console.log(err);
+
       err.status = err.status || 404;
       next(err);
     }
@@ -133,6 +135,7 @@ module.exports = {
       const user = await User.findById(req.user);
       res.status(200).json(user);
     } catch (err) {
+      // console.log(err);
       err.status = err.status || 404;
       next(err);
     }
@@ -174,6 +177,7 @@ module.exports = {
       const result = mapping[isGuest];
       res.status(200).json(result);
     } catch (err) {
+      // console.log(err);
       err.status = err.status || 404;
       next(err);
     }
@@ -191,6 +195,7 @@ module.exports = {
       const status = isDestroied ? 201 : 400;
       res.status(status).json();
     } catch (err) {
+      // console.log(err);
       err.status = err.status || 400;
       next(err);
     }

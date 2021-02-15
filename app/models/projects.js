@@ -37,24 +37,20 @@ ProjectSchema.pre("save", async function (next) {
   }
 });
 
-ProjectSchema.pre("remove", async function (next) {
-  const project = this;
+// ProjectSchema.pre("findOneAndDelete", async function (next) {
+//   const project = this;
+//   await Task.deleteMany({ project: project._id });
+//   const user = await User.findById(project.owner);
+//   const newProjectsArr = await user.projects.splice(
+//     user.projects.indexOf(project._id),
+//     1
+//   );
+//   await User.findByIdAndUpdate(user._id, {
+//     tasks: newProjectsArr,
+//   });
 
-  await Task.deleteMany({ project: project._id });
-
-  const user = await User.findById(project.owner);
-
-  const newProjectsArr = await user.projects.splice(
-    user.projects.indexOf(project._id),
-    1
-  );
-
-  await User.findByIdAndUpdate(user._id, {
-    tasks: newProjectsArr,
-  });
-
-  next();
-});
+//   next();
+// });
 
 /**
  * Statics
@@ -63,7 +59,7 @@ ProjectSchema.pre("remove", async function (next) {
 ProjectSchema.statics.addUserToProject = async function (
   projectId,
   userId,
-  userRole = "worker"
+  userRole = "contributor"
 ) {
   await Project.findOneAndUpdate(
     { _id: projectId },

@@ -11,10 +11,11 @@ const TaskSchema = new Schema({
   user: { type: Schema.ObjectId, ref: "User" },
   project: { type: Schema.ObjectId, ref: "Projects" },
   title: { type: String },
-  state: {
-    currentState: { type: String, default: "on-hold" },
-    user: { type: Schema.ObjectId, ref: "User" },
-  },
+  // state: {
+  //   currentState: { type: String, default: "on-hold" },
+  //   user: { type: Schema.ObjectId, ref: "User" },
+  // },
+  isComleted: { type: Boolean, default: false },
   createdAt: { type: Date, default: Date.now() },
   planedAt: { type: Date },
   editedAt: { type: Date, default: null },
@@ -25,22 +26,24 @@ TaskSchema.path("title").required(true, "Title connot be blank");
 
 TaskSchema.pre("save", async function (next) {
   const task = this;
-
   if (task.isNew && task.user) {
     await User.findByIdAndUpdate(task.user, {
       $push: { tasks: task._id },
     });
 
-    next();
-  } else if (task.isNew && task.project) {
+    // return next();
+  }
+  if (task.isNew && task.project) {
     await Project.findByIdAndUpdate(task.project, {
       $push: { tasks: task._id },
     });
 
-    next();
-  } else {
-    throw new Error({ status: 422 });
+    // return next();
   }
+  if (task.isNew && (task.user || task.project)) {
+    return next();
+  }
+  throw new Error({ status: 422 });
 });
 
 TaskSchema.pre("deleteOne", async function (next) {

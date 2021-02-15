@@ -23,7 +23,7 @@ module.exports = {
     });
   },
 
-  async editOneprojectById(token, id) {
+  async editOneprojectById(token, task) {
     return await fetch(`http://localhost:3000/projects/edit`, {
       method: "PATCH",
       headers: {
@@ -31,7 +31,7 @@ module.exports = {
         "Content-Type": "application/json;charset=utf-8",
         Origin: `http://localhost:3000/projects/edit`,
       },
-      body: JSON.stringify({ projectId: id }),
+      body: JSON.stringify({ projectId: task.projectId, title: task.title }),
     });
   },
 

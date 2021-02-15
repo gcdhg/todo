@@ -8,11 +8,14 @@ const Project = require("@Models/projects.js");
 const projects = require("@Api/projects");
 
 const auth = require("@Middleware/auth.js");
+const entity = require("@Middleware/entity");
 
-router.get("/all", auth, projects.getUserProjects);
-router.get("/:project", auth, projects.getOneProject);
-router.post("/create", auth, projects.createProject);
-router.patch("/edit", auth, projects.editOneProject);
-router.delete("/delete", auth, projects.deleteProject);
+const middle = [auth, entity];
+
+router.get("/all", middle, projects.getUserProjects);
+router.get("/:project", middle, projects.getOneProject);
+router.post("/create", middle, projects.createProject);
+router.patch("/edit", middle, projects.editOneProject);
+router.delete("/delete", middle, projects.deleteProject);
 
 module.exports = router;

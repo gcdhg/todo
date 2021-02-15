@@ -66,13 +66,10 @@ describe("TODO", () => {
     expect(newProjReq.status).toBe(201);
     expect(createdProject[0]).toMatchObject({ title: "new project" });
     // ? edit Project
-    const editProj = await projFun.editOneprojectById(
-      tokenLogin.token,
-      createdProject[0]._id,
-      {
-        title: "very new todo project",
-      }
-    );
+    const editProj = await projFun.editOneprojectById(tokenLogin.token, {
+      projectId: createdProject[0]._id,
+      title: "very new todo project",
+    });
     expect(editProj.status).toBe(201);
     // ? get Project by id
     const newProj = await newProjReq.json();
