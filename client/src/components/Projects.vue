@@ -8,7 +8,7 @@
       ></b-form-input>
     </b-row>
     <b-row>
-      {{ RETURN_ALL_PROJECTS.map((p) => p.title) }}
+      <!-- {{ RETURN_ALL_PROJECTS.map((p) => p.title) }} -->
       <ProjectList v-bind:projects="RETURN_ALL_PROJECTS" />
     </b-row>
   </div>

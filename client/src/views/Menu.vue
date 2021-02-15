@@ -28,8 +28,10 @@
           >
             Personal data
           </b-list-group-item>
+          <b-list-group-item class="text-center" type="button" @click="logout">
+            Logout
+          </b-list-group-item>
         </b-list-group>
-        <b-button @click="logout">Logout</b-button>
       </b-card>
       <b-card class="col-9">
         <router-view></router-view>

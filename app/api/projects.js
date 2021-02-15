@@ -20,24 +20,24 @@ module.exports.getOneProject = async function (req, res, next) {
     const project = await Project.findOne({
       _id: req.params.project,
       "contributors.user": req.user._id,
-    });
-    // .populate([
-    //   {
-    //     path: "tasks",
-    //     model: "Task",
-    //   },
-    //   {
-    //     path: "participants.user",
-    //     model: "User",
-    //     select: "username",
-    //   },
-    //   {
-    //     path: "owner",
-    //     model: "User",
-    //     select: "username",
-    //   },
-    // ])
-    // .exec();
+    })
+      .populate([
+        {
+          path: "tasks",
+          model: "Task",
+        },
+        // {
+        //   path: "contributors.user",
+        //   model: "User",
+        //   select: "username",
+        // },
+        // {
+        //   path: "owner",
+        //   model: "User",
+        //   select: "username",
+        // },
+      ])
+      .exec();
     res.status(200).json(project);
   } catch (err) {
     err.status = err.status || 404;

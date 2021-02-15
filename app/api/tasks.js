@@ -29,9 +29,9 @@ module.exports.createTask = async function (req, res, next) {
  * Get all tasks created by user (including those in owned project)
  */
 
-module.exports.showAllPrivateTasks = async function (req, res, next) {
+module.exports.getAllPrivateTasks = async function (req, res, next) {
   try {
-    const tasks = await Task.find({ user: req.user._id });
+    const tasks = await Task.find({ user: req.user._id, project: undefined });
     res.status(200).json(tasks);
   } catch (err) {
     err.status = err.status || 400;

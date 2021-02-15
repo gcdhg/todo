@@ -29,6 +29,7 @@ export default {
     ...mapActions(["CREATE_NEW_TASK", "GET_ALL_USER_TASKS"]),
     async createNewTask() {
       await this.CREATE_NEW_TASK({ title: this.title });
+      this.title = "";
     },
   },
   async mounted() {

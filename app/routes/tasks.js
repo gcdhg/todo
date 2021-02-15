@@ -11,7 +11,7 @@ const entity = require("@Middleware/entity");
 
 const middle = [auth, entity];
 
-router.get("/get", middle, tasks.showAllPrivateTasks);
+router.get("/get", middle, tasks.getAllPrivateTasks);
 router.post("/create", middle, tasks.createTask);
 router.put("/state/:id", middle, tasks.changeState);
 
