@@ -2,10 +2,10 @@
   <b-container fluid>
     <div v-if="projects.length">
       <ProjectIteam
-        v-for="(task, i) of projects"
-        :key="task._id"
+        v-for="(project, i) of projects"
+        :key="project._id"
         v-bind:index="i"
-        v-bind:task="projects"
+        v-bind:project="projects"
       />
     </div>
     <div v-else>no projects created yet!</div>
@@ -13,7 +13,7 @@
 </template>
 
 <script>
-import TaskIteam from "../Task/TaskIteam";
+import ProjectIteam from "../Project/ProjectIteam";
 
 export default {
   props: {
@@ -26,7 +26,7 @@ export default {
     },
   },
   components: {
-    TaskIteam,
+    ProjectIteam,
   },
 };
 </script>

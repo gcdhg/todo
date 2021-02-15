@@ -6,28 +6,27 @@
         class="col-3"
         v-bind:title="this.RETURN_USER_DATA.username"
       >
-        <b-list-group-item
-          type="button"
-          v-bind:active="RETURN_MODE === 'tasks'"
-          @click="getTasks"
-        >
-          Tasks
-        </b-list-group-item>
         <b-list-group flush>
           <b-list-group-item
             type="button"
-            v-bind:active="RETURN_MODE === 'profile'"
-            @click="getPersonalData"
+            v-bind:active="RETURN_MODE === 'tasks'"
+            @click="getTasks"
           >
-            Personal data
+            Tasks
           </b-list-group-item>
-
           <b-list-group-item
             type="button"
             v-bind:active="RETURN_MODE === 'projects'"
             @click="getProjects"
           >
             Projects
+          </b-list-group-item>
+          <b-list-group-item
+            type="button"
+            v-bind:active="RETURN_MODE === 'profile'"
+            @click="getPersonalData"
+          >
+            Personal data
           </b-list-group-item>
         </b-list-group>
         <b-button @click="logout">Logout</b-button>
@@ -67,6 +66,7 @@ export default {
     async getProjects() {
       if (this.RETURN_MODE !== "projects") {
         await this.CHANGE_MODE("projects");
+        this.$router.push(`/${this.RETURN_USER_DATA.username}/projects`);
       }
     },
     async logout() {
