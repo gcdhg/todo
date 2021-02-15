@@ -7,7 +7,7 @@ You need to have installed Node and NPM.
 Clone this repository
 
 ```bash
-git clone https://github.com/gtsopour/nodejs-shopping-cart.git
+git clone https://github.com/gcdhg/todo.git
 ```
 
 Install dependencies
