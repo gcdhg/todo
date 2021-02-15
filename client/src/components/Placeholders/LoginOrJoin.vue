@@ -25,7 +25,7 @@ export default {
   async mounted() {
     if (this.RETURN_TOKEN !== undefined) {
       this.$nextTick(() => {
-        this.$router.push(`/${this.RETURN_USER_DATA.username}/profile`);
+        this.$router.push(`${this.RETURN_USER_DATA.username}/tasks`);
       });
     }
   },
