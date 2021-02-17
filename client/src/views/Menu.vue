@@ -46,6 +46,9 @@ import { mapActions, mapGetters } from "vuex";
 export default {
   computed: mapGetters(["RETURN_MODE", "RETURN_USER_DATA"]),
   async created() {
+    // const mode = this.$router.history.current.fullPath.replace(/\w*\//g, "");
+    // console.log(mode);
+    // this.$router.push(`/${this.RETURN_USER_DATA.username}/${mode}`);
     await this.GET_USER_DATA();
   },
   methods: {

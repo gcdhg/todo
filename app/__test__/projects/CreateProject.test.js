@@ -16,10 +16,10 @@ describe("TODO", () => {
   let id;
 
   const user = {
-    name: "projectman1",
-    username: "projectman1",
-    email: "projectman1@gmail.com",
-    password: "projectman1",
+    name: "projectman222",
+    username: "projectman222",
+    email: "projectman222@gmail.com",
+    password: "projectman222",
   };
 
   beforeAll(async () => {
@@ -79,9 +79,9 @@ describe("TODO", () => {
      * ? create project
      */
     let project = await projFun.createProject(token, {
-      title: "new project",
+      title: "my new projecct",
     });
-    const dbProject = await Project.find({ title: "new project" });
+    const dbProject = await Project.find({ title: "my new projecct" });
     expect(project.status).toBe(201);
 
     project = await project.json();
@@ -103,7 +103,7 @@ describe("TODO", () => {
      * ? create task in Project
      */
     let task = await taskfun.createTask(token, {
-      title: "new project task",
+      title: "my new projecct task",
       project: project._id,
     });
     /**
@@ -122,7 +122,7 @@ describe("TODO", () => {
     oneProject = await oneProject.json();
 
     expect(oneProject).toMatchObject({
-      title: "new project",
+      title: "my new projecct",
     });
     // ? delete Project without valid user data
     const deleteProjectWithFakeData = await projFun.deleteProject(token);

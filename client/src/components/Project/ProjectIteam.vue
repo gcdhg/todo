@@ -24,7 +24,7 @@
         </b-card-text>
         <b-card-text>
           <b-button
-            v-b-toggle="'collapse-1'"
+            v-b-toggle="`collapse-${index}`"
             @click="getProject"
             size="sm"
             variant="primary"
@@ -32,7 +32,7 @@
             <b-icon icon="arrow-down" aria-hidden="true"></b-icon>
             tasks
           </b-button>
-          <b-collapse id="collapse-1" class="mt-2">
+          <b-collapse v-bind:id="`collapse-${index}`" class="mt-2">
             <b-card>
               <b-form-input
                 v-model="title"

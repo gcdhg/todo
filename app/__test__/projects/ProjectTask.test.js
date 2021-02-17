@@ -126,7 +126,7 @@ describe("TODO", () => {
      * ? check data project
      */
     expect(checkProject.tasks).toHaveLength(1);
-    expect(checkProject.tasks[0]).toEqual(taskP._id);
+    expect(checkProject.tasks[0]._id).toEqual(taskP._id);
     /**
      * ? check that tasks recorded in user
      */
