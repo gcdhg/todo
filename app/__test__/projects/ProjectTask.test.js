@@ -79,9 +79,9 @@ describe("TODO", () => {
      * ? create project
      */
     let project = await projFun.createProject(token, {
-      title: "new project",
+      title: "abdcpkfjogjkfslkpodnbgmfs",
     });
-    const dbProject = await Project.find({ title: "new project" });
+    const dbProject = await Project.find({ title: "abdcpkfjogjkfslkpodnbgmfs" });
     expect(project.status).toBe(201);
 
     project = await project.json();
@@ -106,12 +106,13 @@ describe("TODO", () => {
     let projects = await projFun.getUserProjects(token);
     expect(projects.status).toBe(200);
     projects = await projects.json();
+    expect(projects.length).toBeGreaterThanOrEqual(1)
     /**
      * ? create project task
      */
     // console.log(projects);
     let taskP = await taskfun.createTask(token, {
-      title: "project task",
+      title: "project task neverland",
       project: projects[0]._id,
     });
     expect(taskP.status).toBe(201);

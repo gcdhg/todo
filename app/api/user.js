@@ -33,14 +33,20 @@ module.exports = {
   async loginUser(req, res, next) {
     try {
       const { email, password } = req.body;
+      // console.log(req.session);
       const user = await User.findByRecords(email, password);
       const token = await user.generateAuthToken();
 
       req.session.userid = user._id;
       req.session.token = token;
+      // res.locals.userid = user._id;
+      // res.locals.token = token;
+      // console.log(req.sessionID)
       res.status(200).json({
         username: user.username,
         token: token,
+        // sessionID: req.sessionID,
+        // session: req.session,
       });
     } catch (err) {
       // console.log(err);

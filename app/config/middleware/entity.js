@@ -18,7 +18,7 @@ const entity = async (req, _res, next) => {
         return next();
       }
       const isContrib = project.contributors.some(
-        (user) => user.user.toString() === req.user._id
+        (user) => user.user.toString() == req.user._id
       );
       if (isContrib) {
         req.currentUser = new Contributor(user);

@@ -16,7 +16,7 @@ const MongoStore = require("connect-mongo")(session);
 const taskRouter = require("@Routes/tasks");
 const usersRouter = require("@Routes/users");
 const projectsRouter = require("@Routes/projects");
-const { signedCookie } = require("cookie-parser");
+// const { signedCookie } = require("cookie-parser");
 
 // database connection
 const database = require("./config/db/database")(
@@ -46,12 +46,25 @@ app.use(
   })
 );
 
+// enables Cross-Origin Resource Sharing
+app.use(cors());
+app.options("*", cors());
+
+// app.use(
+//   cors({
+//     origin: ["*"],
+//     methods: ["GET", "POST", "PATCH", "PUT", "DELETE"],
+//     credentials: true, // enable set cookie
+//   })
+// );
+
 // enables sessions
 app.use(
   session({
     name: "sessionId",
-    saveUninitialized: false,
     resave: false,
+    saveUninitialized: false,
+    httpOnly: false,
     secret: process.env.SESSION_SECRET_KEY,
     cookie: {
       maxAge: 1209600,
@@ -60,10 +73,6 @@ app.use(
     },
   })
 );
-
-// enables Cross-Origin Resource Sharing
-app.use(cors());
-app.options("*", cors());
 // adding routers
 app.use("/tasks", taskRouter);
 app.use("/users", usersRouter);
@@ -80,7 +89,7 @@ app.use(function (err, req, res, next) {
   res.locals.message = err.message;
   res.locals.error = req.app.get("env") === "development" ? err : {};
   // render the error page
-  console.error(err);
+  // console.error(err);
   res.status(err.status || 500).json(err);
 });
 

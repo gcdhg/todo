@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const _ = require("lodash");
 
-const User = mongoose.model("User");
+// const User = mongoose.model("User");
 const Task = mongoose.model("Task");
 
 /**
@@ -18,7 +18,6 @@ module.exports.createTask = async function (req, res, next) {
     });
     res.status(201).json(task);
   } catch (err) {
-    // console.log(JSON.stringify(err, null, 2));
     console.log(err);
     err.status = err.status || 400;
     next(err);

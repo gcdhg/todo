@@ -35,8 +35,9 @@ export default {
         const res = await userFetch.loginUser(user);
         if (res.status === (200 || 201)) {
           const json = await res.json();
-          console.log(res.Session);
           context.commit("UPDATE_TOKEN", json.token);
+          // console.log(json);
+          // setCookie('session', json.session)
           await context.dispatch("GET_USER_DATA");
           return true;
         } else {

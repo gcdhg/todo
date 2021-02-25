@@ -79,9 +79,11 @@ describe("TODO", () => {
      * ? create project
      */
     let project = await projFun.createProject(token, {
-      title: "my new projecct",
+      title: "akni2uf2oiovdniinomv0pdlndivbl",
     });
-    const dbProject = await Project.find({ title: "my new projecct" });
+    const dbProject = await Project.find({
+      title: "akni2uf2oiovdniinomv0pdlndivbl",
+    });
     expect(project.status).toBe(201);
 
     project = await project.json();
@@ -103,7 +105,7 @@ describe("TODO", () => {
      * ? create task in Project
      */
     let task = await taskfun.createTask(token, {
-      title: "my new projecct task",
+      title: "akni2uf2oiovdniinomv0pdlndivbl task",
       project: project._id,
     });
     /**
@@ -120,9 +122,8 @@ describe("TODO", () => {
      */
     expect(oneProject.status).toBe(200);
     oneProject = await oneProject.json();
-
     expect(oneProject).toMatchObject({
-      title: "my new projecct",
+      title: "akni2uf2oiovdniinomv0pdlndivbl",
     });
     // ? delete Project without valid user data
     const deleteProjectWithFakeData = await projFun.deleteProject(token);

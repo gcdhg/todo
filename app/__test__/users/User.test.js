@@ -78,6 +78,8 @@ describe("User", () => {
     });
     const tokenl = await login.json();
     token = tokenl.token;
+    // console.log(tokenl.session);
+    // console.log(tokenl.locals);
     /**
      * ? login with false data
      */
