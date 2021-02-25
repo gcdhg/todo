@@ -72,4 +72,15 @@ module.exports = {
       body: JSON.stringify(newStatus),
     });
   },
+
+  async completeTask(token, id) {
+    return await fetch(`http://localhost:3000/tasks/complete/${id}`, {
+      method: "PUT",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json;charset=utf-8",
+        Origin: `http://localhost:3000/tasks/complete/${id}`,
+      },
+    });
+  },
 };

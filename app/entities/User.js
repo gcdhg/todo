@@ -18,6 +18,7 @@ class User {
   }
   async editTask(id, newTask) {
     try {
+      console.log(newTask);
       const task = await Task.findOneAndUpdate(
         {
           _id: id,

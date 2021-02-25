@@ -13,10 +13,11 @@ const middle = [auth, entity];
 
 router.get("/get", middle, tasks.getAllPrivateTasks);
 router.post("/create", middle, tasks.createTask);
-router.put("/state/:id", middle, tasks.changeState);
+// router.put("/state/:id", middle, tasks.changeState);
 
 router.get("/:id", middle, tasks.getTaskById);
 router.put("/:id", middle, tasks.editTask);
+router.put("/complete/:id", middle, tasks.completeTask);
 router.delete("/:id", middle, tasks.deleteTask);
 
 module.exports = router;

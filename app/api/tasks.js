@@ -92,7 +92,7 @@ module.exports.deleteTask = async function (req, res, next) {
  * Change task state
  **/
 
-module.exports.changeState = async function (req, res, next) {
+module.exports.completeTask = async function (req, res, next) {
   try {
     const user = req.currentUser;
     const task = await user.CompleteTask(req.params.id);
